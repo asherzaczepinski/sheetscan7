@@ -1,5 +1,17 @@
-#once we figure out rows i don't know if we need preprocessing
+#I don't need to tile
+#i need to do the up and down black thingy where the lines were
+#i need to figure out the (middle) lines between the staff for as to where to go for the notes to --- better less than more interms of towards the middle line
 
+
+
+#i should go through every part a note could be
+#see 20 pixels black in a row or something like that --- count first instance of black --- track the middle of the note
+#this would be a note
+#imagine we hit a half note with white middle
+#we track start and end
+#then we go up from the start part and make sure it's not a flat!
+#make sure it's not a sharp by seeing how far the first and last index go up and down
+#natural is a bit harder but the idea could be something like above
 
 
 
@@ -27,6 +39,7 @@ threshold = 0.6
 
 all_rows = []
 all_columns = []
+
 def draw_example_rectangle(image_path, rect):
     # Validate rectangle coordinates
     if not all(isinstance(coord, (int, float)) for coord in rect):
@@ -47,7 +60,6 @@ def draw_example_rectangle(image_path, rect):
 
     # Save the image with rectangles
     img.save(image_path)
-
 
 def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     # Load the image
@@ -100,16 +112,23 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             if start_line != -1:
                 lines.append([0, start_line, width, row_index])
                 start_line = -1  # Reset start_line
+    for row in lines:
+        upper_line_y = row[1] - 1
+        bottom_line_y = row[3] 
+        #if all this is true y is it accesing the upper_line_y wrong? in img_array
 
-    
+        #something is stupidly wrong here then
+        for x_index in range(width):
+            #the lines r prob wrong then if this is happening
+            if img_array[upper_line_y, x_index] != 255 and img_array[bottom_line_y, x_index] != 255:
+                for y in range(upper_line_y + 1, bottom_line_y):
+                    img_array[y, x_index] = 0
+    #right here I a going to do the up and down part over ever line
+    #will loop through the x of the above and below line for every row
+    #fill in with black
+                
     # Save the modified image
     Image.fromarray(img_array).save(image_path)
-
-
-    #this won't work anymore
-    """ for vert in columns:
-        for column in vert:
-            draw_example_rectangle(image_path, column) """
     # Append the lines found in the image to the list
     lines.append(image_path)
     all_rows.append(lines)
@@ -170,8 +189,6 @@ input_folder = "input"
 
 open_pdf_into_input(pdf_path, input_folder)
 
-
-
 for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
         image_path = os.path.join(input_folder, filename)
@@ -180,18 +197,6 @@ for filename in os.listdir(input_folder):
 source_folder = 'input'
 destination_folder = 'new_input'
 duplicate_folder(source_folder, destination_folder)
-
-def draw_example_rectangle(image_path, rect):
-    # Load the image
-    img = Image.open(image_path)
-    draw = ImageDraw.Draw(img)
-    
-    # Draw the rectangle
-    print("Drawing rectangle:", rect)  # Debugging statement to show which rectangle is being drawn
-    draw.rectangle(rect, fill="black", width=1)
-    
-    # Save the image with rectangles drawn
-    img.save(image_path)
             
 new_columns = []
 for page in all_columns:
@@ -203,19 +208,9 @@ for page in all_columns:
         x = line[0][0]
         if x >= past_x + 1 and x <= past_x + 5 and past_x != -1:
             if line[0][1] >= page[line_index - 1][0][1] - 5 and line[0][1] <= page[line_index - 1][0][1] + 5:
-            #we have to make sure right here the past_x + 1 and this crap actually have the same columns
-            #we can prob do this by just checking the first one and assuming based off the y
-            #will do this
-            #let's say they are not the same
-            #what we can do is do two different checks
-            #we will somehow need to split it
                 if saved_vert == []:
                     saved_vert = page[line_index - 1].copy()
             else:
-                #how will we split up is the question
-                #splitting here and moving on
-                #all we want to do is append the first column in it's own right... can use the previous saved_vert
-                #then we will start a new saved_vert with the new past_x + 1
                 new_vert = saved_vert.copy()
                 for column in new_vert:
                     column[2] = page[line_index - 1][0][2]
@@ -243,10 +238,3 @@ for page in all_columns:
     current_page.append(page[-1])  # Add the image path to the current page's columns
     new_columns.append(current_page)
 
-#going to comment this for testing
-
-for page in new_columns:
-    page_location = f"new_input/{str(page[-1])[5:]}"  # Image path is the last element
-    for vert_line in page[:-1]:  # Exclude the last item (image path)
-        for column in vert_line:
-            draw_example_rectangle(page_location, column)
