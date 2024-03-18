@@ -1,21 +1,4 @@
-#I don't need to tile
-#i need to do the up and down black thingy where the lines were
-#i need to figure out the (middle) lines between the staff for as to where to go for the notes to --- better less than more interms of towards the middle line
-
-
-
-#i should go through every part a note could be
-#see 20 pixels black in a row or something like that --- count first instance of black --- track the middle of the note
-#this would be a note
-#imagine we hit a half note with white middle
-#we track start and end
-#then we go up from the start part and make sure it's not a flat!
-#make sure it's not a sharp by seeing how far the first and last index go up and down
-#natural is a bit harder but the idea could be something like above
-
-
-
-
+#to find average distance between 2 lines we can do 
 
 
 from PIL import Image, ImageDraw
@@ -25,6 +8,7 @@ import fitz  # PyMuPDF
 
 import numpy as np
 import os
+import cv2
 
 import argparse
 
@@ -39,6 +23,11 @@ threshold = 0.6
 
 all_rows = []
 all_columns = []
+#its in x,y format
+all_notes = []
+all_sharps = []
+all_flats = []
+all_naturals = []
 
 def draw_example_rectangle(image_path, rect):
     # Validate rectangle coordinates
@@ -86,7 +75,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if column_start == -1:
                     column_start = y
             else:
-                if column_start != -1 and (y - column_start) >= 200:
+                if column_start != -1 and (y - column_start) >= height * 0.057:
                     column.append([x, column_start, x + 1, y])
                     #put this back later
                     img_array[column_start:y, x:x + 1] = 255
@@ -126,7 +115,59 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     #right here I a going to do the up and down part over ever line
     #will loop through the x of the above and below line for every row
     #fill in with black
-                
+    
+    
+
+
+
+
+
+
+
+
+    invisible_lines = []
+
+    for row in lines:
+        print('will work on this latter cuz david a b')
+    #we're going to have to make a new thing that does the middle between the lines and everything else we'll call it invisible lines
+    #then we'll loop through this array no need for the middle part
+                    
+    
+    difference_between_lines = lines[1][1] - lines[0][1] 
+    #then we'll go everywhere there would be a line and apply the ratio
+    notes = []
+
+    #this has to account for the up and down in terms of every spot on the notes above and below register key
+    #also has to account for the notes on the lines themselves!
+    
+
+
+
+
+
+    #the other thing is i want to not only find it horizontally but once we do i'm going to go down and check to see if it indeed is a black cross!
+    #i can test this in various ways will work on it in homebase
+    for row in lines:
+        middle_y = int((int(row[1]) + int(row[3])) / 2)
+        black_count = 0
+        for x in range(width):
+            pixel_value = img_array[middle_y, x]
+            if pixel_value != 255 and x != width - 1:
+                black_count += 1
+            elif black_count != 0 and black_count > difference_between_lines * 1.5:
+                note_middle_x = int(((x - black_count) + x) / 2)
+                notes.append([note_middle_x, middle_y])
+                black_count = 0
+         #based off the page we're in on the -1 index loop through and find the notes based off the ratio of difference bewteen lines
+        
+
+
+
+
+
+
+
+
     # Save the modified image
     Image.fromarray(img_array).save(image_path)
     # Append the lines found in the image to the list
@@ -134,6 +175,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     all_rows.append(lines)
     columns.append(image_path)
     all_columns.append(columns)
+    notes.append(image_path)
+    all_notes.append(notes)
+
 
 def open_pdf_into_input(pdf_path, input_folder):
     # Open the PDF file
@@ -238,3 +282,15 @@ for page in all_columns:
     current_page.append(page[-1])  # Add the image path to the current page's columns
     new_columns.append(current_page)
 
+for page in all_notes:
+    image_path = page[-1]
+    for note in page[:-1]:  
+        #radius will eventually be difference between lines + 20    
+        radius = 40
+        color = (0, 0, 0)
+        thickness = 2
+        image = cv2.imread(image_path)
+        image_with_circle = cv2.circle(image, (note[0], note[1]), radius, color, thickness)
+        cv2.imwrite(image_path, image_with_circle)
+
+                
