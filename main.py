@@ -127,8 +127,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     invisible_lines = []
 
-    for row in lines:
-        print()
+    #WE'RE GOING TO LOOP BACKWARDS BC AT THE TOP THERE IS TEXT
+    #WE WILL CALCULATE THE BOTTOM 5 LINES TO NEXT UP TOP AND ONLY GO UP BY THAT SPACE / 2
+
+    for row_index in range(len(lines) - 1, -1, -1):
+        row = lines[row_index]
+        print(row)
+
     #we're going to have to make a new thing that does the middle between the lines and everything else we'll call it invisible lines
     #then we'll loop through this array no need for the middle part
                     
@@ -153,9 +158,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         black_count = 0
         for x in range(width):
             pixel_value = img_array[middle_y, x]
-            if pixel_value != 255 and x != width - 1:
+            if pixel_value != 255:
                 black_count += 1
-            elif (black_count != 0 and black_count > difference_between_lines) or x == width - 1:
+            elif (black_count != 0 and black_count > difference_between_lines):
                 note_middle_x = int(((x - black_count) + x) / 2)
                 notes.append([note_middle_x, middle_y])
                 black_count = 0
