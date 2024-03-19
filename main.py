@@ -128,7 +128,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     invisible_lines = []
 
     for row in lines:
-        print('will work on this latter cuz david a b')
+        print()
     #we're going to have to make a new thing that does the middle between the lines and everything else we'll call it invisible lines
     #then we'll loop through this array no need for the middle part
                     
@@ -147,6 +147,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     #the other thing is i want to not only find it horizontally but once we do i'm going to go down and check to see if it indeed is a black cross!
     #i can test this in various ways will work on it in homebase
+
     for row in lines:
         middle_y = int((int(row[1]) + int(row[3])) / 2)
         black_count = 0
@@ -154,9 +155,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             pixel_value = img_array[middle_y, x]
             if pixel_value != 255 and x != width - 1:
                 black_count += 1
-            elif black_count != 0 and black_count > difference_between_lines * 1.5:
+            elif (black_count != 0 and black_count > difference_between_lines) or x == width - 1:
                 note_middle_x = int(((x - black_count) + x) / 2)
                 notes.append([note_middle_x, middle_y])
+                black_count = 0
+            else:
                 black_count = 0
          #based off the page we're in on the -1 index loop through and find the notes based off the ratio of difference bewteen lines
         
@@ -282,6 +285,7 @@ for page in all_columns:
     current_page.append(page[-1])  # Add the image path to the current page's columns
     new_columns.append(current_page)
 
+print(all_notes)
 for page in all_notes:
     image_path = page[-1]
     for note in page[:-1]:  
