@@ -130,29 +130,28 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     #WE'RE GOING TO LOOP BACKWARDS BC AT THE TOP THERE IS TEXT
     #WE WILL CALCULATE THE BOTTOM 5 LINES TO NEXT UP TOP AND ONLY GO UP BY THAT SPACE / 2
 
-    for row_index in range(len(lines) - 1, -1, -1):
-        row = lines[row_index]
-        print(row)
+    #staff range is the last sixth one to the last fifth one
 
-    #we're going to have to make a new thing that does the middle between the lines and everything else we'll call it invisible lines
-    #then we'll loop through this array no need for the middle part
-                    
-    
     difference_between_lines = lines[1][1] - lines[0][1] 
-    #then we'll go everywhere there would be a line and apply the ratio
+
+    staff_white_range = lines[len(lines) - 5] - lines[len(lines) - 6] / 2 
+    for row_index in range(len(lines)):
+        row = lines[row_index]
+        if row_index % 5 == 0:
+            if row_index == 0:
+                stopping_point = row[1] - staff_white_range
+            else:
+                stopping_point = (row[1] + lines[row_index - 1]) / 2
+            current_y = row[1]
+            while current_y >= stopping_point:
+                #just going to be a value for now
+                invisible_lines.append(current_y)
+                current_y -= difference_between_lines / 2
+    
     notes = []
 
-    #this has to account for the up and down in terms of every spot on the notes above and below register key
-    #also has to account for the notes on the lines themselves!
-    
-
-
-
-
-
-    #the other thing is i want to not only find it horizontally but once we do i'm going to go down and check to see if it indeed is a black cross!
-    #i can test this in various ways will work on it in homebase
-
+    #eventually going to go through invisble lines
+    #remove this
     for row in lines:
         middle_y = int((int(row[1]) + int(row[3])) / 2)
         black_count = 0
