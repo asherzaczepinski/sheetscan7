@@ -134,20 +134,30 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     difference_between_lines = lines[1][1] - lines[0][1] 
 
-    staff_white_range = lines[len(lines) - 5] - lines[len(lines) - 6] / 2 
+    staff_white_range = (lines[len(lines) - 5][1] - lines[len(lines) - 6][1]) / 2 
+    #when we get current y we should rly be finding the middle of the row ngl
+    
+
+
+
+
+    #it's actually going good so far just have to make it go down too 
     for row_index in range(len(lines)):
         row = lines[row_index]
         if row_index % 5 == 0:
             if row_index == 0:
                 stopping_point = row[1] - staff_white_range
             else:
-                stopping_point = (row[1] + lines[row_index - 1]) / 2
+                stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             current_y = row[1]
             while current_y >= stopping_point:
                 #just going to be a value for now
                 invisible_lines.append(current_y)
-                current_y -= difference_between_lines / 2
-    
+                #has to be round not int just in case it's .5 on the first one we want to go into it not away
+                current_y -= round(difference_between_lines / 2)
+
+    for current_loop_y in invisible_lines:
+        draw_example_rectangle(image_path, (0, current_loop_y, width, current_loop_y + 1))    
     notes = []
 
     #eventually going to go through invisble lines
