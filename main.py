@@ -141,9 +141,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
 
-    #it's actually going good so far just have to make it go down too 
+    #it's actually going good so far just have to make it go up too 
     for row_index in range(len(lines)):
         row = lines[row_index]
+
+
+        #the issue here is how we're using row_index
+        #truly think abt how it's being utilized
         if row_index % 5 == 0:
             if row_index == 0:
                 stopping_point = row[1] - staff_white_range
@@ -155,7 +159,19 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 invisible_lines.append(current_y)
                 #has to be round not int just in case it's .5 on the first one we want to go into it not away
                 current_y -= round(difference_between_lines / 2)
-
+        elif (row_index + 1) % 5 == 0:
+            #loop forwards now
+            #check just to make sure it's not the last one!
+            if row_index == len(lines) - 1:
+                stopping_point = row[1] + staff_white_range
+            else:
+                stopping_point = (row[1] + lines[row_index + 1][1]) / 2
+            current_y = lines[row_index - 1][1] 
+            while current_y <= stopping_point:
+                print(current_y)
+                invisible_lines.append(current_y)
+                current_y += round(difference_between_lines / 2)
+            
     for current_loop_y in invisible_lines:
         draw_example_rectangle(image_path, (0, current_loop_y, width, current_loop_y + 1))    
     notes = []
