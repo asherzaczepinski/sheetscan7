@@ -1,6 +1,3 @@
-#to find average distance between 2 lines we can do 
-
-
 from PIL import Image, ImageDraw
 import shutil
 from pathlib import Path
@@ -104,100 +101,89 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     for row in lines:
         upper_line_y = row[1] - 1
         bottom_line_y = row[3] 
-        #if all this is true y is it accesing the upper_line_y wrong? in img_array
-
-        #something is stupidly wrong here then
         for x_index in range(width):
-            #the lines r prob wrong then if this is happening
             if img_array[upper_line_y, x_index] != 255 and img_array[bottom_line_y, x_index] != 255:
                 for y in range(upper_line_y + 1, bottom_line_y):
                     img_array[y, x_index] = 0
-    #right here I a going to do the up and down part over ever line
-    #will loop through the x of the above and below line for every row
-    #fill in with black
-    
-    
-
-
-
-
-
-
-
 
     invisible_lines = []
 
-    #WE'RE GOING TO LOOP BACKWARDS BC AT THE TOP THERE IS TEXT
-    #WE WILL CALCULATE THE BOTTOM 5 LINES TO NEXT UP TOP AND ONLY GO UP BY THAT SPACE / 2
-
-    #staff range is the last sixth one to the last fifth one
-
-    difference_between_lines = lines[1][1] - lines[0][1] 
+    difference_between_lines = lines[1][1] - lines[0][3] 
 
     staff_white_range = (lines[len(lines) - 5][1] - lines[len(lines) - 6][1]) / 2 
-    #when we get current y we should rly be finding the middle of the row ngl
     
+    group = []
 
 
-
-
-    #it's actually going good so far just have to make it go up too 
+    #at some point in here we have to reset group to [] and append it to invisible lines
     for row_index in range(len(lines)):
         row = lines[row_index]
-
-
-        #the issue here is how we're using row_index
-        #truly think abt how it's being utilized
-        if row_index % 5 == 0:
-            if row_index == 0:
-                stopping_point = row[1] - staff_white_range
-            else:
-                stopping_point = (row[1] + lines[row_index - 1][1]) / 2
-            current_y = row[1]
-            while current_y >= stopping_point:
-                #just going to be a value for now
-                invisible_lines.append(current_y)
-                #has to be round not int just in case it's .5 on the first one we want to go into it not away
-                current_y -= round(difference_between_lines / 2)
-        elif (row_index + 1) % 5 == 0:
-            #loop forwards now
-            #check just to make sure it's not the last one!
+        current_y = row[1]
+        #this is when it is on the last line of a staff and ends up going down
+        if (row_index + 1) % 5 == 0:
             if row_index == len(lines) - 1:
                 stopping_point = row[1] + staff_white_range
             else:
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
-            current_y = lines[row_index - 1][1] 
             while current_y <= stopping_point:
-                print(current_y)
-                invisible_lines.append(current_y)
+                group.append(current_y)
                 current_y += round(difference_between_lines / 2)
-            
-    for current_loop_y in invisible_lines:
-        draw_example_rectangle(image_path, (0, current_loop_y, width, current_loop_y + 1))    
+            invisible_lines.append(group)
+            group = []
+        #this is on the first line of a staff and goes up 
+        elif row_index % 5 == 0:
+            if row_index == 0:
+                stopping_point = row[1] - staff_white_range
+            else:
+                stopping_point = (row[1] + lines[row_index - 1][1]) / 2
+            while current_y >= stopping_point:
+                group.append(current_y)
+                current_y -= round(difference_between_lines / 2)
+            #then we can also implement the segmented part so for later we can end up applying the sharps correctly
+                
+            for add_row_index in range(4):
+                future_line = lines[row_index + add_row_index + 1][1] 
+                group.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
+                group.append(future_line)
+    
     notes = []
 
-    #eventually going to go through invisble lines
-    #remove this
-    for row in lines:
-        middle_y = int((int(row[1]) + int(row[3])) / 2)
-        black_count = 0
-        for x in range(width):
-            pixel_value = img_array[middle_y, x]
-            if pixel_value != 255:
-                black_count += 1
-            elif (black_count != 0 and black_count > difference_between_lines):
-                note_middle_x = int(((x - black_count) + x) / 2)
-                notes.append([note_middle_x, middle_y])
-                black_count = 0
-            else:
+    #we can reverse it to go through columsn first and then do the row thing
+    #this would allow us to eliminate notes on top of one another which we actually allow!
+    #we shouldn't do that
+
+
+    #A CHECK I'M THINKING OF DIONG IS HALF DIAGONAL LEFT UP AND HALF DIAGONAL RIGHT DOWN IT SHOULD BE NON-WHITE FOR SURE
+    #THEN WE MAKE SURE FAR LEFT TOP CORNER AND FAR BOTTOM RIGHT CORNER ARE WHITE
+    #THIS WILL ALLOW US TO KNOW IF IT'S A nOTE BETTER
+    for group in invisible_lines:
+        for current_loop_y in group:
+            black_count = 0
+            for x in range(width):
+                pixel_value = img_array[current_loop_y, x]
+                if pixel_value != 255:
+                    black_count += 1
+                    continue
+                elif (black_count != 0 and black_count > difference_between_lines * 1.15):
+                    note_middle_x = int(((x - black_count) + x) / 2)
+                    #gives it just a bit more flexibility with the minus part 
+                    #it's becuase sometimes it rounds up and makes the difference a bit bigger than it should be that's all so we want to account for the rounding on both sides
+                    up_down_range = int(difference_between_lines / 2) - 2
+                    black_note = True
+                    for pixel_changer in range(up_down_range):
+                        #extra safety check
+                        if (current_loop_y + pixel_changer) <= (height - 1):
+                            upper_pixel = img_array[current_loop_y - pixel_changer, note_middle_x]
+                            lower_pixel = img_array[current_loop_y + pixel_changer, note_middle_x]
+                            if upper_pixel == 255 or lower_pixel == 255:
+                                black_note = False
+                        else:
+                            black_note = False
+                    if black_note:
+                        notes.append([note_middle_x, current_loop_y])
                 black_count = 0
          #based off the page we're in on the -1 index loop through and find the notes based off the ratio of difference bewteen lines
         
-
-
-
-
-
 
 
 
@@ -302,12 +288,6 @@ for page in all_columns:
             saved_vert = []
         if line_index == len(page) - 2 and saved_vert != []:
             new_vert = saved_vert.copy()
-            # Adjust the end x-coordinate to match the last column in the merged group
-
-            #and for here we have to go through the actual new_vert and compare the columns one by one in two nested for loops
-            #this will decide what we keep and don't keep
-
-
             for column in new_vert:
                 column[2] = page[line_index - 1][0][2]
             current_page.append(new_vert)
@@ -315,7 +295,6 @@ for page in all_columns:
     current_page.append(page[-1])  # Add the image path to the current page's columns
     new_columns.append(current_page)
 
-print(all_notes)
 for page in all_notes:
     image_path = page[-1]
     for note in page[:-1]:  
