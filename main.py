@@ -1,4 +1,7 @@
 #make a review page for my amazing product on my website
+#work on making the going down logic for notes to be better!
+#make sure the lines r being removed
+#if we implement the decreasing stuff we might be able to forget the percentage thing
 
 from PIL import Image, ImageDraw
 from pathlib import Path
