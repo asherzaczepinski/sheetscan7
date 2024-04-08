@@ -1,5 +1,3 @@
-#make a review page for my amazing product on my website
-
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -140,19 +138,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             left = 0
             right = img_array.shape[1]
 
-            #Black notes
-
+            #black note here
             black_count = 0
-
-            #IF IT ACTUALLY REMOVES THE LINES AND REPLACES THEM OUR A SHOULDN'T BE AN ISSUE
-            #WE HAVE TO IMPLEMENT THIS AND WORK FROM THERE CONCISING DOWN OUR CODE!!!!
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
-                #we basically have to make sure the new blackcount when we adjust the image is less than difference_between_lines_for_line_drawing * 1.5
-                #same with when we draw any rectangle
-                elif black_count >= difference_between_lines_for_line_drawing * 1.15:
+                elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
                     #apply my logic to see if it is a black note
                     middle_x = x_index - round(black_count / 2)
                     #-1 to discount the current one
@@ -171,10 +163,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         total_pixels = roi.size
                         non_white_pixels = np.sum(roi < 255)
                         non_white_percentage = (non_white_pixels / total_pixels) * 100
-
-
-                        #just edited this w/ difference * 1.5
-                        if non_white_percentage > 70 and black_count < difference_between_lines_for_line_drawing * 1.5:
+                        if non_white_percentage > 70:
                             draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                         #replace non-whitepercentage > 60 w something else like a new calculation
                         #i can calculate a new thing
@@ -195,30 +184,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             new_total_pixels = new_roi.size
                             new_non_white_pixels = np.sum(new_roi < 255)
                             new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
-                            new_roi_width = new_roi.shape[1]
-                            if new_non_white_percentage > 80 and new_roi_width < difference_between_lines_for_line_drawing * 1.5:
+                            if new_non_white_percentage > 80:
                                 draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                         black_count = 0
                 else:
                     black_count = 0
-            
-
-
-
-
-
-
-
-
-
-
-            #white notes
-            #once we implement the across white secross from black to black should be this much then, we can go up and down from the middle of white_count
-            #when we're going up and down if it qualifies we can take the column that went up and down and keep moving left and right
-            #we have to make sure the last black point and top black point decreases and increases
-            #could loop 5 times or the whole thing for that matter
-            #we could also do this for the black notes but it might be excess and could be a feature i add later on!
-                    
             # Crop the image
             cropped_img = img.crop((left, top, right, bottom))
 
