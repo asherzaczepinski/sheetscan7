@@ -3,6 +3,12 @@
 #make sure the lines r being removed
 #if we implement the decreasing stuff we might be able to forget the percentage thing
 
+
+
+
+
+#IF I FIX THE LINE REMOVAL STUFF I CAN NARROW DOWN THE AREA FOR The BLACK NOTES AND NOT IMPLEMENT THE SUPER COMPLICATED
+#DECREASING METHOD. THIS WAY I DON'T HAVE TO WORK ON TOO MUCH
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
