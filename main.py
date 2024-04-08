@@ -9,6 +9,11 @@
 
 #IF I FIX THE LINE REMOVAL STUFF I CAN NARROW DOWN THE AREA FOR The BLACK NOTES AND NOT IMPLEMENT THE SUPER COMPLICATED
 #DECREASING METHOD. THIS WAY I DON'T HAVE TO WORK ON TOO MUCH
+
+
+
+#instead of circling black or white notes could also mark it right before based on the mode
+#then if there is a note in the vicinity we would then circle beau and jake told me this
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
