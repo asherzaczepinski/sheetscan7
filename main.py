@@ -80,6 +80,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 for y in range(upper_line_y + 1, bottom_line_y):
                     img_array[y, x_index] = 0
     
+    
+    #have to prove img_array is working bc our issue w the  long things shouldn't be happening can also work down there
+                    
+
+
+
     invisible_lines = []
 
     #Space it in middle for line identification
@@ -165,53 +171,42 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             black_count = 0
                     if black_note:
                         #has to be x, y tuple
+                        little_increment = int(difference_between_lines_for_line_drawing / (7/3))
                         top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, current_loop_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                        roi = img_array[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]
+                        roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
                         total_pixels = roi.size
                         non_white_pixels = np.sum(roi < 255)
                         non_white_percentage = (non_white_pixels / total_pixels) * 100
 
-
-                        #just edited this w/ difference * 1.5
-                        if non_white_percentage > 70 and black_count < difference_between_lines_for_line_drawing * 1.5:
+                        if non_white_percentage > 80:
                             draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-                        #replace non-whitepercentage > 60 w something else like a new calculation
-                        #i can calculate a new thing
-                            
-
-
-                        #nest steps are everything it draws down below here with draw_example_rectange we will save it to a testing folder called cropped
-                        #this will try to figue out relative to the line height how to extract the whole not starting from  left to right
-                        #then we will use this area to calculate a new non_white_percentage once we figure out what percent of pixels we need to account for subtraction left or right
-                        #try to implement the area thing too for how big the outline can be!!!
+            
+                    
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
-                            #maybe here we could recalculate the non-white percentage to be around the note
-                            #we will have to test with imaging
 
-                            little_increment = int(difference_between_lines_for_line_drawing / (7/3))
                    
                             new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
                             new_total_pixels = new_roi.size
                             new_non_white_pixels = np.sum(new_roi < 255)
                             new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
-                            new_roi_width = new_roi.shape[1]
-                            if new_non_white_percentage > 80 and new_roi_width < difference_between_lines_for_line_drawing * 1.5:
+
+                            if new_non_white_percentage > 80:
+
+
+
+
+
+                                #have to do the going down pixel calculation
+                                #this way we go through each line
                                 draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+
+
+
                         black_count = 0
                 else:
                     black_count = 0
             
-
-
-
-
-
-
-
-
-
-
             #white notes
             #once we implement the across white secross from black to black should be this much then, we can go up and down from the middle of white_count
             #when we're going up and down if it qualifies we can take the column that went up and down and keep moving left and right
