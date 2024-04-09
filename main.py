@@ -172,12 +172,17 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             group = []
         #this is on the first line of a staff and goes up 
         elif row_index % 5 == 0:
-            #Going to work on the removal of the every other line HERE!!!!
             if row_index == 0:
                 stopping_point = row[1] - staff_white_range
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
+            #remove stuff here  i don't think it matters if we do every other line just because of howthe code works
+            #even if it looks wierd for the white it will still work 
             while current_y >= stopping_point:
+
+                #base this off the way we do the below
+                img_array[current_y - (difference_between_lines_for_line_drawing / 2): row_index + 1, 0: width] = 255
+
                 group.append(current_y)
                 current_y -= round(difference_between_lines_for_line_drawing / 2)
             for add_row_index in range(4):
@@ -186,7 +191,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
-
+    #DELETE THE ABOVE THAT DOES THE REPLACING AND LEAVE IT ALL TO HERE FO RHTE LINES
+    #ThIS ACCOUNTS EVERYTHING WE DON'T WANT TO REPEAT OUR STEPS
 
 
     #need to do the take out and replace thing right here!!!!!
