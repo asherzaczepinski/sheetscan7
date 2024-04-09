@@ -85,6 +85,32 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 lines.append([0, start_line, width, row_index])
                 start_line = -1  # Reset start_line
 
+    #I think it is not removing the whole thing we should get this working
+                  
+    temp_output_folder = 'test_output_first'
+    modified_img = Image.fromarray(img_array)
+
+    # Ensure the output directory exists
+    if not os.path.exists(temp_output_folder):
+        os.makedirs(temp_output_folder)
+    
+    # Construct the output image path
+    image_filename = os.path.basename(image_path)
+    output_image_path = os.path.join(temp_output_folder, image_filename)
+    
+    # Save the modified image to the output path
+    modified_img.save(output_image_path)
+
+
+    #ooooOOOOOOH IT's NOT REMOVING THE WHITE LINES AFTER
+    #I THINK I DELETED THAT PART
+    #THIS WOULD FIX A LOT OF STUFF RN
+    #BECAUSE ITS LOOKING FOR THE BLACK STUFF IN THE LINES ANYWAYS
+    #HAVE GOT TO FIX THISSSSSS!!!!
+
+
+
+
     #replace the part we took out
     for row in lines:
         upper_line_y = row[1] - 1
@@ -98,6 +124,19 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     #have to prove img_array is working bc our issue w the  long things shouldn't be happening can also work down there
                     
 
+    temp_output_folder = 'test_output_second'
+    modified_img = Image.fromarray(img_array)
+
+    # Ensure the output directory exists
+    if not os.path.exists(temp_output_folder):
+        os.makedirs(temp_output_folder)
+    
+    # Construct the output image path
+    image_filename = os.path.basename(image_path)
+    output_image_path = os.path.join(temp_output_folder, image_filename)
+    
+    # Save the modified image to the output path
+    modified_img.save(output_image_path)
 
 
     invisible_lines = []
@@ -147,6 +186,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
+
+
+
+    #need to do the take out and replace thing right here!!!!!
+    #for the new white lines!
+    #this is good for everything especially bc it could rly fuck up the white replace thing
+    #i can do the white replacement above and do the black fill in blanks between
+    
     for group in invisible_lines:
         #It might have to do with this
 

@@ -1,2 +1,4 @@
 env/*
 output_segments/*
+test_output_first/*
+test_output_second/*
