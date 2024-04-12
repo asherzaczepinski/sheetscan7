@@ -133,7 +133,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
     #for these try to figure out how to do the "every other line removal"
-    #have to truly know what is going on w the logic below
+    #have to truly kn ow what is going on w the logic below
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
