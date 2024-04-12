@@ -4,7 +4,9 @@
 #if we implement the decreasing stuff we might be able to forget the percentage thing
 #instead of circling black or white notes could also mark it right before based on the mode
 #then if there is a note in the vicinity we would then circle beau and jake told me this
-
+#going to need to use old column finding code to segment up once we find sharps and apply them
+#i am putting a 2 year cap on this project
+#it will be so satisfything when done
 
 
 
@@ -134,7 +136,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     #for these try to figure out how to do the "every other line removal"
     #have to truly know what is going on w the logic below
+    half_height = round(difference_between_lines_for_line_drawing / 2)
     for row_index in range(len(lines)):
+        #the last line (5th) and down
         row = lines[row_index]
         current_y = row[1]
         if (row_index + 1) % 5 == 0:
@@ -148,21 +152,19 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             invisible_lines.append(group)
             group = []
         elif row_index % 5 == 0:
+            #first line and up
             if row_index == 0:
                 stopping_point = row[1] - staff_white_range
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
-
-                #THIS IS THE WHITE REPLACEMENT PART
-                half_height = round(difference_between_lines_for_line_drawing / 2)
                 img_array[current_y - half_height: row_index + 1, 0: width] = 255
-
                 group.append(current_y)
                 current_y -= round(difference_between_lines_for_line_drawing / 2)
             for add_row_index in range(4):
-                future_line = lines[row_index + add_row_index + 1][1] 
-
+                #everything in the middle
+                #everything here get's removed and replaced
+                future_line = lines[row_index + add_row_index + 1][1]                 
                 group.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
                 if add_row_index != 3:
                     group.append(future_line)
