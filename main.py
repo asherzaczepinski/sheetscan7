@@ -2,7 +2,8 @@
 #work on making the going down logic for notes to be better!
 #make sure the lines r being removed
 #if we implement the decreasing stuff we might be able to forget the percentage thing
-
+#instead of circling black or white notes could also mark it right before based on the mode
+#then if there is a note in the vicinity we would then circle beau and jake told me this
 
 
 
@@ -12,8 +13,6 @@
 
 
 
-#instead of circling black or white notes could also mark it right before based on the mode
-#then if there is a note in the vicinity we would then circle beau and jake told me this
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -101,29 +100,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     # Save the modified image to the output path
     modified_img.save(output_image_path)
 
-
-    #ooooOOOOOOH IT's NOT REMOVING THE WHITE LINES AFTER
-    #I THINK I DELETED THAT PART
-    #THIS WOULD FIX A LOT OF STUFF RN
-    #BECAUSE ITS LOOKING FOR THE BLACK STUFF IN THE LINES ANYWAYS
-    #HAVE GOT TO FIX THISSSSSS!!!!
-
-
-
-
-    #replace the part we took out
-    for row in lines:
-        upper_line_y = row[1] - 1
-        bottom_line_y = row[3] 
-        for x_index in range(width):
-            if img_array[upper_line_y, x_index] != 255 and img_array[bottom_line_y, x_index] != 255:
-                for y in range(upper_line_y + 1, bottom_line_y):
-                    img_array[y, x_index] = 0
-    
-    
-    #have to prove img_array is working bc our issue w the  long things shouldn't be happening can also work down there
-                    
-
     temp_output_folder = 'test_output_second'
     modified_img = Image.fromarray(img_array)
 
@@ -158,9 +134,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
-        #this is when it is on the last line of a staff and ends up going down
         if (row_index + 1) % 5 == 0:
-            #Going to work on the removal of the every other line HERE!!!!
             if row_index == len(lines) - 1:
                 stopping_point = row[1] + staff_white_range
             else:
@@ -170,18 +144,16 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 current_y += round(difference_between_lines_for_line_drawing / 2)
             invisible_lines.append(group)
             group = []
-        #this is on the first line of a staff and goes up 
         elif row_index % 5 == 0:
             if row_index == 0:
                 stopping_point = row[1] - staff_white_range
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
-            #remove stuff here  i don't think it matters if we do every other line just because of howthe code works
-            #even if it looks wierd for the white it will still work 
             while current_y >= stopping_point:
 
-                #base this off the way we do the below
-                img_array[current_y - (difference_between_lines_for_line_drawing / 2): row_index + 1, 0: width] = 255
+                #THIS IS THE WHITE REPLACEMENT PART
+                half_height = round(difference_between_lines_for_line_drawing / 2)
+                img_array[current_y - half_height: row_index + 1, 0: width] = 255
 
                 group.append(current_y)
                 current_y -= round(difference_between_lines_for_line_drawing / 2)
@@ -191,15 +163,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
-    #DELETE THE ABOVE THAT DOES THE REPLACING AND LEAVE IT ALL TO HERE FO RHTE LINES
-    #ThIS ACCOUNTS EVERYTHING WE DON'T WANT TO REPEAT OUR STEPS
+    #fill in the blank with all the groups invisible lines! --- look to notes for reference
 
+    #because i am fixing up the line removal we can apply the area thing to the black notes
 
-    #need to do the take out and replace thing right here!!!!!
-    #for the new white lines!
-    #this is good for everything especially bc it could rly fuck up the white replace thing
-    #i can do the white replacement above and do the black fill in blanks between
-    
     for group in invisible_lines:
         #It might have to do with this
 
@@ -217,14 +184,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             black_count = 0
 
-            #IF IT ACTUALLY REMOVES THE LINES AND REPLACES THEM OUR A SHOULDN'T BE AN ISSUE
-            #WE HAVE TO IMPLEMENT THIS AND WORK FROM THERE CONCISING DOWN OUR CODE!!!!
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
-                #we basically have to make sure the new blackcount when we adjust the image is less than difference_between_lines_for_line_drawing * 1.5
-                #same with when we draw any rectangle
                 elif black_count >= difference_between_lines_for_line_drawing * 1.15:
                     #apply my logic to see if it is a black note
                     middle_x = x_index - round(black_count / 2)
@@ -237,7 +200,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             black_note = False
                             black_count = 0
                     if black_note:
-                        #has to be x, y tuple
                         little_increment = int(difference_between_lines_for_line_drawing / (7/3))
                         top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, current_loop_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
@@ -245,31 +207,17 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         total_pixels = roi.size
                         non_white_pixels = np.sum(roi < 255)
                         non_white_percentage = (non_white_pixels / total_pixels) * 100
-
                         if non_white_percentage > 80:
                             draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-            
-                    
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
-
-                   
                             new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
                             new_total_pixels = new_roi.size
                             new_non_white_pixels = np.sum(new_roi < 255)
                             new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
-
                             if new_non_white_percentage > 80:
-
-
-
-
-
                                 #have to do the going down pixel calculation
                                 #this way we go through each line
                                 draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-
-
-
                         black_count = 0
                 else:
                     black_count = 0
