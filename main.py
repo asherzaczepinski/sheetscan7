@@ -131,6 +131,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     
     group = []
 
+
+    #for these try to figure out how to do the "every other line removal"
+    #have to truly know what is going on w the logic below
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
@@ -159,6 +162,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 current_y -= round(difference_between_lines_for_line_drawing / 2)
             for add_row_index in range(4):
                 future_line = lines[row_index + add_row_index + 1][1] 
+
                 group.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
                 if add_row_index != 3:
                     group.append(future_line)
