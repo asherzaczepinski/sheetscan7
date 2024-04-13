@@ -117,8 +117,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
             counter = 1
             while current_y <= stopping_point:
-                if counter % 2 == 0:
-                    img_array[current_y - round(line_height / 2): current_y + round(line_height / 2), 0: width] = 255
                 group.append(current_y)
                 current_y += round(difference_between_lines_for_line_drawing / 2)
                 counter+=1
@@ -132,8 +130,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             counter = 1
             while current_y >= stopping_point:
-                if counter % 2 == 0:
-                    img_array[current_y - round(line_height / 2): current_y + round(line_height / 2), 0: width] = 255
                 group.append(current_y)
                 current_y -= round(difference_between_lines_for_line_drawing / 2)
                 counter+=1
@@ -142,11 +138,15 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 #everything here get's removed and replaced
                 future_line = lines[row_index + add_row_index + 1][1]                 
                 group.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
-                img_array[group[-1] - round(line_height / 2): group[-1] + round(line_height / 2), 0: width] = 255
                 if add_row_index != 3:
                     group.append(future_line)
-                    img_array[group[-1] - round(line_height / 2): group[-1] + round(line_height / 2), 0: width] = 255
 
+    for group in invisible_lines:
+        for current_loop_y in group:
+            #this will be line removal and fill in
+            #img_array[current_y - round(line_height / 2): current_y + round(line_height / 2), 0: width] = 255
+            print()
+    #might even reverse and just get everythng and then do the removal part 
     img = Image.fromarray(img_array)
     img.save(image_path)
     print('saved image at ' + image_path)
