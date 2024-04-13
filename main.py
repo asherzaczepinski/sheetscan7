@@ -85,38 +85,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             if start_line != -1:
                 lines.append([0, start_line, width, row_index])
                 start_line = -1  # Reset start_line
-
-    #I think it is not removing the whole thing we should get this working
-                  
-    temp_output_folder = 'test_output_first'
-    modified_img = Image.fromarray(img_array)
-
-    # Ensure the output directory exists
-    if not os.path.exists(temp_output_folder):
-        os.makedirs(temp_output_folder)
-    
-    # Construct the output image path
-    image_filename = os.path.basename(image_path)
-    output_image_path = os.path.join(temp_output_folder, image_filename)
-    
-    # Save the modified image to the output path
-    modified_img.save(output_image_path)
-
-    temp_output_folder = 'test_output_second'
-    modified_img = Image.fromarray(img_array)
-
-    # Ensure the output directory exists
-    if not os.path.exists(temp_output_folder):
-        os.makedirs(temp_output_folder)
-    
-    # Construct the output image path
-    image_filename = os.path.basename(image_path)
-    output_image_path = os.path.join(temp_output_folder, image_filename)
-    
-    # Save the modified image to the output path
-    modified_img.save(output_image_path)
-
-
+                
     invisible_lines = []
 
     #Space it in middle for line identification
@@ -146,9 +115,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 stopping_point = row[1] + staff_white_range
             else:
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
+            counter = 1
             while current_y <= stopping_point:
+                if counter % 2 == 0:
+                    img_array[current_y - round(line_height / 2): current_y + round(line_height / 2), 0: width] = 255
                 group.append(current_y)
                 current_y += round(difference_between_lines_for_line_drawing / 2)
+                counter+=1
             invisible_lines.append(group)
             group = []
         elif row_index % 5 == 0:
@@ -157,18 +130,24 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 stopping_point = row[1] - staff_white_range
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
+            counter = 1
             while current_y >= stopping_point:
-                img_array[current_y - half_height: row_index + 1, 0: width] = 255
+                if counter % 2 == 0:
+                    img_array[current_y - round(line_height / 2): current_y + round(line_height / 2), 0: width] = 255
                 group.append(current_y)
                 current_y -= round(difference_between_lines_for_line_drawing / 2)
+                counter+=1
             for add_row_index in range(4):
                 #everything in the middle
                 #everything here get's removed and replaced
                 future_line = lines[row_index + add_row_index + 1][1]                 
                 group.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
+                img_array[group[-1] - round(line_height / 2): group[-1] + round(line_height / 2), 0: width] = 255
                 if add_row_index != 3:
                     group.append(future_line)
 
+    img.save(image_path)
+    print('saved image at ' + image_path)
     #fill in the blank with all the groups invisible lines! --- look to notes for reference
 
     #because i am fixing up the line removal we can apply the area thing to the black notes
