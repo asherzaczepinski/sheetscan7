@@ -145,6 +145,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 img_array[group[-1] - round(line_height / 2): group[-1] + round(line_height / 2), 0: width] = 255
                 if add_row_index != 3:
                     group.append(future_line)
+                    img_array[group[-1] - round(line_height / 2): group[-1] + round(line_height / 2), 0: width] = 255
+
     img = Image.fromarray(img_array)
     img.save(image_path)
     print('saved image at ' + image_path)
