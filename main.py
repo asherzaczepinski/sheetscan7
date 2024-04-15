@@ -1,3 +1,7 @@
+#have to check up and below an extended one to make sure there isn't a note above
+
+
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -17,6 +21,8 @@ args = parser.parse_args()
 threshold = 0.6
 
 all_rows = []
+
+all_black_notes = []
 
 #for testing purposes only
 def draw_example_rectangle(image_path, rect):
@@ -54,6 +60,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     # Variable to track the start of a line
     start_line = -1
+
+    black_notes = []
 
     for row_index, row in enumerate(img_array):
         # Count non-white (in grayscale, white is 255) pixels in the row
@@ -165,27 +173,21 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         non_white_percentage = (non_white_pixels / total_pixels) * 100
                         if non_white_percentage > 70:
                             draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-                        #replace non-whitepercentage > 60 w something else like a new calculation
-                        #i can calculate a new thing
-                            
-
-
-                        #nest steps are everything it draws down below here with draw_example_rectange we will save it to a testing folder called cropped
-                        #this will try to figue out relative to the line height how to extract the whole not starting from  left to right
-                        #then we will use this area to calculate a new non_white_percentage once we figure out what percent of pixels we need to account for subtraction left or right
-                        #try to implement the area thing too for how big the outline can be!!!
+                            black_notes.append([top_left, bottom_right])
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
-                            #maybe here we could recalculate the non-white percentage to be around the note
-                            #we will have to test with imaging
-
-                            little_increment = int(difference_between_lines_for_line_drawing / (7/3))
-                   
+                            little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
                             new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
                             new_total_pixels = new_roi.size
                             new_non_white_pixels = np.sum(new_roi < 255)
                             new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
                             if new_non_white_percentage > 80:
+                                #check the last or above line of black_notes and make sure there is nothing right above the current stuff
+                                #if there is don't append anything
+                                #if there isn't do append
+                                #then we will work on removing shit but idk
+                                #this will solidfy everything
                                 draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                black_notes.append([top_left, bottom_right])
                         black_count = 0
                 else:
                     black_count = 0
