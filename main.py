@@ -192,7 +192,16 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                     black_notes.append([top_left, bottom_right])
                                 else:
                                     #check if in last_row_notes something is not right above the black note
-                                    #might want to create a variable called last_row_notes  
+                                    #might want to create a variable called last_row_notes 
+                                    none_above = True 
+                                    for note in last_row_notes:
+                                        #have to get middle here they won't align perfectly
+                                        #or we can account for the -10!!!!! by saying - 10
+                                        if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
+                                            none_above = False
+                                    if none_above:
+                                        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                        black_notes.append([top_left, bottom_right])
                         black_count = 0
                 else:
                     black_count = 0
