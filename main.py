@@ -45,6 +45,26 @@ def draw_example_rectangle(image_path, rect):
     # Save the image with rectangles
     img.save(image_path)
 
+def draw_testing_square(image_path, rect):
+    # Validate rectangle coordinates
+    if not all(isinstance(coord, (int, float)) for coord in rect):
+        print(f"Invalid rectangle coordinates: {rect}")
+        return
+
+    # Load the image
+    img = Image.open(image_path)
+    draw = ImageDraw.Draw(img)
+
+    # Draw each rectangle
+    try:
+        draw.rectangle(rect, fill=0, outline="black", width=1)
+    except ValueError as e:
+        print(f"Failed to draw rectangle {rect} on {image_path}: {e}")
+        return
+
+    # Save the image with rectangles
+    img.save(image_path)
+
 def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     # Load the image
     img = Image.open(image_path).convert("L")  # Convert to grayscale
@@ -188,9 +208,18 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 #then we will work on removing shit but idk
                                 #this will solidfy everything
                                 if last_row_notes == []:
+                                    #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+
                                     draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                     black_notes.append([top_left, bottom_right])
                                 else:
+                                    #this is a testing square to see if it identifies it
+
+
+
+                                    #this proves it doesn't see that one portion of notes as valid notes
+                                    #I AM GOING TO COMPLETELY REMOVE THE DRAWING CAPABILITIES FOR BIGGER THINGS AND SEE IF IT STILL APPLIES
+                                    draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                     #check if in last_row_notes something is not right above the black note
                                     #might want to create a variable called last_row_notes 
                                     none_above = True 
