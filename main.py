@@ -191,11 +191,33 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         total_pixels = roi.size
                         non_white_pixels = np.sum(roi < 255)
                         non_white_percentage = (non_white_pixels / total_pixels) * 100
+
+
+
+                        #the issue is it is checking this before 1.5
+                        #with the cluster groups this still applies!!!! even with the line things
                         if non_white_percentage > 70:
+
+
+                            #this is for testing
+                            if black_count >= difference_between_lines_for_line_drawing * 1.5:
+                                draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+
                             draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                             temp_notes.append([top_left, bottom_right])
                             black_notes.append([top_left, bottom_right])
+
+
+
+
+                        #changed for 1.5
+                        #it's truly not recognizing that area
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
+
+
+
+                            #ths has to do the particular thing
+
                             little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
                             new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
                             new_total_pixels = new_roi.size
@@ -207,6 +229,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 #if there isn't do append
                                 #then we will work on removing shit but idk
                                 #this will solidfy everything
+
                                 if last_row_notes == []:
                                     #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
 
@@ -219,6 +242,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
                                     #this proves it doesn't see that one portion of notes as valid notes
                                     #I AM GOING TO COMPLETELY REMOVE THE DRAWING CAPABILITIES FOR BIGGER THINGS AND SEE IF IT STILL APPLIES
+
+
+                                    #i don't understand why there is black filled ares above
                                     draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                     #check if in last_row_notes something is not right above the black note
                                     #might want to create a variable called last_row_notes 
