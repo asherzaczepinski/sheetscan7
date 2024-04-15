@@ -201,11 +201,37 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
                             #this is for testing
                             if black_count >= difference_between_lines_for_line_drawing * 1.5:
-                                draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                if last_row_notes == []:
+                                    #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
 
-                            draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-                            temp_notes.append([top_left, bottom_right])
-                            black_notes.append([top_left, bottom_right])
+                                    draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                    black_notes.append([top_left, bottom_right])
+                                else:
+                                    #this is a testing square to see if it identifies it
+
+
+
+                                    #this proves it doesn't see that one portion of notes as valid notes
+                                    #I AM GOING TO COMPLETELY REMOVE THE DRAWING CAPABILITIES FOR BIGGER THINGS AND SEE IF IT STILL APPLIES
+
+
+                                    #i don't understand why there is black filled ares above
+                                    #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                    #check if in last_row_notes something is not right above the black note
+                                    #might want to create a variable called last_row_notes 
+                                    none_above = True 
+                                    for note in last_row_notes:
+                                        #have to get middle here they won't align perfectly
+                                        #or we can account for the -10!!!!! by saying - 10
+                                        if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
+                                            none_above = False
+                                    if none_above:
+                                        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                        black_notes.append([top_left, bottom_right])
+                            else:
+                                draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                temp_notes.append([top_left, bottom_right])
+                                black_notes.append([top_left, bottom_right])
 
 
 
@@ -245,7 +271,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
                                     #i don't understand why there is black filled ares above
-                                    draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                    #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                     #check if in last_row_notes something is not right above the black note
                                     #might want to create a variable called last_row_notes 
                                     none_above = True 
