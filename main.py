@@ -135,9 +135,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     for group in invisible_lines:
         #It might have to do with this
-
+        last_row_notes = []
         for current_loop_y in group:
-
+            temp_notes = []
             half_height = round(difference_between_lines_for_line_drawing / 2)
             top = max(0, current_loop_y - half_height)
             bottom = min(img_array.shape[0], current_loop_y + half_height)
@@ -173,6 +173,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         non_white_percentage = (non_white_pixels / total_pixels) * 100
                         if non_white_percentage > 70:
                             draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                            temp_notes.append([top_left, bottom_right])
                             black_notes.append([top_left, bottom_right])
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
                             little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
@@ -186,8 +187,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 #if there isn't do append
                                 #then we will work on removing shit but idk
                                 #this will solidfy everything
-                                draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-                                black_notes.append([top_left, bottom_right])
+                                if last_row_notes == []:
+                                    draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+                                    black_notes.append([top_left, bottom_right])
+                                else:
+                                    #check if in last_row_notes something is not right above the black note
+                                    #might want to create a variable called last_row_notes  
                         black_count = 0
                 else:
                     black_count = 0
@@ -203,6 +208,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             # Save the cropped image directly in the 'output_segments' directory
             cropped_img.save(os.path.join(output_dir, file_name))
+            last_row_notes = temp_notes
 
     lines.append(image_path)
     all_rows.append(lines)
