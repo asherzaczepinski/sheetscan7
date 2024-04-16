@@ -1,5 +1,7 @@
 #should really be drawing the rectangles at the end so it doesn't remove anything when moving forward with code
-
+#i'm testing with the other pdf.... we can work on stuff later the black notes aren't fully fully perfect but it's working pretty damn well
+#there are some notes that are not being seen they all have lines through them
+#if there is an easy fix use it otherwise keep track of this and update code once i publish this
 
 
 
