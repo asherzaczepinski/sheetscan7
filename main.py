@@ -3,7 +3,7 @@
 #there are some notes that are not being seen they all have lines through them
 #if there is an easy fix use it otherwise keep track of this and update code once i publish this
 
-
+#No FUCK THAT KEEP WORKING W THE NEW PDF DURING TMRW I WANT TO FIGURE THIS OUT 
 
 
 
