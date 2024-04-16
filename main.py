@@ -8,6 +8,11 @@
 
 
 
+#NEXT STEPS TODAY IS TO TO THE DRAW RE TANGLE AT BOTTOM AND THEN DO THE WHITE REMOVAL UP AND DOWN
+
+
+#THE ISSUE WITH THE DRAWING RECTANGLES AT THE END IS WE NEED TO KEEP IN MIND SOME OF THEM WON'T APPEAR BC THEY WIL HAVE A BIGGER AREA
+#THIS IS FINE THO
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -182,7 +187,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if black_count >= difference_between_lines_for_line_drawing * 1.5:
                                 if last_row_notes == []:
                                     black_notes.append([top_left, bottom_right])
-                                    draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                 else:
                                     none_above = True 
                                     for note in last_row_notes:
@@ -192,9 +196,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                             none_above = False
                                     if none_above:
                                         black_notes.append([top_left, bottom_right])
-                                        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                             else:
-                                draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                 temp_notes.append([top_left, bottom_right])
                                 black_notes.append([top_left, bottom_right])
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
