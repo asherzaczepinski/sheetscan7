@@ -1,29 +1,17 @@
-#should really be drawing the rectangles at the end so it doesn't remove anything when moving forward with code
-#i'm testing with the other pdf.... we can work on stuff later the black notes aren't fully fully perfect but it's working pretty damn well
-#there are some notes that are not being seen they all have lines through them
-#if there is an easy fix use it otherwise keep track of this and update code once i publish this
-
-#No FUCK THAT KEEP WORKING W THE NEW PDF DURING TMRW I WANT TO FIGURE THIS OUT 
-
-
-
-
-#NEXT STEPS TODAY IS TO TO THE DRAW RE TANGLE AT BOTTOM AND THEN DO THE WHITE REMOVAL UP AND DOWN
-
-
-#THE ISSUE WITH THE DRAWING RECTANGLES AT THE END IS WE NEED TO KEEP IN MIND SOME OF THEM WON'T APPEAR BC THEY WIL HAVE A BIGGER AREA
-#THIS IS FINE THO
-
-
-
-
-
-
-
-
 #THE MOST IMPORTANT NEXT STEP IS TO REMOVE THE LINES AND STEMS!!!!
 #THIS IS THE MOST IMPORTANT WE CAN USE OLD OCLUMN CODE
 #THIS IS THE MOST IMPORTANT NET STEP
+
+#i will edit the logic for lines through notes 
+
+
+#first i will do the line part and replacement
+
+#one day will combine the above w below not trying to make it extra complicated
+
+
+
+#try putting my replacement code under the nex removal just for test!
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -155,6 +143,18 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
+    #doing the line removal up and downhere!!!1
+    
+    for group in invisible_lines:
+        for current_loop_y in group:
+            img_array[current_loop_y - 2:current_loop_y + line_height, 0: width] = 255
+
+    img = Image.fromarray(img_array)  # Ensure data type is uint8
+
+    # Save the image
+    img.save(image_path)
+
+
     for group in invisible_lines:
         #It might have to do with this
         last_row_notes = []
@@ -170,6 +170,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             #black note here
             black_count = 0
+
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
