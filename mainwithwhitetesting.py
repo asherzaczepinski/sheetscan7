@@ -154,6 +154,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             
 
             #REPLACE WHITE LOOP
+
+            # use corner logic for black note checking
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
@@ -170,11 +172,23 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 #FOR THE ROI WILL DO THE TOP LEFTMOST AND BOTTOM RIGHTMOST IN REPLACED WHEN CALCULTED
                 elif difference_between_blacks >= difference_between_lines_for_line_drawing * 0.8 and difference_between_blacks < difference_between_lines_for_line_drawing * 5:
                     #this is right now the "full white note thing"
-
+                    #going to loop across and fill in
+                    for x_addend in range(difference_between_blacks):
+                        #where we start and go across
+                        temp_x = x_index - difference_between_blacks + x_addend
+                        center = x_index - int(difference_between_blacks) / 2
+                        #this will be how we save our roi along with center
+                        max_tall = 0
+                        max_low = 0
+                        while True:
+                            #this will go up and fill in
+                            #this will go down and fill in
 
                     #roi - will keep a saved image around the note and then also keep the center to determine if its falls in a note later
 
                     #Have to track position of stuff through here to replace it after this loop so the black loop and further ones are ready
+                    difference_between_blacks = 0
+
                 elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
                     
                     #roi - will keep a saved image around the note and then also keep the center to determine if its falls in a note later
