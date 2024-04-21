@@ -144,6 +144,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             black_count = 0
 
+            difference_between_blacks = 0
+
+            #at the end we can maybe ask chatgpt or figure out how to combine the twoooo!
             #THE RIGHT WAY TO APPROACH THIS IS TO DO THE FILL IN METHOD FOR THE BLACK DASH AND FOR THE BLANK WHITE
             #THEN WHENEVER WE DON'T FIND A NOTe in the next thing it will revert that area to what it was before on the og page
             #we just need to keep the original page and the coordinates of what we replace
@@ -155,13 +158,23 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
+                    difference_between_blacks += 1
+                elif difference_between_blacks >= difference_between_lines_for_line_drawing * 0.8 and difference_between_blacks < difference_between_lines_for_line_drawing * 5:
+                    #this is right now the "full white note thing"
+                    #Have to track position of stuff through here to replace it after this loop so the black loop and further ones are ready
                 elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
+            
                     #see if up and down is white and "suspect a white note"
                     #fill in with black in all directions until we hit a stop can loop outwards then up and down
                     #might just do the black logic below up here to make it easier...
                     #my fear is that it someone fills in spots in random places or something...
                     #the whole point of this is assuming it will be hard to identify white notes arbitrarily and I want to save time
                     #i think it is safe to fill in and just see what happens to the other stuff 
+                    difference_between_blacks = 0
+
+
+
+                    
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
