@@ -159,11 +159,28 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                     difference_between_blacks += 1
+                #can adjust this value later
+                #will have to add logic to the tracker below to not identify the filled in stuff
+                    
+
+                #fill in up to note height
+                    
+
+
+                #FOR THE ROI WILL DO THE TOP LEFTMOST AND BOTTOM RIGHTMOST IN REPLACED WHEN CALCULTED
                 elif difference_between_blacks >= difference_between_lines_for_line_drawing * 0.8 and difference_between_blacks < difference_between_lines_for_line_drawing * 5:
                     #this is right now the "full white note thing"
+
+
+                    #roi - will keep a saved image around the note and then also keep the center to determine if its falls in a note later
+
                     #Have to track position of stuff through here to replace it after this loop so the black loop and further ones are ready
                 elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
-            
+                    
+                    #roi - will keep a saved image around the note and then also keep the center to determine if its falls in a note later
+
+                    #have to test up and down here
+
                     #see if up and down is white and "suspect a white note"
                     #fill in with black in all directions until we hit a stop can loop outwards then up and down
                     #might just do the black logic below up here to make it easier...
