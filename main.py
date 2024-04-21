@@ -1,17 +1,3 @@
-#THE MOST IMPORTANT NEXT STEP IS TO REMOVE THE LINES AND STEMS!!!!
-#THIS IS THE MOST IMPORTANT WE CAN USE OLD OCLUMN CODE
-#THIS IS THE MOST IMPORTANT NET STEP
-
-#i will edit the logic for lines through notes 
-
-
-#first i will do the line part and replacement
-
-#one day will combine the above w below not trying to make it extra complicated
-
-
-
-#try putting my replacement code under the nex removal just for test!
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -143,18 +129,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
-    #doing the line removal up and downhere!!!1
-    
-    for group in invisible_lines:
-        for current_loop_y in group:
-            img_array[current_loop_y - 2:current_loop_y + line_height, 0: width] = 255
-
-    img = Image.fromarray(img_array)  # Ensure data type is uint8
-
-    # Save the image
-    img.save(image_path)
-
-
     for group in invisible_lines:
         #It might have to do with this
         last_row_notes = []
@@ -168,14 +142,30 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             left = 0
             right = img_array.shape[1]
 
-            #black note here
             black_count = 0
 
+            difference_between_blacks = 0
+
+
+
+
+
+            #A POSSIBILLITY IS WHENEVER WE SUSPECT A WHITE NOTe WE CAN TURN IT INTO A BLACK NOTe AND RUN OUR BLACK NOTe ALGORITHM!!!
+
+            #coming up with a way to also track black and then white and then black again... maybe difference between blacks 
+            #this could help me identify the white notes without dashes through them
+            #then i need a really good way to go left and right to see if it's a white note... maybe we can use this logic to find sharps too!
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
+                    difference_between_blacks += 1
                 elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
+                    if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.8 and difference_between_blacks < difference_between_lines_for_line_drawing * 5:
+
+                    difference_between_blacks = 0
+                    if ("blah blah blah when replaced looks like a white note then we do a white note here considering the dash through it"):
+                        print("blah blah blah")
                     #apply my logic to see if it is a black note
                     middle_x = x_index - round(black_count / 2)
                     #-1 to discount the current one
@@ -198,6 +188,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if black_count >= difference_between_lines_for_line_drawing * 1.5:
                                 if last_row_notes == []:
                                     black_notes.append([top_left, bottom_right])
+                                    draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                 else:
                                     none_above = True 
                                     for note in last_row_notes:
@@ -207,7 +198,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                             none_above = False
                                     if none_above:
                                         black_notes.append([top_left, bottom_right])
+                                        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                             else:
+                                draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                 temp_notes.append([top_left, bottom_right])
                                 black_notes.append([top_left, bottom_right])
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
@@ -286,5 +279,8 @@ open_pdf_into_input(pdf_path, input_folder)
 for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
         image_path = os.path.join(input_folder, filename)
-        extract_highlighted_lines_and_columns_from_image(image_path)
+        try:
+            extract_highlighted_lines_and_columns_from_image(image_path)
+        except:
+            print('this page could not be processed')
             

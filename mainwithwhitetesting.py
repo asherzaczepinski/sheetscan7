@@ -1,8 +1,3 @@
-
-#have to check up and below an extended one to make sure there isn't a note above
-
-
-
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -39,26 +34,6 @@ def draw_example_rectangle(image_path, rect):
     # Draw each rectangle
     try:
         draw.rectangle(rect, fill=None, outline="black", width=1)
-    except ValueError as e:
-        print(f"Failed to draw rectangle {rect} on {image_path}: {e}")
-        return
-
-    # Save the image with rectangles
-    img.save(image_path)
-
-def draw_testing_square(image_path, rect):
-    # Validate rectangle coordinates
-    if not all(isinstance(coord, (int, float)) for coord in rect):
-        print(f"Invalid rectangle coordinates: {rect}")
-        return
-
-    # Load the image
-    img = Image.open(image_path)
-    draw = ImageDraw.Draw(img)
-
-    # Draw each rectangle
-    try:
-        draw.rectangle(rect, fill=0, outline="black", width=1)
     except ValueError as e:
         print(f"Failed to draw rectangle {rect} on {image_path}: {e}")
         return
@@ -167,8 +142,26 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             left = 0
             right = img_array.shape[1]
 
-            #black note here
             black_count = 0
+
+            #THE RIGHT WAY TO APPROACH THIS IS TO DO THE FILL IN METHOD FOR THE BLACK DASH AND FOR THE BLANK WHITE
+            #THEN WHENEVER WE DON'T FIND A NOTe in the next thing it will revert that area to what it was before on the og page
+            #we just need to keep the original page and the coordinates of what we replace
+            #it is NOT THAT COMPLICATED
+            
+
+            #REPLACE WHITE LOOP
+            for x_index in range(width):
+                pixel = img_array[current_loop_y, x_index]
+                if pixel != 255 and x_index != width - 1:
+                    black_count += 1
+                elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
+                    #see if up and down is white and "suspect a white note"
+                    #fill in with black in all directions until we hit a stop can loop outwards then up and down
+                    #might just do the black logic below up here to make it easier...
+                    #my fear is that it someone fills in spots in random places or something...
+                    #the whole point of this is assuming it will be hard to identify white notes arbitrarily and I want to save time
+                    #i think it is safe to fill in and just see what happens to the other stuff 
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
@@ -192,34 +185,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         total_pixels = roi.size
                         non_white_pixels = np.sum(roi < 255)
                         non_white_percentage = (non_white_pixels / total_pixels) * 100
-
-
-
-                        #the issue is it is checking this before 1.5
-                        #with the cluster groups this still applies!!!! even with the line things
                         if non_white_percentage > 70:
-
-
-                            #this is for testing
                             if black_count >= difference_between_lines_for_line_drawing * 1.5:
                                 if last_row_notes == []:
-                                    #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-
-                                    draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                     black_notes.append([top_left, bottom_right])
+                                    draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                 else:
-                                    #this is a testing square to see if it identifies it
-
-
-
-                                    #this proves it doesn't see that one portion of notes as valid notes
-                                    #I AM GOING TO COMPLETELY REMOVE THE DRAWING CAPABILITIES FOR BIGGER THINGS AND SEE IF IT STILL APPLIES
-
-
-                                    #i don't understand why there is black filled ares above
-                                    #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-                                    #check if in last_row_notes something is not right above the black note
-                                    #might want to create a variable called last_row_notes 
                                     none_above = True 
                                     for note in last_row_notes:
                                         #have to get middle here they won't align perfectly
@@ -227,62 +198,28 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                         if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
                                             none_above = False
                                     if none_above:
-                                        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                         black_notes.append([top_left, bottom_right])
+                                        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                             else:
                                 draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                 temp_notes.append([top_left, bottom_right])
                                 black_notes.append([top_left, bottom_right])
-
-
-
-
-                        #changed for 1.5
-                        #it's truly not recognizing that area
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
-
-
-
-                            #ths has to do the particular thing
-
                             little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
                             new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
                             new_total_pixels = new_roi.size
                             new_non_white_pixels = np.sum(new_roi < 255)
                             new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
                             if new_non_white_percentage > 80:
-                                #check the last or above line of black_notes and make sure there is nothing right above the current stuff
-                                #if there is don't append anything
-                                #if there isn't do append
-                                #then we will work on removing shit but idk
-                                #this will solidfy everything
-
                                 if last_row_notes == []:
-                                    #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-
-                                    draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                     black_notes.append([top_left, bottom_right])
                                 else:
-                                    #this is a testing square to see if it identifies it
-
-
-
-                                    #this proves it doesn't see that one portion of notes as valid notes
-                                    #I AM GOING TO COMPLETELY REMOVE THE DRAWING CAPABILITIES FOR BIGGER THINGS AND SEE IF IT STILL APPLIES
-
-
-                                    #i don't understand why there is black filled ares above
-                                    #draw_testing_square(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-                                    #check if in last_row_notes something is not right above the black note
-                                    #might want to create a variable called last_row_notes 
                                     none_above = True 
                                     for note in last_row_notes:
-                                        #have to get middle here they won't align perfectly
                                         #or we can account for the -10!!!!! by saying - 10
                                         if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
                                             none_above = False
                                     if none_above:
-                                        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                         black_notes.append([top_left, bottom_right])
                         black_count = 0
                 else:
@@ -301,9 +238,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             cropped_img.save(os.path.join(output_dir, file_name))
             last_row_notes = temp_notes
 
-
-
-    #implementing this here and then removing until it works then will copy and paste back into main.py
+    #drawing the black_notes
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
@@ -345,4 +280,8 @@ open_pdf_into_input(pdf_path, input_folder)
 for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
         image_path = os.path.join(input_folder, filename)
-        extract_highlighted_lines_and_columns_from_image(image_path)
+        try:
+            extract_highlighted_lines_and_columns_from_image(image_path)
+        except:
+            print('this page could not be processed')
+            
