@@ -178,11 +178,30 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         temp_x = x_index - difference_between_blacks + x_addend
                         center = x_index - int(difference_between_blacks) / 2
                         #this will be how we save our roi along with center
-                        max_tall = 0
-                        max_low = 0
+                        max_tall = 1
+                        max_low = 1
+                        counter = 1
                         while True:
+                            temp_pixel = img_array[counter, temp_x]
+                            if temp_pixel != 255:
+                                break
+                            temp_pixel = 0
                             #this will go up and fill in
-                            #this will go down and fill in
+                            counter += 1
+                            if counter > max_tall:
+                                max_tall = counter
+
+                        counter = 1
+                        temp_x = x_index - difference_between_blacks - x_addend
+                        while True:
+                            temp_pixel = img_array[counter, temp_x]
+                            if temp_pixel != 255:
+                                break
+                            temp_pixel = 0
+                            #this will go up and fill in
+                            counter += 1
+                            if counter > max_low:
+                                max_low = counter
 
                     #roi - will keep a saved image around the note and then also keep the center to determine if its falls in a note later
 
@@ -204,6 +223,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     difference_between_blacks = 0
 
 
+            img = Image.fromarray(img_array)
+            img.save(image_path)
 
                     
             for x_index in range(width):
@@ -326,6 +347,5 @@ for filename in os.listdir(input_folder):
         image_path = os.path.join(input_folder, filename)
         try:
             extract_highlighted_lines_and_columns_from_image(image_path)
-        except:
-            print('this page could not be processed')
-            
+        except Exception as e:
+            print(e)

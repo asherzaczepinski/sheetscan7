@@ -1,3 +1,6 @@
+#find which one of this was working 
+
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -263,6 +266,6 @@ for filename in os.listdir(input_folder):
         image_path = os.path.join(input_folder, filename)
         try:
             extract_highlighted_lines_and_columns_from_image(image_path)
-        except:
-            print('this page could not be processed')
+        except Exception as e:
+            print(e)
             
