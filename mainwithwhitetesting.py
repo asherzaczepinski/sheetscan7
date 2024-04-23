@@ -161,16 +161,17 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                     difference_between_blacks += 1
-                #can adjust this value later
+
                 #will have to add logic to the tracker below to not identify the filled in stuff
-                    
-
-                #fill in up to note height
-                    
-
 
                 #FOR THE ROI WILL DO THE TOP LEFTMOST AND BOTTOM RIGHTMOST IN REPLACED WHEN CALCULTED
+                    
+                    print('hif')
+
+                #doo this later
                 elif difference_between_blacks >= difference_between_lines_for_line_drawing * 0.8 and difference_between_blacks < difference_between_lines_for_line_drawing * 5:
+                    
+                    print('hi')
                     #this is right now the "full white note thing"
                     #going to loop across and fill in
 
@@ -194,6 +195,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
                             temp_pixel = img_array[current_loop_y, temp_x]
                             if temp_pixel != 255:
+                                print('hi')
                                 break
                             
                             #check to make sure the counter doesn't go over the width
@@ -208,6 +210,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         while True:
                             temp_pixel = img_array[current_loop_y, temp_x]
                             if temp_pixel != 255:
+                                print('hi')
                                 break
                             temp_pixel = 0
                             #this will go up and fill in
@@ -233,7 +236,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     #the whole point of this is assuming it will be hard to identify white notes arbitrarily and I want to save time
                     #i think it is safe to fill in and just see what happens to the other stuff 
                     difference_between_blacks = 0
-
+                    print('hi')
+                
+                print('Were here')
 
             img = Image.fromarray(img_array)
             img.save(image_path)
