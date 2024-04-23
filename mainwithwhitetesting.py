@@ -173,6 +173,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 elif difference_between_blacks >= difference_between_lines_for_line_drawing * 0.8 and difference_between_blacks < difference_between_lines_for_line_drawing * 5:
                     #this is right now the "full white note thing"
                     #going to loop across and fill in
+
+
+
+                    #I KNOW THIS ISSUE WHAT IS COUNTER BEING USED FOR!
                     for x_addend in range(difference_between_blacks):
                         #where we start and go across
                         temp_x = x_index - difference_between_blacks + x_addend
@@ -181,10 +185,18 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         max_tall = 1
                         max_low = 1
                         counter = 1
+
+
+
+
+                        #figure out why nothing is happening! I'm in the right direction
                         while True:
-                            temp_pixel = img_array[counter, temp_x]
+
+                            temp_pixel = img_array[current_loop_y, temp_x]
                             if temp_pixel != 255:
                                 break
+                            
+                            #check to make sure the counter doesn't go over the width
                             temp_pixel = 0
                             #this will go up and fill in
                             counter += 1
@@ -194,7 +206,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         counter = 1
                         temp_x = x_index - difference_between_blacks - x_addend
                         while True:
-                            temp_pixel = img_array[counter, temp_x]
+                            temp_pixel = img_array[current_loop_y, temp_x]
                             if temp_pixel != 255:
                                 break
                             temp_pixel = 0
