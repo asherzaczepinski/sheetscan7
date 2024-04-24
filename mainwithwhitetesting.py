@@ -190,10 +190,16 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
                         #figure out why nothing is happening! I'm in the right direction
+
+
+
+                        #ooooh this is a counter thing the temp_x stas the same e have to increase the current_loop_y not the temp_x
+                        #that is the issue'/.
+                        #it is already GOING THRPUGH!!!
                         while True:
                             print('stuck in while loop')
-                            temp_pixel = img_array[current_loop_y, temp_x]
-                            if temp_pixel != 255 or temp_x >= width - 1:
+                            temp_pixel = img_array[current_loop_y + counter, temp_x]
+                            if temp_pixel != 255 or counter > difference_between_lines_for_line_drawing / 2:
                                 print('hi stopped')
                                 break
                             
@@ -207,8 +213,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         temp_x = x_index - difference_between_blacks - x_addend
                         while True:
                             print('stuck in while loop')
-                            temp_pixel = img_array[current_loop_y, temp_x]
-                            if temp_pixel != 255 or temp_x >= width - 1:
+                            temp_pixel = img_array[current_loop_y - counter, temp_x]
+                            if temp_pixel != 255 or counter > difference_between_lines_for_line_drawing / 2:
                                 print('hi stopped')
                                 break
                             temp_pixel = 0
