@@ -1,3 +1,6 @@
+#some stuff is screwed up with replacement
+#it just has to do when it is replaced
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -204,7 +207,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 break
                             
                             #check to make sure the counter doesn't go over the width
-                            temp_pixel = 0
+                            img_array[current_loop_y + counter, temp_x] = 0
                             #this will go up and fill in
                             counter += 1
                             if counter > max_tall:
@@ -217,7 +220,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if temp_pixel != 255 or counter > difference_between_lines_for_line_drawing / 2:
                                 print('hi stopped')
                                 break
-                            temp_pixel = 0
+                            img_array[current_loop_y + counter, temp_x] = 0
                             #this will go up and fill in
                             counter += 1
                             if counter > max_low:
