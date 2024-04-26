@@ -147,102 +147,29 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             black_count = 0
 
+
+
+            #this here is our white note logic I'm thinking of doing a diagonal slash and going from there
+
+
+            #make it draw a black rectangle in center of anything it suspects
+            #remember the middle lines are removed
             difference_between_blacks = -1
 
-            #at the end we can maybe ask chatgpt or figure out how to combine the twoooo!
-            #THE RIGHT WAY TO APPROACH THIS IS TO DO THE FILL IN METHOD FOR THE BLACK DASH AND FOR THE BLANK WHITE
-            #THEN WHENEVER WE DON'T FIND A NOTe in the next thing it will revert that area to what it was before on the og page
-            #we just need to keep the original page and the coordinates of what we replace
-            #it is NOT THAT COMPLICATED
-            
-
-            #REPLACE WHITE LOOP
-
-            # use corner logic for black note checking
-
-
-
-
-
-
-
-
-
-            #it's drawing diagonal bc it is being prevent  by something
-            #It's difference between blacks that is screwing this up the whole logic here is bad
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
-
-                #will have to add logic to the tracker below to not identify the filled in stuff
-
-                #FOR THE ROI WILL DO THE TOP LEFTMOST AND BOTTOM RIGHTMOST IN REPLACED WHEN CALCULTED
-                    
-
-                    #doo this later
-                    #it will be * 0.8 or somethign higher later
-
-                    #an issue is it has to keep going more than the difference between blacks
                     if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.5 and difference_between_blacks < difference_between_lines_for_line_drawing:
-                        for x_addend in range(difference_between_blacks):
-                            #where we start and go across
-                            temp_x = x_index - difference_between_blacks + x_addend
-                            center = x_index - int(difference_between_blacks) / 2
-                            #this will be how we save our roi along with center
-                            max_tall = 1
-                            max_low = 1
-                            counter = 1
-                            while True:
-                                temp_pixel = img_array[current_loop_y - counter, temp_x]
-                                if temp_pixel != 255 or counter > difference_between_lines_for_line_drawing:
-                                    print('hi stopped')
-                                    break
-                                #check to make sure the counter doesn't go over the width
-                                img_array[current_loop_y - counter, temp_x] = 0
-                                #this will go up and fill in
-                                counter += 1
-                                if counter > max_tall:
-                                    max_tall = counter
-                            counter = 1
-                            temp_x = x_index - difference_between_blacks - x_addend
-                            while True:
-                                temp_pixel = img_array[current_loop_y + counter, temp_x]
-                                if temp_pixel != 255 or counter > difference_between_lines_for_line_drawing:
-                                    print('hi stopped')
-                                    break
-                                img_array[current_loop_y + counter, temp_x] = 0
-                                #this will go up and fill in
-                                counter += 1
-                                if counter > max_low:
-                                    max_low = counter
-
-                        #roi - will keep a saved image around the note and then also keep the center to determine if its falls in a note later
-
-                        #Have to track position of stuff through here to replace it after this loop so the black loop and further ones are ready
-                    difference_between_blacks = 0
-
+                        difference_between_blacks = 0
                 else:
                     if black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
-                        
-                        #roi - will keep a saved image around the note and then also keep the center to determine if its falls in a note later
-
-                        #have to test up and down here
-
-                        #see if up and down is white and "suspect a white note"
-                        #fill in with black in all directions until we hit a stop can loop outwards then up and down
-                        #might just do the black logic below up here to make it easier...
-                        #my fear is that it someone fills in spots in random places or something...
-                        #the whole point of this is assuming it will be hard to identify white notes arbitrarily and I want to save time
-                        #i think it is safe to fill in and just see what happens to the other stuff 
                         print('dash through middle')
                     if difference_between_blacks != -1:
                         difference_between_blacks += 1
 
-            img = Image.fromarray(img_array)
-            img.save(image_path)
-
-                    
+            black_count = 0
+                 
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
