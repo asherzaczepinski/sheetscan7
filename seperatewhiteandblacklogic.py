@@ -1,5 +1,7 @@
 #some stuff is screwed up with replacement
 #it just has to do when it is replaced
+#don't need output segments but need columns
+#the draw_example rectangles explains a lot of issues when it's inside the black note logic this is wherei should be working from!
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -200,7 +202,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if black_count >= difference_between_lines_for_line_drawing * 1.5:
                                 if last_row_notes == []:
                                     black_notes.append([top_left, bottom_right])
-                                    draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                 else:
                                     none_above = True 
                                     for note in last_row_notes:
@@ -210,9 +211,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                             none_above = False
                                     if none_above:
                                         black_notes.append([top_left, bottom_right])
-                                        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                             else:
-                                draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
                                 temp_notes.append([top_left, bottom_right])
                                 black_notes.append([top_left, bottom_right])
                         elif black_count >= difference_between_lines_for_line_drawing * 1.5:
@@ -235,27 +234,16 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         black_count = 0
                 else:
                     black_count = 0
-            
-            # Crop the image
-            cropped_img = img.crop((left, top, right, bottom))
-
-            # Output directory for cropped images
-            output_dir = "output_segments"
-            os.makedirs(output_dir, exist_ok=True)
-
-            # File name for the cropped image
-            file_name = f"{Path(image_path).stem}_{current_loop_y}_{left}_{top}_{right}_{bottom}.png"
-
-            # Save the cropped image directly in the 'output_segments' directory
-            cropped_img.save(os.path.join(output_dir, file_name))
             last_row_notes = temp_notes
 
-    #drawing the black_notes
+
+    #put this back once white note logic is solid
+    """ #drawing the black_notes
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
         draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-
+ """
     lines.append(image_path)
     all_rows.append(lines)
     
