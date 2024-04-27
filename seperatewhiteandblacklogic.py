@@ -158,6 +158,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             #remember the middle lines are removed
             difference_between_blacks = -1
 
+
+
+
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 #if it's black
@@ -165,12 +168,15 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     black_count += 1
                     if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.5 and difference_between_blacks < difference_between_lines_for_line_drawing:
                         #drawing center here
-                        draw_example_rectangle(image_path, (x_index - difference_between_blacks / 2, current_loop_y, x_index - difference_between_blacks / 2 + 5, current_loop_y + 1))
-                        difference_between_blacks = 0
+                        draw_example_rectangle(image_path, (x_index - difference_between_blacks / 2, current_loop_y, x_index - difference_between_blacks / 2 + 5 + 10, current_loop_y + 1 + 10))
+                    difference_between_blacks = 0
                 else:
                     #if it's white
                     if difference_between_blacks != -1:
                         difference_between_blacks += 1
+                    
+
+
 
             #will do dash through middle whites here
             black_count = 0
