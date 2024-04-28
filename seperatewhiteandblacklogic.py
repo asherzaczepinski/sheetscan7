@@ -138,6 +138,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         #It might have to do with this
         last_row_notes = []
         for current_loop_y in group:
+            print(current_loop_y)
+
+            #current loop y is going to far over at the end
+            #lets adjust the code so when it adds it at the very last grouop it does it up to the height
             temp_notes = []
             half_height = round(difference_between_lines_for_line_drawing / 2)
             top = max(0, current_loop_y - half_height)
