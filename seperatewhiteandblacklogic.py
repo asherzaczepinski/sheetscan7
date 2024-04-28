@@ -140,12 +140,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
+    #IT'S NOT GOING PAST THE BOTTOM ONES
     for group in invisible_lines:
         #It might have to do with this
         last_row_notes = []
         for current_loop_y in group:
-            print(current_loop_y)
-
+            #remove this at end we're testin current loop y
+            draw_example_rectangle(image_path, (0, current_loop_y, width, current_loop_y + 1))
             #current loop y is going to far over at the end
             #lets adjust the code so when it adds it at the very last grouop it does it up to the height
             temp_notes = []
@@ -178,23 +179,18 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
                         #ONCE WE GET THIS WORKING WE CAN KEEP ON GOING
-                        try:
-                            while True:
-                                temp_pixel_above = img_array[x_index - int(difference_between_blacks / 2), current_loop_y - counter]
-                                temp_pixel_below = img_array[x_index - int(difference_between_blacks / 2), current_loop_y + counter]
+                        while True:
+                            temp_pixel_above = img_array[current_loop_y - counter, x_index - int(difference_between_blacks / 2)]
+                            temp_pixel_below = img_array[current_loop_y + counter, x_index - int(difference_between_blacks / 2)]
 
-                                #figure out issues here
-                                if counter > difference_between_lines_for_line_drawing / 3 or current_loop_y + counter > width - 2:
-                                    white_note = False
-                                    break
-                                if temp_pixel_above != 255 and temp_pixel_below != 255 and counter < difference_between_lines_for_line_drawing / 3:
-                                    break
-                                counter += 1
-                        except Exception as e:
-                            print(e)
-                            print(current_loop_y)
-                            #how is current loop y so high!
-                            print(counter)
+                            #figure out issues here
+                            if counter > difference_between_lines_for_line_drawing / 2 or current_loop_y + counter > width - 2:
+                                white_note = False
+                                break
+                            if temp_pixel_above != 255 and temp_pixel_below != 255 and counter < difference_between_lines_for_line_drawing / 3:
+                                break
+                            counter += 1
+                    
 
 
 
