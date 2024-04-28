@@ -161,15 +161,35 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     black_count += 1
                     if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
                         #drawing center here
-                        draw_example_rectangle(image_path, (x_index - difference_between_blacks / 2, current_loop_y, x_index - difference_between_blacks / 2 + 5 + 10, current_loop_y + 1 + 10))
+                        #going to experiment drawing first and then move into checking for if it's white
+
+
+
+                        #I'm going to do a check above and below so test doing it w grey
+                        o = 0
+                        for i in range(int(difference_between_lines_for_line_drawing * 0.4)):
+                            #right
+                            img_array[current_loop_y - o, x_index - int(difference_between_blacks / 2) + i] = 0
+                            #left
+                            img_array[current_loop_y + o, x_index - int(difference_between_blacks / 2) - i] = 0 
+                            adjust_increment = int(difference_between_blacks * 0.25)
+                            #lower right
+                            #lower left
+                            
+
+                            #upper right
+                            #upper left    
+                            if i % 2 == 0:
+                                o += 1
                     difference_between_blacks = 0
                 else:
                     #if it's white
                     if difference_between_blacks != -1:
                         difference_between_blacks += 1
                     
-
-
+            #will take this out eventually
+            img = Image.fromarray(img_array)
+            img.save(image_path)
 
             #will do dash through middle whites here
             black_count = 0
