@@ -112,6 +112,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             if row_index == len(lines) - 1:
                 stopping_point = row[1]
                 #should be < bc it starts at 0 for y
+
+
+                #GOING TO NEED THIS SAME LOGIC FOR THE ABOVE
                 while stopping_point < height:
                     stopping_point += round(difference_between_lines_for_line_drawing / 2)
                 stopping_point -= round(difference_between_lines_for_line_drawing / 2)
