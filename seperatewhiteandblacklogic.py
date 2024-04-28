@@ -160,6 +160,17 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                     if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
+                        counter = 0
+                        white_note = True
+                        while True:
+                            temp_pixel_above = img_array[x_index - int(difference_between_blacks / 2), current_loop_y - counter]
+                            temp_pixel_below = img_array[x_index - int(difference_between_blacks / 2), current_loop_y + counter]
+                            if counter > difference_between_lines_for_line_drawing / 3:
+                                white_note = False
+                                break
+                            if temp_pixel_above != 255 and temp_pixel_below != 255 and counter < difference_between_lines_for_line_drawing / 3:
+                                break
+                            counter += 1
                         #going to do the up and down thing
                         #then going to calculate the left right
                         #then going to calculate if there is a line above or not
@@ -168,6 +179,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         #we can calculate the top and bottom max when there is no line
                         #we will calculate line by going across and seeing if all is 100% black the average line height amount of times 
                         #maybe ceil / 2 idk
+                        if white_note:
+                            draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
                     difference_between_blacks = 0
                 else:
                     #if it's white
