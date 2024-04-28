@@ -167,29 +167,46 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
                         #I'm going to do a check above and below so test doing it w grey
                         o = 0
+
+                        #now we just test each pixel and assign it a name
+                        #then if the lower and upper and all non-white and the middle is always white then we make our boolen count a note there and draw it at the end
+                        white_note = True
                         for i in range(int(difference_between_lines_for_line_drawing * 0.4)):
                             #right
-                            img_array[current_loop_y - o, x_index - int(difference_between_blacks / 2) + i] = 0
+                            middle_right = img_array[current_loop_y - o, x_index - int(difference_between_blacks / 2) + i] 
+                            if middle_right != 255:
+                                white_note = False
                             #left
-                            img_array[current_loop_y + o, x_index - int(difference_between_blacks / 2) - i] = 0 
-                            adjust_increment = int(difference_between_blacks * 0.25)
+                            middle_left = img_array[current_loop_y + o, x_index - int(difference_between_blacks / 2) - i] 
+                            if middle_left != 255:
+                                white_note = False
+                            adjust_increment = int(difference_between_blacks * 0.5)
                             #lower right
+                            lower_right = img_array[current_loop_y - o + adjust_increment, x_index - int(difference_between_blacks / 2) + i] 
+                            if lower_right == 255:
+                                white_note = False
                             #lower left
-                            
-
+                            lower_left = img_array[current_loop_y + o + adjust_increment, x_index - int(difference_between_blacks / 2) - i] 
+                            if lower_left == 255:
+                                white_note = False
                             #upper right
+                            upper_right = img_array[current_loop_y - o - adjust_increment, x_index - int(difference_between_blacks / 2) + i]
+                            if upper_right == 255:
+                                white_note = False
                             #upper left    
+                            upper_left = img_array[current_loop_y + o - adjust_increment, x_index - int(difference_between_blacks / 2) - i] 
+                            if upper_left == 255:
+                                white_note = False
                             if i % 2 == 0:
                                 o += 1
+                        if white_note:
+                            #eventually we will add it to a loop and do it at the end
+                            draw_example_rectangle(image_path, (x_index - difference_between_blacks, current_loop_y - 20, x_index, current_loop_y + 20))
                     difference_between_blacks = 0
                 else:
                     #if it's white
                     if difference_between_blacks != -1:
                         difference_between_blacks += 1
-                    
-            #will take this out eventually
-            img = Image.fromarray(img_array)
-            img.save(image_path)
 
             #will do dash through middle whites here
             black_count = 0
