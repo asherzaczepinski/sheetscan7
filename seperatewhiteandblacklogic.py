@@ -111,7 +111,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         if (row_index + 1) % 5 == 0:
             if row_index == len(lines) - 1:
                 stopping_point = row[1]
-                while stopping_point < height:
+                while stopping_point < height and stopping_point <= row[1] + staff_white_range:
                     stopping_point += round(difference_between_lines_for_line_drawing / 2)
                 stopping_point -= round(difference_between_lines_for_line_drawing / 2)
             else:
@@ -126,7 +126,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             #Going to work on the removal of the every other line HERE!!!!
             if row_index == 0:
                 stopping_point = row[1] 
-                while stopping_point > 0:
+                while stopping_point > 0 and stopping_point >= row[1] - staff_white_range:
                     stopping_point -= round(difference_between_lines_for_line_drawing / 2)
                 stopping_point += round(difference_between_lines_for_line_drawing / 2)
             else:
@@ -187,6 +187,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if counter > difference_between_lines_for_line_drawing / 2 or current_loop_y + counter > width - 2:
                                 white_note = False
                                 break
+
+
+
+                            #INSTEAD OF THIS AT THE SAME TIME BC IT CAN BE KINDA OFF WE SHOULD RLY DO COUNT IF IT DOES EITHER ONE WITHIN THE RANGE
+                            #THEN WE DO IT BOOLEAN BASED 
+                            #BC SOME NOTES AREN'T PERFECTLY DIVIDED
                             if temp_pixel_above != 255 and temp_pixel_below != 255 and counter < difference_between_lines_for_line_drawing / 3:
                                 break
                             counter += 1
