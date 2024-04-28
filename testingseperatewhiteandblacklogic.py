@@ -176,33 +176,44 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         for i in range(loop_range):
                             #right
                             middle_right = img_array[current_loop_y - o, x_index - int(difference_between_blacks / 2) + i] 
+                            #take this out eventually
+                            img_array[current_loop_y - o, x_index - int(difference_between_blacks / 2) + i] = 0 
                             if middle_right != 255:
                                 white_note = False
                             #left
                             middle_left = img_array[current_loop_y + o, x_index - int(difference_between_blacks / 2) - i] 
+                            #take this out eventually
+                            img_array[current_loop_y + o, x_index - int(difference_between_blacks / 2) - i] = 0 
                             if middle_left != 255:
                                 white_note = False
                             adjust_increment = int(difference_between_blacks * 0.5)
                             #lower right
                             lower_right = img_array[current_loop_y - o + adjust_increment, x_index - int(difference_between_blacks / 2) + i] 
+                            #take this out eventually
+                            img_array[current_loop_y - o + adjust_increment, x_index - int(difference_between_blacks / 2) + i] = 100
                             if lower_right != 255:
                                 black_sum += 1
                             #lower left
                             lower_left = img_array[current_loop_y + o + adjust_increment, x_index - int(difference_between_blacks / 2) - i] 
+                            #take this out eventually
+                            img_array[current_loop_y + o + adjust_increment, x_index - int(difference_between_blacks / 2) - i] = 100
                             if lower_left != 255:
                                 black_sum += 1
                             #upper right
                             upper_right = img_array[current_loop_y - o - adjust_increment, x_index - int(difference_between_blacks / 2) + i]
+                            #take this out eventually
+                            img_array[current_loop_y - o - adjust_increment, x_index - int(difference_between_blacks / 2) + i] = 100
                             if upper_right != 255:
                                 black_sum += 1
                             #upper left    
                             upper_left = img_array[current_loop_y + o - adjust_increment, x_index - int(difference_between_blacks / 2) - i] 
+                            #take this out eventually
+                            img_array[current_loop_y + o - adjust_increment, x_index - int(difference_between_blacks / 2) - i] = 100
                             if upper_left != 255:
                                 black_sum += 1
                             if i % 2 == 0:
                                 o += 1
-                        #it's /4 because left right up and down for just loop range going half the distance
-                        if black_sum / 4 / loop_range > 0.9 and white_note:
+                        if black_sum / loop_range > 0.9 and white_note:
                             #eventually we will add it to a loop and do it at the end
                             draw_example_rectangle(image_path, (x_index - difference_between_blacks, current_loop_y - 20, x_index, current_loop_y + 20))
                     difference_between_blacks = 0
@@ -214,6 +225,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             #will do dash through middle whites here
             black_count = 0
             
+            img = Image.fromarray(img_array)
+            img.save(image_path)
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
