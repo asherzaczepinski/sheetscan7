@@ -118,6 +118,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 while stopping_point < height:
                     stopping_point += round(difference_between_lines_for_line_drawing / 2)
                 stopping_point -= round(difference_between_lines_for_line_drawing / 2)
+            
+            
+            
+            
+            
             else:
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
             while current_y <= stopping_point:
@@ -129,6 +134,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         elif row_index % 5 == 0:
             #Going to work on the removal of the every other line HERE!!!!
             if row_index == 0:
+
+
+
+                #WORK HERE JUST IN CASE IT DOESN'T GO OVER WE WILL WORK ON THIS ONCE WE REFINE THE ABOVE
                 stopping_point = row[1] - staff_white_range
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
@@ -176,6 +185,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
                         #will eventually take out try except
+
+
+                        #ONCE WE GET THIS WORKING WE CAN KEEP ON GOING
                         try:
                             while True:
                                 temp_pixel_above = img_array[x_index - int(difference_between_blacks / 2), current_loop_y - counter]
