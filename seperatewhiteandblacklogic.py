@@ -56,6 +56,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     # Get image width
     width = img_array.shape[1]
 
+    height = img_array.shape[0]
     # This will hold the lines found in the image
     lines = []
 
@@ -108,19 +109,19 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         current_y = row[1]
         #this is when it is on the last line of a staff and ends up going down
         if (row_index + 1) % 5 == 0:
-            if #have to check to make sure this is not the last group:
-                #Going to work on the removal of the every other line HERE!!!!
-                if row_index == len(lines) - 1:
-                    stopping_point = row[1] + staff_white_range
-                else:
-                    stopping_point = (row[1] + lines[row_index + 1][1]) / 2
-                while current_y <= stopping_point:
-                    group.append(current_y)
-                    current_y += round(difference_between_lines_for_line_drawing / 2)
-                invisible_lines.append(group)
-                group = []
+            if row_index == len(lines) - 1:
+                stopping_point = row[1]
+                #should be < bc it starts at 0 for y
+                while stopping_point < height:
+                    stopping_point += round(difference_between_lines_for_line_drawing / 2)
+                stopping_point -= round(difference_between_lines_for_line_drawing / 2)
             else:
-                #only go up to a certain amount
+                stopping_point = (row[1] + lines[row_index + 1][1]) / 2
+            while current_y <= stopping_point:
+                group.append(current_y)
+                current_y += round(difference_between_lines_for_line_drawing / 2)
+            invisible_lines.append(group)
+            group = []
         #this is on the first line of a staff and goes up 
         elif row_index % 5 == 0:
             #Going to work on the removal of the every other line HERE!!!!
