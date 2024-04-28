@@ -142,13 +142,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     #IT'S NOT GOING PAST THE BOTTOM ONES
     for group in invisible_lines:
-        #It might have to do with this
         last_row_notes = []
         for current_loop_y in group:
-            #remove this at end we're testin current loop y
-            draw_example_rectangle(image_path, (0, current_loop_y, width, current_loop_y + 1))
-            #current loop y is going to far over at the end
-            #lets adjust the code so when it adds it at the very last grouop it does it up to the height
             temp_notes = []
             half_height = round(difference_between_lines_for_line_drawing / 2)
             top = max(0, current_loop_y - half_height)
@@ -171,6 +166,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                     if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
+                        #remove this
+                        draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
+
                         counter = 0
                         white_note = True
 
@@ -179,6 +177,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
                         #ONCE WE GET THIS WORKING WE CAN KEEP ON GOING
+                        above = False
+                        below = False
                         while True:
                             temp_pixel_above = img_array[current_loop_y - counter, x_index - int(difference_between_blacks / 2)]
                             temp_pixel_below = img_array[current_loop_y + counter, x_index - int(difference_between_blacks / 2)]
@@ -189,11 +189,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 break
 
 
-
+                            if temp_pixel_above != 255:
+                                above = True
+                            if temp_pixel_below != 255:
+                                below = True
                             #INSTEAD OF THIS AT THE SAME TIME BC IT CAN BE KINDA OFF WE SHOULD RLY DO COUNT IF IT DOES EITHER ONE WITHIN THE RANGE
                             #THEN WE DO IT BOOLEAN BASED 
                             #BC SOME NOTES AREN'T PERFECTLY DIVIDED
-                            if temp_pixel_above != 255 and temp_pixel_below != 255 and counter < difference_between_lines_for_line_drawing / 3:
+                            if above and below and counter < difference_between_lines_for_line_drawing / 2:
                                 break
                             counter += 1
                     
