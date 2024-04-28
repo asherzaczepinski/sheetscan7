@@ -149,6 +149,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             black_count = 0
             difference_between_blacks = -1
+
+
+
+            #we'll replicate this exact logic for the dash through
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 #if it's black
