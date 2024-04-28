@@ -1,3 +1,8 @@
+#LETS MAKE A DRAW EXAMPLE RECTANGLE JUST EDIT THE IMG_ARRAY
+#WE WILL MAKE ANOTHER FUNCTION TO SAVE
+#THIS WILL MAKE OUR CODE WORK IN SECONDS
+
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -284,7 +289,7 @@ def open_pdf_into_input(pdf_path, input_folder):
     doc.close()
 
 # Example usage
-pdf_path = "oldinput.pdf"
+pdf_path = "input.pdf"
 input_folder = "input"
 
 open_pdf_into_input(pdf_path, input_folder)
