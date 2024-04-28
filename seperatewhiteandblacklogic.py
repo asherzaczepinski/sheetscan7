@@ -160,51 +160,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                     if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
-                        #drawing center here
-                        #going to experiment drawing first and then move into checking for if it's white
-
-
-
-                        #I'm going to do a check above and below so test doing it w grey
-                        o = 0
-
-                        #now we just test each pixel and assign it a name
-                        #then if the lower and upper and all non-white and the middle is always white then we make our boolen count a note there and draw it at the end
-                        white_note = True
-                        loop_range = int(difference_between_lines_for_line_drawing * 0.4)
-                        black_sum = 0
-                        for i in range(loop_range):
-                            #right
-                            middle_right = img_array[current_loop_y - o, x_index - int(difference_between_blacks / 2) + i] 
-                            if middle_right != 255:
-                                white_note = False
-                            #left
-                            middle_left = img_array[current_loop_y + o, x_index - int(difference_between_blacks / 2) - i] 
-                            if middle_left != 255:
-                                white_note = False
-                            adjust_increment = int(difference_between_blacks * 0.5)
-                            #lower right
-                            lower_right = img_array[current_loop_y - o + adjust_increment, x_index - int(difference_between_blacks / 2) + i] 
-                            if lower_right != 255:
-                                black_sum += 1
-                            #lower left
-                            lower_left = img_array[current_loop_y + o + adjust_increment, x_index - int(difference_between_blacks / 2) - i] 
-                            if lower_left != 255:
-                                black_sum += 1
-                            #upper right
-                            upper_right = img_array[current_loop_y - o - adjust_increment, x_index - int(difference_between_blacks / 2) + i]
-                            if upper_right != 255:
-                                black_sum += 1
-                            #upper left    
-                            upper_left = img_array[current_loop_y + o - adjust_increment, x_index - int(difference_between_blacks / 2) - i] 
-                            if upper_left != 255:
-                                black_sum += 1
-                            if i % 2 == 0:
-                                o += 1
-                        #it's /4 because left right up and down for just loop range going half the distance
-                        if black_sum / 4 / loop_range > 0.9 and white_note:
-                            #eventually we will add it to a loop and do it at the end
-                            draw_example_rectangle(image_path, (x_index - difference_between_blacks, current_loop_y - 20, x_index, current_loop_y + 20))
+                        #going to do the up and down thing
+                        #then going to calculate the left right
+                        #then going to calculate if there is a line above or not
+                        #can calculate it right off of the top part
+                        #if so ignore the top and if not heck for the top left and bottom right being black
+                        #we can calculate the top and bottom max when there is no line
+                        #we will calculate line by going across and seeing if all is 100% black the average line height amount of times 
+                        #maybe ceil / 2 idk
                     difference_between_blacks = 0
                 else:
                     #if it's white
