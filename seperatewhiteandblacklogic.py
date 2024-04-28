@@ -311,7 +311,7 @@ def open_pdf_into_input(pdf_path, input_folder):
     doc.close()
 
 # Example usage
-pdf_path = "input.pdf"
+pdf_path = "oldinput.pdf"
 input_folder = "input"
 
 open_pdf_into_input(pdf_path, input_folder)
