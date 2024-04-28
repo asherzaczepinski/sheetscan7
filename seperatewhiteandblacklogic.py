@@ -1,8 +1,3 @@
-#some stuff is screwed up with replacement
-#it just has to do when it is replaced
-#don't need output segments but need columns
-#the draw_example rectangles explains a lot of issues when it's inside the black note logic this is wherei should be working from!
-
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -140,7 +135,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
-    #IT'S NOT GOING PAST THE BOTTOM ONES
     for group in invisible_lines:
         last_row_notes = []
         for current_loop_y in group:
@@ -154,63 +148,30 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             right = img_array.shape[1]
 
             black_count = 0
-
-
-
-            #this here is our white note logic I'm thinking of doing a diagonal slash and going from there
             difference_between_blacks = -1
-
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 #if it's black
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                     if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
-                        #remove this
-                        draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
-
                         counter = 0
                         white_note = True
-
-
-                        #will eventually take out try except
-
-
-                        #ONCE WE GET THIS WORKING WE CAN KEEP ON GOING
                         above = False
                         below = False
                         while True:
                             temp_pixel_above = img_array[current_loop_y - counter, x_index - int(difference_between_blacks / 2)]
                             temp_pixel_below = img_array[current_loop_y + counter, x_index - int(difference_between_blacks / 2)]
-
-                            #figure out issues here
-                            if counter > difference_between_lines_for_line_drawing / 2 or current_loop_y + counter > width - 2:
+                            if counter > difference_between_lines_for_line_drawing / 3:
                                 white_note = False
                                 break
-
-
                             if temp_pixel_above != 255:
                                 above = True
                             if temp_pixel_below != 255:
                                 below = True
-                            #INSTEAD OF THIS AT THE SAME TIME BC IT CAN BE KINDA OFF WE SHOULD RLY DO COUNT IF IT DOES EITHER ONE WITHIN THE RANGE
-                            #THEN WE DO IT BOOLEAN BASED 
-                            #BC SOME NOTES AREN'T PERFECTLY DIVIDED
-                            if above and below and counter < difference_between_lines_for_line_drawing / 2:
+                            if above and below and counter < difference_between_lines_for_line_drawing / 3:
                                 break
                             counter += 1
-                    
-
-
-
-                        #going to do the up and down thing
-                        #then going to calculate the left right
-                        #then going to calculate if there is a line above or not
-                        #can calculate it right off of the top part
-                        #if so ignore the top and if not heck for the top left and bottom right being black
-                        #we can calculate the top and bottom max when there is no line
-                        #we will calculate line by going across and seeing if all is 100% black the average line height amount of times 
-                        #maybe ceil / 2 idk
                         if white_note:
                             draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
                     difference_between_blacks = 0
