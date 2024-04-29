@@ -203,13 +203,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 break
                             counter += 1
                         if white_note:
-
-                            #here is where we are going to do the up and right check
-                            #we can put it into a while loop and have two counters
-                            #this will determine if we can draw it or not
-
-
-
                             #ASK CHATGPT IF THIS LOGIC OF REPLACING THE INDEXES WILL WORK FOR THIS TYPE OF ARRAY
                             temp_pixel = img_array[current_loop_y, x_index - difference_between_blacks]
 
@@ -220,12 +213,16 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 temp_pixel[1] += up_right
                                 if temp_pixel == 255:
                                     white_note = False
-
-                                #have to increase in here!!
-
-                                #make sure previous logic uses this for the notes I should be using this for the white notes the difference between lines
-                                if temp_pixel[0] >= current_loop_y + difference_between_lines / 2:
+                                if temp_pixel[0] >= current_loop_y + difference_between_lines / 2 or img_array[temp_pixel[0] + 1, temp_pixel[1]] == 255:
                                     break
+                                right_addend = 0
+                                while True:
+                                    new_pixel = img_array[temp_pixel[0], temp_pixel[1] + right_addend]
+                                    if new_pixel == 255:
+                                        break
+                                    right_addend += 1
+                                up += 1
+                                up_right += right_addend
                             if white_note:
                                 draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
                     
