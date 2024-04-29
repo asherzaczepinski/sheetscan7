@@ -3,6 +3,23 @@
 #THIS WILL MAKE OUR CODE WORK IN SECONDS
 
 
+
+
+
+
+
+
+#FOR THE WHITE NOTe WE HAVE TO GO RIGHT AND KEEP GOING UP LEFT RIGHT IN A PATTERN AND TEST THIS!!!!!!!!!!!
+#half way
+
+#figure out where it is doing the through thing at bc i think it might have to do with it ignoring the dash
+#we want this on our own terms
+
+
+
+
+
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -94,6 +111,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     difference_between_lines_for_line_drawing = lines[1][1] - lines[0][1] 
 
+    #difference between lines
+
+    difference_between_lines = lines[1][1] - lines[0][3]
+
     #line height
 
     line_height = lines[0][3] - lines[0][1]
@@ -182,7 +203,32 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 break
                             counter += 1
                         if white_note:
-                            draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
+
+                            #here is where we are going to do the up and right check
+                            #we can put it into a while loop and have two counters
+                            #this will determine if we can draw it or not
+
+
+
+                            #ASK CHATGPT IF THIS LOGIC OF REPLACING THE INDEXES WILL WORK FOR THIS TYPE OF ARRAY
+                            temp_pixel = img_array[current_loop_y, x_index - difference_between_blacks]
+
+                            up = 0
+                            up_right = 0
+                            while True:
+                                temp_pixel[0] += up
+                                temp_pixel[1] += up_right
+                                if temp_pixel == 255:
+                                    white_note = False
+
+                                #have to increase in here!!
+
+                                #make sure previous logic uses this for the notes I should be using this for the white notes the difference between lines
+                                if temp_pixel[0] >= current_loop_y + difference_between_lines / 2:
+                                    break
+                            if white_note:
+                                draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
+                    
                     difference_between_blacks = 0
                 else:
                     #if it's white
