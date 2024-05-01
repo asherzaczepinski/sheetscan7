@@ -2,6 +2,9 @@
 #WE WILL MAKE ANOTHER FUNCTION TO SAVE
 #THIS WILL MAKE OUR CODE WORK IN SECONDS
 
+
+
+#have to do img_array seperate from the drawing or else it takes too long
 #figure out where it is doing the through thing at bc i think it might have to do with it ignoring the dash
 #I NEED TO FIGURE OUT WHY IT IS DOING THE DASHES STILL
 
@@ -70,6 +73,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     start_line = -1
 
     black_notes = []
+
+    white_notes = []
 
     for row_index, row in enumerate(img_array):
         # Count non-white (in grayscale, white is 255) pixels in the row
@@ -224,6 +229,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 up += 1
                                 up_right += right_addend
                             if white_note:
+
+                                #have to figure out how to do top left and bottom righ
+                                white_notes.append([[], []])
                                 draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
                     
                     difference_between_blacks = 0
@@ -298,12 +306,16 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
     #put this back once white note logic is solid
-    """ #drawing the black_notes
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
         draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
- """
+
+    for white_note in white_notes:
+        top_left = white_note[0]
+        bottom_right = white_note[1]
+        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+
     lines.append(image_path)
     all_rows.append(lines)
     
