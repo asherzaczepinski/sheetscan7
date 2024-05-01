@@ -4,6 +4,12 @@
 
 
 
+
+
+#LOWKEY DON'T NEED A METHOD JUST EVERY TIME WE GET DRAW EXAMPLE RECTANGLE JUST EDIT THE IMG ARRAY DN SAVE AT THE END
+#IT'S NOT THAT HARD
+#WE WILL ONLY USE DRAW EXAMPLE RECTANGLE FOR TESTING!
+
 #have to do img_array seperate from the drawing or else it takes too long
 #figure out where it is doing the through thing at bc i think it might have to do with it ignoring the dash
 #I NEED TO FIGURE OUT WHY IT IS DOING THE DASHES STILL
