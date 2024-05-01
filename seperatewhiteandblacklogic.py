@@ -6,7 +6,7 @@
 #I NEED TO FIGURE OUT WHY IT IS DOING THE DASHES STILL
 
 
-
+#NOW IT'S NOT WORKING YY!
 
 
 from PIL import Image, ImageDraw
@@ -195,17 +195,29 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             temp_pixel = img_array[current_loop_y, x_index - difference_between_blacks]
                             up = 0
                             up_right = 0
+                            
+                            
+                            
+                            #draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
+
+
+
+                            #THERE IS SOMETHING SCREWED UP W THIS LOGIC
+
+
+                            #let's implement max for each variable!!!!!
+                            #THIS WILL STOP UNWANTED ERRORS WE'LL DO THIS LATER AFTER WE FIX IT
                             while True:
                                 temp_pixel_0 = current_loop_y + up
                                 temp_pixel_1 = x_index - difference_between_blacks + up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                                if temp_pixel == 255:
-                                    white_note = False
                                 if temp_pixel_0 >= current_loop_y + difference_between_lines / 2 or img_array[temp_pixel_0 + 1, temp_pixel_1] == 255:
                                     break
+                                if temp_pixel == 255:
+                                    white_note = False
                                 right_addend = 0
                                 while True:
-                                    new_pixel = img_array[temp_pixel_0, temp_pixel_1 + right_addend]
+                                    new_pixel = img_array[temp_pixel_0 + 1, temp_pixel_1 + right_addend]
                                     if new_pixel == 255:
                                         break
                                     right_addend += 1
