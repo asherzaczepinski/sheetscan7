@@ -207,7 +207,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             up = 0
                             up_right = 0
                             while True:
-                                temp_pixel_0 = current_loop_y + up
+                                #changed this from minus to plus
+                                temp_pixel_0 = current_loop_y - up
                                 temp_pixel_1 = x_index - difference_between_blacks + up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
                                 if temp_pixel_0 >= current_loop_y + difference_between_lines / 2 or img_array[temp_pixel_0 + 1, temp_pixel_1] == 255:
@@ -216,7 +217,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                     white_note = False
                                 right_addend = 0
                                 while True:
-                                    new_pixel = img_array[temp_pixel_0 + 1, temp_pixel_1 + right_addend]
+                                    #changed this to minus 1 bc we are going up i thought
+                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]
                                     if new_pixel == 255:
                                         break
                                     right_addend += 1
@@ -227,7 +229,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 #have to figure out how to do top left and bottom righ
 
                                 #do the left right thing here
-                                white_notes.append([[], []])
+                                white_notes.append([[x_index - difference_between_blacks - 10, current_loop_y - up], [x_index + 10, current_loop_y + up]])
                     
                     difference_between_blacks = 0
                 else:
@@ -309,9 +311,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         #left side
         img_array[top_left[1]: bottom_right[1], top_left[0] - 10] = 0
         #top side
-        img_array[top_left[1], top_left[0]:bottom_right[0]]
+        img_array[top_left[1], top_left[0]:bottom_right[0]] = 0
         #bottom side
-        img_array[bottom_right[1], top_left[0]:bottom_right[0]]        
+        img_array[bottom_right[1], top_left[0]:bottom_right[0]] = 0  
 
     for white_note in white_notes:
         top_left = white_note[0]
@@ -321,10 +323,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         #left side
         img_array[top_left[1]: bottom_right[1], top_left[0] - 10] = 0
         #top side
-        img_array[top_left[1], top_left[0]:bottom_right[0]]
+        img_array[top_left[1], top_left[0]:bottom_right[0]] = 0
         #bottom side
-        img_array[bottom_right[1], top_left[0]:bottom_right[0]]        
-        
+        img_array[bottom_right[1], top_left[0]:bottom_right[0]] = 0       
+
     img = Image.fromarray(img_array)
     img.save(image_path)
 
