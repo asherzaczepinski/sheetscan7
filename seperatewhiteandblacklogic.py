@@ -206,18 +206,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             temp_pixel = img_array[current_loop_y, x_index - difference_between_blacks]
                             up = 0
                             up_right = 0
-                            
-                            
-                            
-                            #draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
-
-
-
-                            #THERE IS SOMETHING SCREWED UP W THIS LOGIC
-
-
-                            #let's implement max for each variable!!!!!
-                            #THIS WILL STOP UNWANTED ERRORS WE'LL DO THIS LATER AFTER WE FIX IT
                             while True:
                                 temp_pixel_0 = current_loop_y + up
                                 temp_pixel_1 = x_index - difference_between_blacks + up_right
@@ -237,8 +225,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if white_note:
 
                                 #have to figure out how to do top left and bottom righ
+
+                                #do the left right thing here
                                 white_notes.append([[], []])
-                                draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
                     
                     difference_between_blacks = 0
                 else:
@@ -315,12 +304,22 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
-        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+        #right side
+        img_array[top_left[1]: bottom_right[1], bottom_right[0] + 10] = 0
+        #left side
+        img_array[top_left[1]: bottom_right[1], top_left[0] - 10] = 0
+        #top side
+        img_array[top_left[1], top_left[0]:bottom_right[0]]
+        #bottom side
+        img_array[bottom_right[1], top_left[0]:bottom_right[0]]        
 
     for white_note in white_notes:
         top_left = white_note[0]
         bottom_right = white_note[1]
         draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+
+    img = Image.fromarray(img_array)
+    img.save(image_path)
 
     lines.append(image_path)
     all_rows.append(lines)
