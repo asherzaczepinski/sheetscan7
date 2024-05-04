@@ -316,8 +316,15 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     for white_note in white_notes:
         top_left = white_note[0]
         bottom_right = white_note[1]
-        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
-
+        #right side
+        img_array[top_left[1]: bottom_right[1], bottom_right[0] + 10] = 0
+        #left side
+        img_array[top_left[1]: bottom_right[1], top_left[0] - 10] = 0
+        #top side
+        img_array[top_left[1], top_left[0]:bottom_right[0]]
+        #bottom side
+        img_array[bottom_right[1], top_left[0]:bottom_right[0]]        
+        
     img = Image.fromarray(img_array)
     img.save(image_path)
 
