@@ -198,28 +198,43 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
                         #got there is not showing any response
+                            
+                        #has something to do w tem pixel
                         if white_note:
-                            temp_pixel = img_array[current_loop_y, x_index - difference_between_blacks]
                             up = 0
                             up_right = 0
+                            counter = 1
                             while True:
+
+                                #it's like starting on black going up one and then stopping when it hits white
+                                #figure this out
                                 temp_pixel_0 = current_loop_y - up
-                                temp_pixel_1 = x_index - difference_between_blacks + up_right
+                                temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+
+                                #for testing
+                                img_array[temp_pixel_0, temp_pixel_1] = 50
+                                
+                                
                                 if temp_pixel_0 <= current_loop_y - difference_between_lines / 2:
                                     print('got there!')
                                     break
                                 if temp_pixel == 255:
+                                    #this is the issue it's always starting on a white motherfucker
+                                    print(counter)
                                     white_note = False
                                     break
                                 right_addend = 0
                                 while True:
-                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]
+                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
                                     if new_pixel == 255:
                                         break
+                                    img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend] = 50
                                     right_addend += 1
+                                print('r' + str(right_addend))
                                 up += 1
                                 up_right += right_addend
+                                counter += 1
                             if white_note:
                                 draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
                     
@@ -228,79 +243,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     #if it's white
                     if difference_between_blacks != -1:
                         difference_between_blacks += 1
-
-            #will do dash through middle whites here
-            black_count = 0
             
-            for x_index in range(width):
-                pixel = img_array[current_loop_y, x_index]
-                if pixel != 255 and x_index != width - 1:
-                    black_count += 1
-                elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
-                    #apply my logic to see if it is a black note
-                    middle_x = x_index - round(black_count / 2)
-                    #-1 to discount the current one
-                    black_note = True
-                    for add in range(1, round(difference_between_lines_for_line_drawing / 2) - 1 - round(line_height / 2)):
-                        above_pixel = img_array[current_loop_y - add, middle_x]
-                        below_pixel = img_array[current_loop_y + add, middle_x]
-                        if above_pixel == 255 or below_pixel == 255:
-                            black_note = False
-                            black_count = 0
-                    if black_note:
-                        #has to be x, y tuple
-                        top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                        bottom_right = [x_index, current_loop_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                        roi = img_array[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]
-                        total_pixels = roi.size
-                        non_white_pixels = np.sum(roi < 255)
-                        non_white_percentage = (non_white_pixels / total_pixels) * 100
-                        if non_white_percentage > 70:
-                            if black_count >= difference_between_lines_for_line_drawing * 1.5:
-                                if last_row_notes == []:
-                                    black_notes.append([top_left, bottom_right])
-                                else:
-                                    none_above = True 
-                                    for note in last_row_notes:
-                                        #have to get middle here they won't align perfectly
-                                        #or we can account for the -10!!!!! by saying - 10
-                                        if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                            none_above = False
-                                    if none_above:
-                                        black_notes.append([top_left, bottom_right])
-                            else:
-                                temp_notes.append([top_left, bottom_right])
-                                black_notes.append([top_left, bottom_right])
-                        elif black_count >= difference_between_lines_for_line_drawing * 1.5:
-                            little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
-                            new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
-                            new_total_pixels = new_roi.size
-                            new_non_white_pixels = np.sum(new_roi < 255)
-                            new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
-                            if new_non_white_percentage > 80:
-                                if last_row_notes == []:
-                                    black_notes.append([top_left, bottom_right])
-                                else:
-                                    none_above = True 
-                                    for note in last_row_notes:
-                                        #or we can account for the -10!!!!! by saying - 10
-                                        if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                            none_above = False
-                                    if none_above:
-                                        black_notes.append([top_left, bottom_right])
-                        black_count = 0
-                else:
-                    black_count = 0
-            last_row_notes = temp_notes
-
-
-    #put this back once white note logic is solid
-    """ #drawing the black_notes
-    for black_note in black_notes:
-        top_left = black_note[0]
-        bottom_right = black_note[1]
-        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
- """
+            #will do dash through middle whites here
+    img = Image.fromarray(img_array)
+    img.save(image_path)        
     lines.append(image_path)
     all_rows.append(lines)
     
