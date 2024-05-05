@@ -1,21 +1,4 @@
-#LETS MAKE A DRAW EXAMPLE RECTANGLE JUST EDIT THE IMG_ARRAY
-#WE WILL MAKE ANOTHER FUNCTION TO SAVE
-#THIS WILL MAKE OUR CODE WORK IN SECONDS
-
-
-
-
-
-#LOWKEY DON'T NEED A METHOD JUST EVERY TIME WE GET DRAW EXAMPLE RECTANGLE JUST EDIT THE IMG ARRAY DN SAVE AT THE END
-#IT'S NOT THAT HARD
-#WE WILL ONLY USE DRAW EXAMPLE RECTANGLE FOR TESTING!
-
-#have to do img_array seperate from the drawing or else it takes too long
-#figure out where it is doing the through thing at bc i think it might have to do with it ignoring the dash
-#I NEED TO FIGURE OUT WHY IT IS DOING THE DASHES STILL
-
-
-#NOW IT'S NOT WORKING YY!
+#figure out how the fuck itis working in the opposite direction
 
 
 from PIL import Image, ImageDraw
@@ -79,8 +62,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     start_line = -1
 
     black_notes = []
-
-    white_notes = []
 
     for row_index, row in enumerate(img_array):
         # Count non-white (in grayscale, white is 255) pixels in the row
@@ -202,32 +183,45 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if above and below and counter < difference_between_lines_for_line_drawing / 3:
                                 break
                             counter += 1
+
+
+
+
+                        #I THINK IT KNOW THE ISSUE IT IS GOING UP AND GOING THRU WHEREAS DOWN IT COULD GO
+                            #HAVE TO SOLVE THIS
+
+                        #once we fix this put it back into our original code
+                            
+
+
+
+
+
+                        #got there is not showing any response
                         if white_note:
                             temp_pixel = img_array[current_loop_y, x_index - difference_between_blacks]
                             up = 0
                             up_right = 0
                             while True:
-                                temp_pixel_0 = current_loop_y + up
+                                temp_pixel_0 = current_loop_y - up
                                 temp_pixel_1 = x_index - difference_between_blacks + up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                                if temp_pixel_0 >= current_loop_y + difference_between_lines / 2 or img_array[temp_pixel_0 + 1, temp_pixel_1] == 255:
+                                if temp_pixel_0 <= current_loop_y - difference_between_lines / 2:
+                                    print('got there!')
                                     break
                                 if temp_pixel == 255:
                                     white_note = False
+                                    break
                                 right_addend = 0
                                 while True:
-                                    new_pixel = img_array[temp_pixel_0 + 1, temp_pixel_1 + right_addend]
+                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]
                                     if new_pixel == 255:
                                         break
                                     right_addend += 1
                                 up += 1
                                 up_right += right_addend
                             if white_note:
-
-                                #have to figure out how to do top left and bottom righ
-
-                                #do the left right thing here
-                                white_notes.append([[x_index - difference_between_blacks - 10, current_loop_y - up], [x_index + 10, current_loop_y + up]])
+                                draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
                     
                     difference_between_blacks = 0
                 else:
@@ -301,33 +295,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
     #put this back once white note logic is solid
+    """ #drawing the black_notes
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
-        #right side
-        img_array[top_left[1]: bottom_right[1], bottom_right[0] + 10] = 0
-        #left side
-        img_array[top_left[1]: bottom_right[1], top_left[0] - 10] = 0
-        #top side
-        img_array[top_left[1], top_left[0]:bottom_right[0]] = 0
-        #bottom side
-        img_array[bottom_right[1], top_left[0]:bottom_right[0]] = 0  
-
-    for white_note in white_notes:
-        top_left = white_note[0]
-        bottom_right = white_note[1]
-        #right side
-        img_array[top_left[1]: bottom_right[1], bottom_right[0] + 10] = 0
-        #left side
-        img_array[top_left[1]: bottom_right[1], top_left[0] - 10] = 0
-        #top side
-        img_array[top_left[1], top_left[0]:bottom_right[0]] = 0
-        #bottom side
-        img_array[bottom_right[1], top_left[0]:bottom_right[0]] = 0       
-
-    img = Image.fromarray(img_array)
-    img.save(image_path)
-
+        draw_example_rectangle(image_path, (top_left[0] - 10, top_left[1] - 10, bottom_right[0] + 10, bottom_right[1] + 10))
+ """
     lines.append(image_path)
     all_rows.append(lines)
     
