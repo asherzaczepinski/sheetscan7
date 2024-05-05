@@ -205,23 +205,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             up_right = 0
                             counter = 1
                             while True:
-
-                                #it's like starting on black going up one and then stopping when it hits white
-                                #figure this out
                                 temp_pixel_0 = current_loop_y - up
                                 temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-
-                                #for testing
-                                img_array[temp_pixel_0, temp_pixel_1] = 50
-                                
-                                
                                 if temp_pixel_0 <= current_loop_y - difference_between_lines / 2:
-                                    print('got there!')
+                                    print('got there')
                                     break
                                 if temp_pixel == 255:
                                     #this is the issue it's always starting on a white motherfucker
-                                    print(counter)
                                     white_note = False
                                     break
                                 right_addend = 0
@@ -229,11 +220,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                     new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
                                     if new_pixel == 255:
                                         break
-                                    img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend] = 50
                                     right_addend += 1
-                                print('r' + str(right_addend))
                                 up += 1
-                                up_right += right_addend
+                                #this somehow fixed it figure out whyyy!!!
+                                up_right += right_addend - 1
                                 counter += 1
                             if white_note:
                                 draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))

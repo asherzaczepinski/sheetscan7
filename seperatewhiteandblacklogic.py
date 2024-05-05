@@ -203,31 +203,32 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 break
                             counter += 1
                         if white_note:
-                            temp_pixel = img_array[current_loop_y, x_index - difference_between_blacks]
                             up = 0
                             up_right = 0
+                            counter = 1
                             while True:
-                                temp_pixel_0 = current_loop_y + up
-                                temp_pixel_1 = x_index - difference_between_blacks + up_right
+                                temp_pixel_0 = current_loop_y - up
+                                temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                                if temp_pixel_0 >= current_loop_y + difference_between_lines / 2 or img_array[temp_pixel_0 + 1, temp_pixel_1] == 255:
+                                if temp_pixel_0 <= current_loop_y - difference_between_lines / 2:
                                     break
                                 if temp_pixel == 255:
+                                    #this is the issue it's always starting on a white motherfucker
                                     white_note = False
+                                    break
                                 right_addend = 0
                                 while True:
-                                    new_pixel = img_array[temp_pixel_0 + 1, temp_pixel_1 + right_addend]
+                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
                                     if new_pixel == 255:
                                         break
                                     right_addend += 1
                                 up += 1
-                                up_right += right_addend
+                                #this somehow fixed it figure out whyyy!!!
+                                up_right += right_addend - 1
+                                counter += 1
                             if white_note:
-
-                                #have to figure out how to do top left and bottom righ
-
-                                #do the left right thing here
-                                white_notes.append([[x_index - difference_between_blacks - 10, current_loop_y - up], [x_index + 10, current_loop_y + up]])
+                                #do the top left bottom right thing for img_array
+                                draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
                     
                     difference_between_blacks = 0
                 else:
