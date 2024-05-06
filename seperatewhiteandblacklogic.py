@@ -231,8 +231,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 counter += 1
                             if white_note:
                                 #do the top left bottom right thing for img_array
-                                draw_example_rectangle(image_path, (x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10, x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10))
-                    
+                                #these are x, y
+                                top_left = [x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10]
+                                bottom_right = [x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10]   
+                                white_notes.append([top_left, bottom_right])
                     difference_between_blacks = 0
                 else:
                     #if it's white
