@@ -203,12 +203,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 break
                             counter += 1
                         if white_note:
+                            #go thru each pixel up to the halfway difference between lines and if there is no black then we determine it not a white note!
+                            for new_x_index in range(difference_between_blacks):
+                                temp_pixel = 
+                            #figure out in above if we should incorporate that into other parts of the code or just do it there
+                                
                             up = 0
                             up_right = 0
                             counter = 1
-
-
-                            #also will need a check bottom to make sure there is no white in those sections
                             while True:
                                 temp_pixel_0 = current_loop_y - up
                                 temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
