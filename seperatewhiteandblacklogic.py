@@ -206,11 +206,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             up = 0
                             up_right = 0
                             counter = 1
+
+
+                            #also will need a check bottom to make sure there is no white in those sections
                             while True:
                                 temp_pixel_0 = current_loop_y - up
                                 temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                                if temp_pixel_0 <= current_loop_y - difference_between_lines / 2:
+                                if temp_pixel_0 <= current_loop_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
                                     break
                                 if temp_pixel == 255:
                                     #this is the issue it's always starting on a white motherfucker
