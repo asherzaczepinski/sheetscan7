@@ -311,25 +311,25 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         top_left = black_note[0]
         bottom_right = black_note[1]
         #right side
-        img_array[top_left[1]: bottom_right[1], bottom_right[0] + 10] = 0
+        img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
         #left side
-        img_array[top_left[1]: bottom_right[1], top_left[0] - 10] = 0
+        img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
         #top side
-        img_array[top_left[1], top_left[0]:bottom_right[0]] = 0
+        img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
         #bottom side
-        img_array[bottom_right[1], top_left[0]:bottom_right[0]] = 0  
+        img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0  
 
     for white_note in white_notes:
         top_left = white_note[0]
         bottom_right = white_note[1]
         #right side
-        img_array[top_left[1]: bottom_right[1], bottom_right[0] + 10] = 0
+        img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
         #left side
-        img_array[top_left[1]: bottom_right[1], top_left[0] - 10] = 0
+        img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
         #top side
-        img_array[top_left[1], top_left[0]:bottom_right[0]] = 0
+        img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
         #bottom side
-        img_array[bottom_right[1], top_left[0]:bottom_right[0]] = 0       
+        img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0       
 
     img = Image.fromarray(img_array)
     img.save(image_path)
