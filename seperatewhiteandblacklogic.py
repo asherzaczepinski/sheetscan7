@@ -204,45 +204,62 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             counter += 1
                         if white_note:
                             #go thru each pixel up to the halfway difference between lines and if there is no black then we determine it not a white note!
-                            for new_x_index in range(difference_between_blacks):
-                                temp_pixel = 
-                            #figure out in above if we should incorporate that into other parts of the code or just do it there
-                                
-                            up = 0
-                            up_right = 0
-                            counter = 1
-                            while True:
-                                temp_pixel_0 = current_loop_y - up
-                                temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
-                                temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                                if temp_pixel_0 <= current_loop_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
-                                    break
-                                if temp_pixel == 255:
-                                    #this is the issue it's always starting on a white motherfucker
+                            for new_x_index in range(x_index - difference_between_blacks - 1, x_index):
+                                temp_y_above = current_loop_y
+                                temp_y_below = current_loop_y
+                                above_flag = False
+                                below_flag = False
+                                while temp_y_above > current_loop_y - (difference_between_lines / 2) and temp_y_below < current_loop_y + (difference_between_lines / 2):
+                                    temp_pixel_above = img_array[temp_y_above, new_x_index]
+                                    temp_pixel_below = img_array[temp_y_below, new_x_index]
+                                    if temp_y_below == 0:
+                                        below_flag = True
+                                    if temp_y_above == 0:
+                                        above_flag = True
+                                    temp_y_above -= 1
+                                    temp_y_below += 1
+                                if below_flag == False or above_flag == False:
                                     white_note = False
-                                    break
-                                right_addend = 0
-                                while True:
-                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
-                                    if new_pixel == 255:
-                                        break
-                                    right_addend += 1
-                                up += 1
-                                #this somehow fixed it figure out whyyy!!!
-                                up_right += right_addend - 1
-                                counter += 1
                             if white_note:
-                                #do the top left bottom right thing for img_array
-                                #these are x, y
-                                top_left = [x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10]
-                                bottom_right = [x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10]   
-                                white_notes.append([top_left, bottom_right])
+                                #figure out in above if we should incorporate that into other parts of the code or just do it there
+                                #whenever i see white i would just go down and see if there is some black at some point
+                                #this is actually more efficient!
+                                up = 0
+                                up_right = 0
+                                counter = 1
+                                while True:
+                                    temp_pixel_0 = current_loop_y - up
+                                    temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
+                                    temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                                    if temp_pixel_0 <= current_loop_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
+                                        break
+                                    if temp_pixel == 255:
+                                        #this is the issue it's always starting on a white motherfucker
+                                        white_note = False
+                                        break
+                                    right_addend = 0
+                                    while True:
+                                        new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
+                                        if new_pixel == 255:
+                                            break
+                                        right_addend += 1
+                                    up += 1
+                                    #this somehow fixed it figure out whyyy!!!
+                                    up_right += right_addend - 1
+                                    counter += 1
+                                if white_note:
+                                    #do the top left bottom right thing for img_array
+                                    #these are x, y
+                                    top_left = [x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10]
+                                    bottom_right = [x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10]   
+                                    white_notes.append([top_left, bottom_right])
                     difference_between_blacks = 0
                 else:
                     #if it's white
                     if difference_between_blacks != -1:
                         difference_between_blacks += 1
 
+            #do dashes here
             #will do dash through middle whites here
             black_count = 0
             
