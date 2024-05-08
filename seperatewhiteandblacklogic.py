@@ -226,6 +226,35 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                     temp_y_below += 1
                                 if below_flag == False or above_flag == False:
                                     white_note = False
+
+
+
+
+
+
+
+                            #also going to work on a middle outwards test here!
+                            #like the same thing above then outwards
+                            #then we are going to do the dash through
+                            #this will be extra thorough
+                            #we will measure it against difference between blacks
+                            if white_note:
+                                #we do this to save processing on the middle part we already went thru
+                                for new_y_index in range(current_loop_y - (difference_between_lines_for_line_drawing / 2), current_loop_y - 1):
+                                    temp_x = x_index - difference_between_blacks - 1
+                                    black_found = False
+                                    while temp_x <= x_index:
+
+                                        temp_x += 1
+                                    
+                                    if
+                                if white_note:
+                                    for new_y_index in range(current_loop_y + 1, current_loop_y + (difference_between_lines_for_line_drawing / 2)):
+                                        temp_x = x_index - difference_between_blacks - 1
+                                        black_found = False
+                                        while temp_x <= x_index:
+
+                                            temp_x += 1
                             if white_note:
                                 #figure out in above if we should incorporate that into other parts of the code or just do it there
                                 #whenever i see white i would just go down and see if there is some black at some point
@@ -387,7 +416,7 @@ def open_pdf_into_input(pdf_path, input_folder):
     doc.close()
 
 # Example usage
-pdf_path = "input.pdf"
+pdf_path = "testinput.pdf"
 input_folder = "input"
 
 open_pdf_into_input(pdf_path, input_folder)
