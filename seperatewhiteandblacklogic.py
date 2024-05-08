@@ -212,13 +212,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 while temp_y_above > current_loop_y - (difference_between_lines / 2) and temp_y_below < current_loop_y + (difference_between_lines / 2):
                                     temp_pixel_above = img_array[temp_y_above, new_x_index]
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]
-                                    if temp_y_below == 0:
-                                        below_flag = True
-                                    if temp_y_above == 0:
+                                    if temp_pixel_above == 0:
                                         above_flag = True
+                                    if temp_pixel_below == 0:
+                                        below_flag = True
                                     temp_y_above -= 1
                                     temp_y_below += 1
                                 if below_flag == False or above_flag == False:
+                                    print(below_flag, above_flag)
                                     white_note = False
                             if white_note:
                                 #figure out in above if we should incorporate that into other parts of the code or just do it there
