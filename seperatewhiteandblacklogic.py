@@ -204,22 +204,27 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             counter += 1
                         if white_note:
                             #go thru each pixel up to the halfway difference between lines and if there is no black then we determine it not a white note!
+
+
+                            #make sure these don't go out of bounds fs at end that owuld be stupid!
                             for new_x_index in range(x_index - difference_between_blacks - 1, x_index):
                                 temp_y_above = current_loop_y
                                 temp_y_below = current_loop_y
                                 above_flag = False
                                 below_flag = False
-                                while temp_y_above > current_loop_y - (difference_between_lines / 2) and temp_y_below < current_loop_y + (difference_between_lines / 2):
+
+
+                                #maybe this is normal difference between lines
+                                while temp_y_above > current_loop_y - (difference_between_lines_for_line_drawing / 2) and temp_y_below < current_loop_y + (difference_between_lines_for_line_drawing / 2):
                                     temp_pixel_above = img_array[temp_y_above, new_x_index]
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]
-                                    if temp_pixel_above == 0:
+                                    if temp_pixel_above != 255:
                                         above_flag = True
-                                    if temp_pixel_below == 0:
+                                    if temp_pixel_below != 255:
                                         below_flag = True
                                     temp_y_above -= 1
                                     temp_y_below += 1
                                 if below_flag == False or above_flag == False:
-                                    print(below_flag, above_flag)
                                     white_note = False
                             if white_note:
                                 #figure out in above if we should incorporate that into other parts of the code or just do it there
