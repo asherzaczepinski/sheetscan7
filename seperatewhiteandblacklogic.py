@@ -164,21 +164,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     for group in invisible_lines:
         last_row_notes = []
         for current_loop_y in group:
-            temp_notes = []
-            half_height = round(difference_between_lines_for_line_drawing / 2)
-            top = max(0, current_loop_y - half_height)
-            bottom = min(img_array.shape[0], current_loop_y + half_height)
-            
-            # Assuming you want to crop the entire width of the image
-            left = 0
-            right = img_array.shape[1]
-
+            temp_notes = []        
             black_count = 0
             difference_between_blacks = -1
 
 
 
-            #we'll replicate this exact logic for the dash through
+            #white notes
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 #if it's black
@@ -202,19 +194,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if above and below and counter < difference_between_lines_for_line_drawing / 3:
                                 break
                             counter += 1
+                        #this is going across and then up and down 
                         if white_note:
-                            #go thru each pixel up to the halfway difference between lines and if there is no black then we determine it not a white note!
-
-
                             #make sure these don't go out of bounds fs at end that owuld be stupid!
                             for new_x_index in range(x_index - difference_between_blacks - 1, x_index):
                                 temp_y_above = current_loop_y
                                 temp_y_below = current_loop_y
                                 above_flag = False
                                 below_flag = False
-
-
-                                #maybe this is normal difference between lines
                                 while temp_y_above > current_loop_y - (difference_between_lines_for_line_drawing / 2) and temp_y_below < current_loop_y + (difference_between_lines_for_line_drawing / 2):
                                     temp_pixel_above = img_array[temp_y_above, new_x_index]
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]
@@ -226,13 +213,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                     temp_y_below += 1
                                 if below_flag == False or above_flag == False:
                                     white_note = False
-                            #now we have to go outwards from the center
+                            #this will try to go up and down and then go left to right
                             if white_note:
-
-                                #remember if the black found is true we have to abort and break
-                                #we do this to save processing on the middle part we already went thru
-
-                                #has to be a black in the first half and second half of the white note across
                                 for new_y_index in range(current_loop_y - (difference_between_lines_for_line_drawing / 2), current_loop_y - 1):
                                     temp_x = x_index - difference_between_blacks - 1
                                     black_found = False
@@ -279,11 +261,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                                 white_note = False
                                                 break
 
-                                            
+                            #this will do the top right thing after determining everything else works 
                             if white_note:
-                                #figure out in above if we should incorporate that into other parts of the code or just do it there
-                                #whenever i see white i would just go down and see if there is some black at some point
-                                #this is actually more efficient!
                                 up = 0
                                 up_right = 0
                                 counter = 1
@@ -294,7 +273,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                     if temp_pixel_0 <= current_loop_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
                                         break
                                     if temp_pixel == 255:
-                                        #this is the issue it's always starting on a white motherfucker
                                         white_note = False
                                         break
                                     right_addend = 0
@@ -308,8 +286,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                     up_right += right_addend - 1
                                     counter += 1
                                 if white_note:
-                                    #do the top left bottom right thing for img_array
-                                    #these are x, y
                                     top_left = [x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10]
                                     bottom_right = [x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10]   
                                     white_notes.append([top_left, bottom_right])
@@ -319,8 +295,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     if difference_between_blacks != -1:
                         difference_between_blacks += 1
 
-            #do dashes here
-            #will do dash through middle whites here
+            #black notes
+                        
             black_count = 0
             
             for x_index in range(width):
