@@ -1,7 +1,7 @@
 #work on dashes
 #A BIG ISSUE HERE IS THAT THE DIFFERENCE IS 10 AND THEN 9 WE HAVE CURRENT LOOP Y SCREWED UP FOR THE ADDING
 #HAVE O FIGURE OUT Y!!!
-
+#it has to do w the fact then when it goes off it doesn't do it from the previous past few but just from the last few
 
 
 
@@ -51,6 +51,8 @@ def draw_example_rectangle(image_path, rect):
     img.save(image_path)
 
 def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
+
+    print("HIII")
     # Load the image
     img = Image.open(image_path).convert("L")  # Convert to grayscale
 
@@ -150,9 +152,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
+
     for group in invisible_lines:
         last_row_notes = []
         for current_loop_y in group:
+            print(current_loop_y)
             temp_notes = []        
             black_count = 0
             difference_between_blacks = -1
