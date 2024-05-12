@@ -1,9 +1,3 @@
-#A BIG ISSUE HERE IS THAT THE DIFFERENCE IS 10 AND THEN 9 WE HAVE CURRENT LOOP Y SCREWED UP FOR THE ADDING
-#HAVE O FIGURE OUT Y!!!
-
-
-
-
 #work on dashes
 
 from PIL import Image, ImageDraw
@@ -249,9 +243,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
+                #see if it goes from
+                img_array[current_loop_y, x_index] = 50
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                 elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
+                    #i think it thinks they're white
+
+                    img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
 
                     #apply my logic to see if it is a black note
                     middle_x = x_index - round(black_count / 2)
@@ -267,8 +266,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
                         #let's hope our black note logic isn't screwed up and it does the dash thing here
                         #so it's not being identified for anything
-                        img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
-
+                        #img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
 
                         #has to be x, y tuple
                         top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
