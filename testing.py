@@ -119,6 +119,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
+
+
+        #need to do int average instead of just /2 thing
+        #we just need a way to measure it from when it goes thru the middle and then go from there
+        #we might need to reverse the order of the elses ngl
         #this is when it is on the last line of a staff and ends up going down
         if (row_index + 1) % 5 == 0:
             if row_index == len(lines) - 1:
@@ -145,6 +150,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
                 group.append(current_y)
+
+                #here we need an average from the past thing
+                #we also need an int average from the last thing
                 current_y -= round(difference_between_lines_for_line_drawing / 2)
             for add_row_index in range(4):
                 future_line = lines[row_index + add_row_index + 1][1] 
@@ -152,11 +160,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.append(future_line)
 
-
+    past = 0
     for group in invisible_lines:
         last_row_notes = []
         for current_loop_y in group:
-            print(current_loop_y)
+            if past != 0:
+                print(current_loop_y - past)
+            past = current_loop_y
             temp_notes = []        
             black_count = 0
             difference_between_blacks = -1
