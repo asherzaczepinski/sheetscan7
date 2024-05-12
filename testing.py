@@ -1,4 +1,11 @@
 #work on dashes
+#A BIG ISSUE HERE IS THAT THE DIFFERENCE IS 10 AND THEN 9 WE HAVE CURRENT LOOP Y SCREWED UP FOR THE ADDING
+#HAVE O FIGURE OUT Y!!!
+
+
+
+
+
 
 from PIL import Image, ImageDraw
 from pathlib import Path
