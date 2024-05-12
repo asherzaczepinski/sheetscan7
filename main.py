@@ -299,6 +299,15 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                         black_notes.append([top_left, bottom_right])
                         black_count = 0
                     else:
+                        
+
+                        #do an img_array to put what was classified here!!!
+                        #TESTING
+                        #FIGURE OUT WHY IT IS NOT GETTING TO THE BOTTOM ROW
+                        img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
+
+
+                    """ 
                         #this works when we need to see what it identifies
                         #img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 10] = 50
                         #going to replicate the non-dashed code
@@ -308,17 +317,25 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         #we won't need this for everyything such as top right function but it will be an important step
                         #set up point 1
 
-                        starting_above_white = current_loop_y - 1
-                        starting_below_white = current_loop_y + 1
+                        starting_above_white = current_loop_y 
+                        starting_below_white = current_loop_y 
                         temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
                         temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]
+                        
 
+                        #OF COURSE THIS IS SCREWED UP!!!!!
+                        #WE HAVE TO MAKE IT SO THAT WE GO THRU UNTIL IT'S white AND THEN DO THIS
+                        
                         while temp_pixel_below != 255:
                             starting_below_white += 1
                             temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]
+                            #testing
+                            img_array[starting_below_white, x_index - int(black_count / 2)] = 50
                         while temp_pixel_above != 255:
                             starting_above_white -= 1
                             temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
+                            #testing
+                            img_array[starting_above_white, x_index - int(black_count / 2)] = 50
 
                         #point 1
                         
@@ -326,16 +343,20 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         above = False
                         below = False
                         white_note = False
+
+                        #testing
+                        img_array[starting_above_white: starting_below_white, x_index - 10: x_index] = 50
+                        #somewhere difference bewteen blacks it not reseting that is my issue
+                        #print(difference_between_blacks)
                         while True:
-                            temp_pixel_above = img_array[starting_above_white - counter, x_index - int(difference_between_blacks / 2)]
-                            temp_pixel_below = img_array[starting_below_white + counter, x_index - int(difference_between_blacks / 2)]
+                            temp_pixel_above = img_array[starting_above_white - counter, x_index - int(black_count / 2)]
+                            temp_pixel_below = img_array[starting_below_white + counter, x_index - int(black_count / 2)]
                             #gonna have to adjust our calculations slightly for this!!
                             #it's /4 i just calculated it 
                             #confirm this
                             #testing
-                            img_array[starting_above_white - counter, x_index - int(difference_between_blacks / 2)] = 50
-                            temp_pixel_below = img_array[starting_below_white + counter, x_index - int(difference_between_blacks / 2)] = 50
-
+                            img_array[starting_above_white - counter, x_index - int(black_count / 2)] = 50
+                            img_array[starting_below_white + counter, x_index - int(black_count / 2)] = 50
 
                             if counter > int(difference_between_lines_for_line_drawing / 3.5):
                                 white_note = False
@@ -355,10 +376,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
                         #put this back in like 2 min
                             
-                        """ if white_note:
+                        if white_note:
                             img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
-                         """#I'm marking up the working code to know where to replicate from
-
+                        #I'm marking up the working code to know where to replicate from
+                    """
                     
                 else:
                     black_count = 0
