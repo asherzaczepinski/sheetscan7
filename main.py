@@ -1,10 +1,16 @@
-#A BIG ISSUE HERE IS THAT THE DIFFERENCE IS 10 AND THEN 9 WE HAVE CURRENT LOOP Y SCREWED UP FOR THE ADDING
-#HAVE O FIGURE OUT Y!!!
-
-
+#fix the overlap and clear up the screen
+#it should start working better from here
+#i know it makes it hard but it is worth it for accuracy
 
 
 #work on dashes
+#A BIG ISSUE HERE IS THAT THE DIFFERENCE IS 10 AND THEN 9 WE HAVE CURRENT LOOP Y SCREWED UP FOR THE ADDING
+#HAVE O FIGURE OUT Y!!!
+#it has to do w the fact then when it goes off it doesn't do it from the previous past few but just from the last few
+
+
+
+
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -50,6 +56,7 @@ def draw_example_rectangle(image_path, rect):
     img.save(image_path)
 
 def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
+
     # Load the image
     img = Image.open(image_path).convert("L")  # Convert to grayscale
 
@@ -113,45 +120,75 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     
     group = []
 
+    temp_difference = -1
+
+
+    #my idea here is to add it for the lines + and minus the (line height / 2)
+    #if there is overlap we will eliminate
+
+
+
+
+
+
+
+    half_line_height = int(line_height / 2) + 1
+
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
-        #this is when it is on the last line of a staff and ends up going down
         if (row_index + 1) % 5 == 0:
             if row_index == len(lines) - 1:
                 stopping_point = row[1]
                 while stopping_point < height and stopping_point <= row[1] + staff_white_range:
-                    stopping_point += round(difference_between_lines_for_line_drawing / 2)
-                stopping_point -= round(difference_between_lines_for_line_drawing / 2)
+                    stopping_point += round(temp_difference / 2)
+                stopping_point -= round(temp_difference / 2)
             else:
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
             while current_y <= stopping_point:
-                group.append(current_y)
-                current_y += round(difference_between_lines_for_line_drawing / 2)
+                group.extend([current_y - half_line_height, current_y])
+                if current_y + half_line_height < height:
+                    group.append(current_y + half_line_height)
+                current_y += round(temp_difference / 2)
             invisible_lines.append(group)
             group = []
         #this is on the first line of a staff and goes up 
         elif row_index % 5 == 0:
             #Going to work on the removal of the every other line HERE!!!!
+            temp_difference = lines[row_index + 1][1] - current_y
             if row_index == 0:
                 stopping_point = row[1] 
                 while stopping_point > 0 and stopping_point >= row[1] - staff_white_range:
-                    stopping_point -= round(difference_between_lines_for_line_drawing / 2)
-                stopping_point += round(difference_between_lines_for_line_drawing / 2)
+                    stopping_point -= round(temp_difference / 2)
+                    print(round(temp_difference/2))
+
+                stopping_point += round(temp_difference / 2)
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
-                group.append(current_y)
-                current_y -= round(difference_between_lines_for_line_drawing / 2)
-            for add_row_index in range(4):
+                group.extend([current_y - half_line_height, current_y, current_y + half_line_height])
+                current_y -= round(temp_difference / 2)
+            for add_row_index in range(4): 
                 future_line = lines[row_index + add_row_index + 1][1] 
-                group.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
+                group.extend([int((future_line + lines[row_index + add_row_index][1]) / 2) - half_line_height, int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + half_line_height])
                 if add_row_index != 3:
-                    group.append(future_line)
+                    group.extend([future_line - half_line_height, future_line, future_line + half_line_height])
+
+
+
+
+
+
+
+
+
+
+
 
     for group in invisible_lines:
         last_row_notes = []
         for current_loop_y in group:
+            #y it is varying is what is confusing me after all of this
             temp_notes = []        
             black_count = 0
             difference_between_blacks = -1
@@ -225,6 +262,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                         break
                                     right_addend = 0
                                     while True:
+                                        if temp_pixel_1 + right_addend >= width:
+                                            white_note = False
+                                            break
                                         new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
                                         if new_pixel == 255:
                                             break
@@ -252,6 +292,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                 elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
+                    #i think it thinks they're white
+
+                    img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
 
                     #apply my logic to see if it is a black note
                     middle_x = x_index - round(black_count / 2)
@@ -267,8 +310,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
                         #let's hope our black note logic isn't screwed up and it does the dash thing here
                         #so it's not being identified for anything
-                        img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
-
+                        #img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
 
                         #has to be x, y tuple
                         top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
@@ -461,8 +503,10 @@ for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
         image_path = os.path.join(input_folder, filename)
         #put this back eventually 
-        try:
+        extract_highlighted_lines_and_columns_from_image(image_path)
+
+        """ try:
             extract_highlighted_lines_and_columns_from_image(image_path)
         except IndexError as e:
-            print(e) 
+            print(e)  """
         
