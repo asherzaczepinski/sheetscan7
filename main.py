@@ -1,3 +1,6 @@
+#drawing w dashes hella far away w over lap but working
+
+
 #fix the overlap and clear up the screen
 #it should start working better from here
 #i know it makes it hard but it is worth it for accuracy
