@@ -299,14 +299,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         below_pixel = img_array[current_loop_y + add, middle_x]
                         if above_pixel == 255 or below_pixel == 255:
                             black_note = False
-
-
-
-                            #I JUST COMMENTED OUT BLACK COUNT = 0 DON'T KNOW IF THIS WAS THE RIGHT DECISION!
-                            #black_count = 0
-
-
-                            
                     if black_note:
                         #has to be x, y tuple
                         top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
@@ -367,37 +359,16 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         above = False
                         below = False
                         white_note = True
-
-
-
-
-
-
-
-
-                        #a big issue here is the black_count thingn i think it might reset somehwere
-                        print(black_count)
                         while True:
                             temp_pixel_above = img_array[starting_above_white - counter, x_index - int(black_count / 2)]
                             temp_pixel_below = img_array[starting_below_white + counter, x_index - int(black_count / 2)]
-                            
-                            #for testing of where it is looking
-                            img_array[starting_above_white - counter, x_index - int(black_count / 2)] = 50
-                            img_array[starting_below_white + counter, x_index - int(black_count / 2)] = 50
-                            
-                            #print(temp_pixel_above)
-                            #print(temp_pixel_below)
-                            if counter > int(difference_between_lines_for_line_drawing / 2):
-                                #print('hi')
+                            if counter > int(difference_between_lines_for_line_drawing / 3.5):
                                 white_note = False
                                 break
                             if temp_pixel_above != 255:
                                 above = True
                             if temp_pixel_below != 255:
                                 below = True
-
-
-                            #EVENTUALLY GO BACK AND SEE IF I SHOULD DO THE <= ON THE ABOVE VERSION
                             if above and below:
                                 break
                             counter += 1
@@ -405,11 +376,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                                         
                         if white_note:
                             #remove this eventually
-                            img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
                             top_left = [x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10]
                             bottom_right = [x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10]   
                             white_notes.append([top_left, bottom_right])
-                        #I'm marking up the working code to know where to replicate from                    
+                        #I'm marking up the working code to know where to replicate from             
+
+                    black_count = 0       
                 else:
                     black_count = 0
             last_row_notes = temp_notes
