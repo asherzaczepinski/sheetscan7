@@ -76,6 +76,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     white_notes = []
 
+    dashed_whites = []
+
     for row_index, row in enumerate(img_array):
         # Count non-white (in grayscale, white is 255) pixels in the row
         non_white_pixels = np.sum(row != 255)
@@ -352,7 +354,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             #remove this eventually
                             top_left = [x_index - int(black_count / 2) - 10, current_loop_y - 10]
                             bottom_right = [x_index - int(black_count / 2) + 10, current_loop_y + 10]   
-                            white_notes.append([top_left, bottom_right])
+                            dashed_whites.append([top_left, bottom_right])
                         #I'm marking up the working code to know where to replicate from             
 
                     black_count = 0       
@@ -374,6 +376,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             
     #1. implement a smart efficient overlap checker
     #2. keep adding points to the dashed
+            
+
+
+    #we will not need mutiple lines for sharps but maybe for flat detection
+    #we will not need an overlap check on the dashed notes
             
     for black_note in black_notes:
         top_left = black_note[0]
@@ -397,7 +404,20 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         #top side
         img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
         #bottom side
-        img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0       
+        img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
+    
+    for dashed_white in dashed_whites:
+        top_left = dashed_white[0]
+        bottom_right = dashed_white[1]
+        #right side
+        img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
+        #left side
+        img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
+        #top side
+        img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
+        #bottom side
+        img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
+
     img = Image.fromarray(img_array)
     img.save(image_path)
 
