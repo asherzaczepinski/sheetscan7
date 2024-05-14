@@ -11,10 +11,6 @@
 #HAVE O FIGURE OUT Y!!!
 #it has to do w the fact then when it goes off it doesn't do it from the previous past few but just from the last few
 
-
-
-
-
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -125,16 +121,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     temp_difference = -1
 
-
-    #my idea here is to add it for the lines + and minus the (line height / 2)
-    #if there is overlap we will eliminate
-
-
-
-
-
-
-
     half_line_height = int(line_height / 2) + 1
 
     for row_index in range(len(lines)):
@@ -174,17 +160,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 group.extend([int((future_line + lines[row_index + add_row_index][1]) / 2) - half_line_height, int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + half_line_height])
                 if add_row_index != 3:
                     group.extend([future_line - half_line_height, future_line, future_line + half_line_height])
-
-
-
-
-
-
-
-
-
-
-
 
     for group in invisible_lines:
         last_row_notes = []
@@ -354,10 +329,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         while temp_pixel_above != 255:
                             starting_above_white -= 1
                             temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
-                            
-
                         #point 1
-                        
                         counter = 0
                         above = False
                         below = False
@@ -375,12 +347,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             if above and below:
                                 break
                             counter += 1
-                        #point 2
-                                                        
+                        #point 2                           
                         if white_note:
                             #remove this eventually
-                            top_left = [x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10]
-                            bottom_right = [x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10]   
+                            top_left = [x_index - int(black_count / 2) - 10, current_loop_y - 10]
+                            bottom_right = [x_index - int(black_count / 2) + 10, current_loop_y + 10]   
                             white_notes.append([top_left, bottom_right])
                         #I'm marking up the working code to know where to replicate from             
 
