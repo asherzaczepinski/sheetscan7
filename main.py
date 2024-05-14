@@ -360,6 +360,18 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     black_count = 0
             last_row_notes = temp_notes
 
+
+
+
+    #on the blacks and the whites we have to do the check
+    #on the dashed whites we should create another array bc there would be no check
+    #the check will include going up and down and seeing which is most even on the up and down for above below
+    #we should have some way to store memory between current loop y's on every iteration
+    #this way we save processing and can compare immediately
+    #we have to figure out if it was saving the white notes with dash above and do this soon
+    #this is a vital step
+    #we also have to implement the next few points to handle cases such as testinput.pdf
+            
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
@@ -422,11 +434,10 @@ open_pdf_into_input(pdf_path, input_folder)
 for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
         image_path = os.path.join(input_folder, filename)
-        #put this back eventually 
-        extract_highlighted_lines_and_columns_from_image(image_path)
+        #extract_highlighted_lines_and_columns_from_image(image_path)
 
-        """ try:
+        try:
             extract_highlighted_lines_and_columns_from_image(image_path)
         except IndexError as e:
-            print(e)  """
+            print(e) 
         
