@@ -1,7 +1,7 @@
 #fix the overlap and clear up the screen
 #it should start working better from here
 #i know it makes it hard but it is worth it for accuracy
-
+#we measure overlap by saying if middle is in something elses thing
 
 #work on dashes
 #A BIG ISSUE HERE IS THAT THE DIFFERENCE IS 10 AND THEN 9 WE HAVE CURRENT LOOP Y SCREWED UP FOR THE ADDING
@@ -160,8 +160,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 stopping_point = row[1] 
                 while stopping_point > 0 and stopping_point >= row[1] - staff_white_range:
                     stopping_point -= round(temp_difference / 2)
-                    print(round(temp_difference/2))
-
                 stopping_point += round(temp_difference / 2)
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
@@ -292,10 +290,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if pixel != 255 and x_index != width - 1:
                     black_count += 1
                 elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
-                    #i think it thinks they're white
-
-                    img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
-
                     #apply my logic to see if it is a black note
                     middle_x = x_index - round(black_count / 2)
                     #-1 to discount the current one
@@ -305,13 +299,15 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         below_pixel = img_array[current_loop_y + add, middle_x]
                         if above_pixel == 255 or below_pixel == 255:
                             black_note = False
-                            black_count = 0
+
+
+
+                            #I JUST COMMENTED OUT BLACK COUNT = 0 DON'T KNOW IF THIS WAS THE RIGHT DECISION!
+                            #black_count = 0
+
+
+                            
                     if black_note:
-
-                        #let's hope our black note logic isn't screwed up and it does the dash thing here
-                        #so it's not being identified for anything
-                        #img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
-
                         #has to be x, y tuple
                         top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, current_loop_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
@@ -326,7 +322,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                 else:
                                     none_above = True 
                                     for note in last_row_notes:
-                                        #have to get middle here they won't align perfectly
                                         #or we can account for the -10!!!!! by saying - 10
                                         if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
                                             none_above = False
@@ -354,66 +349,46 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                         black_notes.append([top_left, bottom_right])
                         black_count = 0
                     else:
-                        
-
-                        #do an img_array to put what was classified here!!!
-                        #TESTING
-                        #FIGURE OUT WHY IT IS NOT GETTING TO THE BOTTOM ROW
-                        img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
-
-
-                    """ 
-                        #this works when we need to see what it identifies
-                        #img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 10] = 50
-                        #going to replicate the non-dashed code
-
-                        #a very important step i think is to figure out where it starts white going up y
-                        #and where it starts going down
-                        #we won't need this for everyything such as top right function but it will be an important step
-                        #set up point 1
-
                         starting_above_white = current_loop_y 
                         starting_below_white = current_loop_y 
                         temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
-                        temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]
-                        
-
-                        #OF COURSE THIS IS SCREWED UP!!!!!
-                        #WE HAVE TO MAKE IT SO THAT WE GO THRU UNTIL IT'S white AND THEN DO THIS
-                        
+                        temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]    
                         while temp_pixel_below != 255:
                             starting_below_white += 1
                             temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]
-                            #testing
-                            img_array[starting_below_white, x_index - int(black_count / 2)] = 50
                         while temp_pixel_above != 255:
                             starting_above_white -= 1
                             temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
-                            #testing
-                            img_array[starting_above_white, x_index - int(black_count / 2)] = 50
+                            
 
                         #point 1
                         
                         counter = 0
                         above = False
                         below = False
-                        white_note = False
+                        white_note = True
 
-                        #testing
-                        img_array[starting_above_white: starting_below_white, x_index - 10: x_index] = 50
-                        #somewhere difference bewteen blacks it not reseting that is my issue
-                        #print(difference_between_blacks)
+
+
+
+
+
+
+
+                        #a big issue here is the black_count thingn i think it might reset somehwere
+                        print(black_count)
                         while True:
                             temp_pixel_above = img_array[starting_above_white - counter, x_index - int(black_count / 2)]
                             temp_pixel_below = img_array[starting_below_white + counter, x_index - int(black_count / 2)]
-                            #gonna have to adjust our calculations slightly for this!!
-                            #it's /4 i just calculated it 
-                            #confirm this
-                            #testing
+                            
+                            #for testing of where it is looking
                             img_array[starting_above_white - counter, x_index - int(black_count / 2)] = 50
                             img_array[starting_below_white + counter, x_index - int(black_count / 2)] = 50
-
-                            if counter > int(difference_between_lines_for_line_drawing / 3.5):
+                            
+                            #print(temp_pixel_above)
+                            #print(temp_pixel_below)
+                            if counter > int(difference_between_lines_for_line_drawing / 2):
+                                #print('hi')
                                 white_note = False
                                 break
                             if temp_pixel_above != 255:
@@ -423,19 +398,18 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
                             #EVENTUALLY GO BACK AND SEE IF I SHOULD DO THE <= ON THE ABOVE VERSION
-                            if above and below and counter <= int(difference_between_lines_for_line_drawing / 3.5):
+                            if above and below:
                                 break
                             counter += 1
                         #point 2
-                            
-
-                        #put this back in like 2 min
-                            
+                                                        
                         if white_note:
+                            #remove this eventually
                             img_array[current_loop_y: current_loop_y + 10, x_index: x_index + 20] = 50
-                        #I'm marking up the working code to know where to replicate from
-                    """
-                    
+                            top_left = [x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10]
+                            bottom_right = [x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10]   
+                            white_notes.append([top_left, bottom_right])
+                        #I'm marking up the working code to know where to replicate from                    
                 else:
                     black_count = 0
             last_row_notes = temp_notes
