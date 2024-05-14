@@ -372,6 +372,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     #this is a vital step
     #we also have to implement the next few points to handle cases such as testinput.pdf
             
+    #1. implement a smart efficient overlap checker
+    #2. keep adding points to the dashed
+            
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
