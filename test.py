@@ -261,9 +261,28 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     if difference_between_blacks != -1:
                         difference_between_blacks += 1
 
+
+
+
+
+
+
+
+            #we're going to start here for the black notes
+            #i'm going to track the previous up and down ratio for when we go from the current position up and down
+            #we cacn track the current position by doing the len of the array
+            #if it is greater in length than the previous then we erase
+            #we reset this after we go thru one iteration of current_loop_y
+            #maybe 2 idk
+                        
+
+
+
+                        
             #black notes
                         
             black_count = 0
+            last_black_count_and_centers_and_index = []
             
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
