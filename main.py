@@ -155,13 +155,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
-                group.extend([current_y - half_line_height, current_y, current_y + half_line_height])
+                group.extend([current_y - half_line_height, current_y])
                 current_y -= round(temp_difference / 2)
             for add_row_index in range(4): 
                 future_line = lines[row_index + add_row_index + 1][1] 
-                group.extend([int((future_line + lines[row_index + add_row_index][1]) / 2) - half_line_height, int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + half_line_height])
+                group.extend([int((future_line + lines[row_index + add_row_index][1]) / 2) - half_line_height, int((future_line + lines[row_index + add_row_index][1]) / 2)])
                 if add_row_index != 3:
-                    group.extend([future_line - half_line_height, future_line, future_line + half_line_height])
+                    group.extend([future_line - half_line_height, future_line])
 
     for group in invisible_lines:
         last_row_notes = []
