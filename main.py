@@ -384,7 +384,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     
 
     #THE OVERLAP CHECK AS WE GO THROUGH IS OUR NEXT BIG STEP!!!! THIS COULD TAKE TWO WEEKS BUT WE WILL HAVE ALL NOTES AT THE END
-            
+    #WE DON'T RLY NEED AN OVERLAP CHECK WE JUST NEED TO GO THRU EVERYTHING ORGANIZE IT EVERY CURRENT_LOOP_Y AND KEEP THE GROUPS
+    #THEN WE SEE WHICH ONES ARE CLOSEST TO CURRENT_LOOP_Y AND WITHIN A RANGE OF DIFFERENCEBETWEENLINES/2 OF EACH OTHER
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
