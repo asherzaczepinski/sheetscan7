@@ -123,7 +123,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     temp_difference = -1
 
-    half_line_height = int(line_height / 2) + 1
+    half_line_height = int(line_height / 2)
+
+
+
+
+
+    #try appending the current loop y with the halflineheight added on 
 
     for row_index in range(len(lines)):
         row = lines[row_index]
@@ -137,7 +143,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
             while current_y <= stopping_point:
-                group.append(current_y)
+                group.append(current_y + half_line_height)
                 current_y += round(temp_difference / 2)
             invisible_lines.append(group)
             group = []
@@ -153,13 +159,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
-                group.append(current_y)
+                group.append(current_y + half_line_height)
                 current_y -= round(temp_difference / 2)
             for add_row_index in range(4): 
                 future_line = lines[row_index + add_row_index + 1][1] 
-                group.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
+                group.append(int((future_line + lines[row_index + add_row_index][1]) / 2) + half_line_height)
                 if add_row_index != 3:
-                    group.append(future_line)
+                    group.append(future_line + half_line_height)
 
     for group in invisible_lines:
         last_row_notes = []
@@ -325,7 +331,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
                         #dashed white calculation ---- this could also be something where it starts in white notes and becomes a dashed white thru some boolean we determine
                         #it could "readjust the currentloopy"
-                        
+
                         starting_above_white = current_loop_y 
                         starting_below_white = current_loop_y 
                         temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
