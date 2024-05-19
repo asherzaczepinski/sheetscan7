@@ -103,6 +103,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     
     invisible_lines = []
 
+    #need a way to track this as just the lines not the double lines
+    all_current_loop_ys = []
+
     #Space it in middle for line identification
 
     difference_between_lines_for_line_drawing = lines[1][1] - lines[0][1] 
@@ -138,8 +141,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
             while current_y <= stopping_point:
                 group.extend([current_y - half_line_height, current_y])
-                if current_y + half_line_height < height:
-                    group.append(current_y + half_line_height)
+                all_current_loop_ys.append(current_y)
                 current_y += round(temp_difference / 2)
             invisible_lines.append(group)
             group = []
@@ -155,13 +157,29 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
+                all_current_loop_ys.append(current_y)
                 group.extend([current_y - half_line_height, current_y])
                 current_y -= round(temp_difference / 2)
             for add_row_index in range(4): 
                 future_line = lines[row_index + add_row_index + 1][1] 
                 group.extend([int((future_line + lines[row_index + add_row_index][1]) / 2) - half_line_height, int((future_line + lines[row_index + add_row_index][1]) / 2)])
+                all_current_loop_ys.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
                 if add_row_index != 3:
                     group.extend([future_line - half_line_height, future_line])
+                    all_current_loop_ys.append(future_line)
+
+
+    for y in all_current_loop_ys:
+        draw_example_rectangle(image_path, (0, y, width, y+1))
+
+    #if its black then just say it doesn't count if it's on the second one we can do this by having an indicator of the extended second
+    #there are only some notes it should be making this check
+
+
+
+
+
+
 
     for group in invisible_lines:
         last_row_notes = []
@@ -386,6 +404,40 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     #THE OVERLAP CHECK AS WE GO THROUGH IS OUR NEXT BIG STEP!!!! THIS COULD TAKE TWO WEEKS BUT WE WILL HAVE ALL NOTES AT THE END
     #WE DON'T RLY NEED AN OVERLAP CHECK WE JUST NEED TO GO THRU EVERYTHING ORGANIZE IT EVERY CURRENT_LOOP_Y AND KEEP THE GROUPS
     #THEN WE SEE WHICH ONES ARE CLOSEST TO CURRENT_LOOP_Y AND WITHIN A RANGE OF DIFFERENCEBETWEENLINES/2 OF EACH OTHER
+            
+
+
+    #let's start by going thru the black notes
+    #go thru each row and compare if 1/2 average not length of just if within 1/2 difbetweenlineheightfordrawing within
+    #
+            
+
+    #put back ltr
+    """ positions = []
+    past_positions = []
+    last_looked_past_index = -1
+    past_y = black_notes[0][0][1]
+    for index, black_note in enumerate(black_notes):
+        x = black_note[0][0]
+        y = black_note[0][1]
+        #we can make it start on the point it left on for past_x interms of how far up we compare the x 
+        if last_looked_past_index != -1:
+            for i in range(last_looked_past_index, past_positions[-1][2]):
+                temp_x = past_positions[i]
+                if abs(x - temp_x) < difference_between_lines_for_line_drawing / 2:
+                    #calculate which one is closer to a currentloop y
+                if temp_x > x:
+                    break
+        if y != past_y:
+            past_positions = positions
+            last_looked_past_index = past_positions[0][2]
+            positions = 0
+        positions.append([x, y, index])
+        past_y = y """
+
+
+        
+
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
