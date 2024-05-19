@@ -125,6 +125,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     half_line_height = int(line_height / 2) + 1
 
+    print(half_line_height)
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
@@ -318,10 +319,18 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                     if none_above:
                                         black_notes.append([top_left, bottom_right])
                         black_count = 0
+
+
+
+                    #THE ISSUE IS IT IS NOT MAKING IT DOWN HERE WHAT WE HAVE TO DO IS CREATE A VARIABLE CALLED TRUST
+                    #IT WOULD START AS FALSE AND BECOME TRUE IF THERE WAS NO BLACK NOTe FOUND OR SOMETHING LIKE THAT
+                    #THEN WE WOULD GO INTO THE ELSE
                     else:
 
-
-
+                        #this is testing to see if when the black note is just below if it refers it back to this
+                        top_left = [x_index - int(black_count / 2) - 10, current_loop_y - 10]
+                        bottom_right = [x_index - int(black_count / 2) + 10, current_loop_y + 10]   
+                        dashed_whites.append([top_left, bottom_right])
 
                         #dashed white calculation ---- this could also be something where it starts in white notes and becomes a dashed white thru some boolean we determine
                         #it could "readjust the currentloopy"
