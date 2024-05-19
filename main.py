@@ -103,9 +103,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     
     invisible_lines = []
 
-    #need a way to track this as just the lines not the double lines
-    all_current_loop_ys = []
-
     #Space it in middle for line identification
 
     difference_between_lines_for_line_drawing = lines[1][1] - lines[0][1] 
@@ -140,8 +137,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
             while current_y <= stopping_point:
-                group.extend([current_y - half_line_height, current_y])
-                all_current_loop_ys.append(current_y)
+                group.append(current_y)
                 current_y += round(temp_difference / 2)
             invisible_lines.append(group)
             group = []
@@ -157,16 +153,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
-                all_current_loop_ys.append(current_y)
-                group.extend([current_y - half_line_height, current_y])
+                group.append(current_y)
                 current_y -= round(temp_difference / 2)
             for add_row_index in range(4): 
                 future_line = lines[row_index + add_row_index + 1][1] 
-                group.extend([int((future_line + lines[row_index + add_row_index][1]) / 2) - half_line_height, int((future_line + lines[row_index + add_row_index][1]) / 2)])
-                all_current_loop_ys.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
+                group.append(int((future_line + lines[row_index + add_row_index][1]) / 2))
                 if add_row_index != 3:
-                    group.extend([future_line - half_line_height, future_line])
-                    all_current_loop_ys.append(future_line)
+                    group.append(future_line)
+
     for group in invisible_lines:
         last_row_notes = []
         for current_loop_y in group:
@@ -365,83 +359,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 else:
                     black_count = 0
             last_row_notes = temp_notes
-
-
-
-
-    #on the blacks and the whites we have to do the check
-    #on the dashed whites we should create another array bc there would be no check
-    #the check will include going up and down and seeing which is most even on the up and down for above below
-    #we should have some way to store memory between current loop y's on every iteration
-    #this way we save processing and can compare immediately
-    #we have to figure out if it was saving the white notes with dash above and do this soon
-    #this is a vital step
-    #we also have to implement the next few points to handle cases such as testinput.pdf
-            
-    #1. implement a smart efficient overlap checker
-    #2. keep adding points to the dashed
-            
-
-
-    #we will not need mutiple lines for sharps but maybe for flat detection
-    #we will not need an overlap check on the dashed notes
-    
-
-    #THE OVERLAP CHECK AS WE GO THROUGH IS OUR NEXT BIG STEP!!!! THIS COULD TAKE TWO WEEKS BUT WE WILL HAVE ALL NOTES AT THE END
-    #WE DON'T RLY NEED AN OVERLAP CHECK WE JUST NEED TO GO THRU EVERYTHING ORGANIZE IT EVERY CURRENT_LOOP_Y AND KEEP THE GROUPS
-    #THEN WE SEE WHICH ONES ARE CLOSEST TO CURRENT_LOOP_Y AND WITHIN A RANGE OF DIFFERENCEBETWEENLINES/2 OF EACH OTHER
-            
-
-
-    #let's start by going thru the black notes
-    #go thru each row and compare if 1/2 average not length of just if within 1/2 difbetweenlineheightfordrawing within
-    #
-            
-
-    #put back ltr
-            
-    #we could make it a dictionary 
-            
-    positions = []
-    past_positions = []
-    last_looked_past_index = -1
-    past_y = black_notes[0][0][1]
-    last_index_y = 0
-    for index, black_note in enumerate(black_notes):
-        x = black_note[0][0]
-        y = black_note[0][1]
-        #we can make it start on the point it left on for past_x interms of how far up we compare the x 
-        if last_looked_past_index != -1:
-            for i in range(last_looked_past_index, past_positions[-1][2]):
-                past_x = past_positions[i][0]
-                past_y = past_positions[i][1]
-                if abs(x - past_x) < difference_between_lines_for_line_drawing / 2:
-                    #calculate which one is closer to a currentloop y
-                    #such as count the index in allcurrentloopys
-                    temp_y = all_current_loop_ys[last_index_y]
-                    while temp_y < past_y:
-                        new_down_y = all_current_loop_ys[last_index_y + 1]
-                        temp_y = all_current_loop_ys[last_index_y]
-
-                        difference_to_past_down = past_y - temp_y
-                        difference_to_past_up = new_down_y - past_y
-                        difference_to_y_down = y - temp_y
-                        difference_to_y_up = new_down_y - y
-                        #see which is smallest
-                        #then that is the one we keep everything else we remove
-                        #see which one is either one closer to and only add once its gaurenteed not at end
-                        last_index_y += 1
-                if temp_x > x:
-                    break
-        if y != past_y:
-            past_positions = positions
-            last_looked_past_index = past_positions[0][2]
-            positions = 0
-        positions.append([x, y, index])
-        past_y = y 
-
-
-        
 
     for black_note in black_notes:
         top_left = black_note[0]
