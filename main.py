@@ -167,20 +167,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.extend([future_line - half_line_height, future_line])
                     all_current_loop_ys.append(future_line)
-
-
-    for y in all_current_loop_ys:
-        draw_example_rectangle(image_path, (0, y, width, y+1))
-
-    #if its black then just say it doesn't count if it's on the second one we can do this by having an indicator of the extended second
-    #there are only some notes it should be making this check
-
-
-
-
-
-
-
     for group in invisible_lines:
         last_row_notes = []
         for current_loop_y in group:
@@ -413,19 +399,38 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             
 
     #put back ltr
-    """ positions = []
+            
+    #we could make it a dictionary 
+            
+    positions = []
     past_positions = []
     last_looked_past_index = -1
     past_y = black_notes[0][0][1]
+    last_index_y = 0
     for index, black_note in enumerate(black_notes):
         x = black_note[0][0]
         y = black_note[0][1]
         #we can make it start on the point it left on for past_x interms of how far up we compare the x 
         if last_looked_past_index != -1:
             for i in range(last_looked_past_index, past_positions[-1][2]):
-                temp_x = past_positions[i]
-                if abs(x - temp_x) < difference_between_lines_for_line_drawing / 2:
+                past_x = past_positions[i][0]
+                past_y = past_positions[i][1]
+                if abs(x - past_x) < difference_between_lines_for_line_drawing / 2:
                     #calculate which one is closer to a currentloop y
+                    #such as count the index in allcurrentloopys
+                    temp_y = all_current_loop_ys[last_index_y]
+                    while temp_y < past_y:
+                        new_down_y = all_current_loop_ys[last_index_y + 1]
+                        temp_y = all_current_loop_ys[last_index_y]
+
+                        difference_to_past_down = past_y - temp_y
+                        difference_to_past_up = new_down_y - past_y
+                        difference_to_y_down = y - temp_y
+                        difference_to_y_up = new_down_y - y
+                        #see which is smallest
+                        #then that is the one we keep everything else we remove
+                        #see which one is either one closer to and only add once its gaurenteed not at end
+                        last_index_y += 1
                 if temp_x > x:
                     break
         if y != past_y:
@@ -433,7 +438,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             last_looked_past_index = past_positions[0][2]
             positions = 0
         positions.append([x, y, index])
-        past_y = y """
+        past_y = y 
 
 
         
