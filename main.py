@@ -157,6 +157,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     for group in invisible_lines:
         last_row_notes = []
+        #re-edit this logic to take two at a time and extend it by twooooo 2 above 
+
         for current_loop_y in group:
             #y it is varying is what is confusing me after all of this
             temp_notes = []        
@@ -257,6 +259,18 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         
             black_count = 0
             
+
+
+
+            #+1 logic checkup
+            #everytime we find a note we will have an int in that section such as black_note
+
+            #we will create a dictionary where the number integer of that thing such as 0 for the first and 1 for second 
+
+            #if there is greater than 1 we access the x, y values in the dictionary and delete the second one below, however if there is only one we keep whatever was put there whether it be one or two
+
+
+            #black and dashed white
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
@@ -272,6 +286,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         if above_pixel == 255 or below_pixel == 255:
                             black_note = False
                     if black_note:
+
+                        #black notes
+
                         #has to be x, y tuple
                         top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, current_loop_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
@@ -313,6 +330,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                                         black_notes.append([top_left, bottom_right])
                         black_count = 0
                     else:
+
+
+                        #dashed white notes
+
                         starting_above_white = current_loop_y 
                         starting_below_white = current_loop_y 
                         temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
