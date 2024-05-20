@@ -1,16 +1,3 @@
-#drawing w dashes hella far away w over lap but working
-
-
-#fix the overlap and clear up the screen
-#it should start working better from here
-#i know it makes it hard but it is worth it for accuracy
-#we measure overlap by saying if middle is in something elses thing
-
-#work on dashes
-#A BIG ISSUE HERE IS THAT THE DIFFERENCE IS 10 AND THEN 9 WE HAVE CURRENT LOOP Y SCREWED UP FOR THE ADDING
-#HAVE O FIGURE OUT Y!!!
-#it has to do w the fact then when it goes off it doesn't do it from the previous past few but just from the last few
-
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -126,6 +113,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     #could make it add int line height /2
     #we have to see if it is different for stuff w bigger lines
 
+
+
+
+    #+ and - have to pick one closest to thing
+    #to currentloop y
+    #bc then the overlap checker works
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
@@ -138,7 +131,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
             while current_y <= stopping_point:
-                group.append(current_y + 1)
+                group.extend([current_y, current_y + 1])
                 current_y += round(temp_difference / 2)
             invisible_lines.append(group)
             group = []
@@ -154,13 +147,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
-                group.append(current_y + 1)
+                group.extend([current_y, current_y + 1])
                 current_y -= round(temp_difference / 2)
             for add_row_index in range(4): 
                 future_line = lines[row_index + add_row_index + 1][1] 
-                group.append(int((future_line + lines[row_index + add_row_index][1]) / 2) + 1)
+                group.extend([int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + 1])
                 if add_row_index != 3:
-                    group.append(future_line + 1)
+                    group.extend([future_line, future_line + 1])
 
     for group in invisible_lines:
         last_row_notes = []
