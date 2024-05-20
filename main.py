@@ -124,15 +124,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     temp_difference = -1
 
-    #could make it add int line height /2
-    #we have to see if it is different for stuff w bigger lines
-
-
-
-
-    #+ and - have to pick one closest to thing
-    #to currentloop y
-    #bc then the overlap checker works
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
@@ -145,7 +136,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index + 1][1]) / 2
             while current_y <= stopping_point:
-                group.extend([current_y, current_y + round(line_height / 2)])
+                group.extend([[current_y, current_y + round(line_height / 2)]])
                 current_y += round(temp_difference / 2)
             invisible_lines.append(group)
             group = []
@@ -161,23 +152,31 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             else:
                 stopping_point = (row[1] + lines[row_index - 1][1]) / 2
             while current_y >= stopping_point:
-                group.extend([current_y, current_y + round(line_height / 2)])
+                group.extend([[current_y, current_y + round(line_height / 2)]])
                 current_y -= round(temp_difference / 2)
             for add_row_index in range(4): 
                 future_line = lines[row_index + add_row_index + 1][1] 
-                group.extend([int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + round(line_height / 2)])
+                group.extend([[int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + round(line_height / 2)]])
                 if add_row_index != 3:
-                    group.extend([future_line, future_line + round(line_height / 2)])
+                    group.extend([[future_line, future_line + round(line_height / 2)]])
 
     for group in invisible_lines:
         last_row_notes = []
         #re-edit this logic to take two at a time and extend it by twooooo 2 above 
 
-        for current_loop_y in group:
-            #y it is varying is what is confusing me after all of this
+
+
+        #gonna have to teest it on the new part
+        for [current_loop_y, new_y] in group:
+
+
+            #ya it's gonna have to do something for both
             temp_notes = []        
             black_count = 0
             difference_between_blacks = -1
+
+
+
             #white notes
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
