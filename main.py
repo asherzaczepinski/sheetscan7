@@ -1,3 +1,17 @@
+
+
+#NEXT STEP:
+
+#+intlineheight/2 logic checkup
+#everytime we find a note we will have an int in that section such as black_note
+
+#we will create a dictionary where the number integer of that thing such as 0 for the first and 1 for second 
+
+#if there is greater than 1 we access the x, y values in the dictionary and delete the second one below, however if there is only one we keep whatever was put there whether it be one or two
+
+#ONCE THIS IS REMOVED WE WILL CONTINUE WORKING ON THE DASH THRU WHITES
+
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -261,16 +275,25 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             
 
 
+            #NEXT STEP IS HERE
 
-            #+1 logic checkup
-            #everytime we find a note we will have an int in that section such as black_note
 
-            #we will create a dictionary where the number integer of that thing such as 0 for the first and 1 for second 
 
-            #if there is greater than 1 we access the x, y values in the dictionary and delete the second one below, however if there is only one we keep whatever was put there whether it be one or two
+
+
 
 
             #black and dashed white
+
+
+
+
+
+
+
+
+
+
             for x_index in range(width):
                 pixel = img_array[current_loop_y, x_index]
                 if pixel != 255 and x_index != width - 1:
