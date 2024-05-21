@@ -61,6 +61,8 @@ def draw_example_rectangle(image_path, rect):
 
 def process_line(input_y, img_array, width, difference_between_lines_for_line_drawing, difference_between_lines, white_notes, dashed_whites, black_notes, line_height):
 
+    last_row_notes = []
+
     #WE JUST NEED IT TO COMPARE TWO ARRAYS DON'T NEED TO KNOW WHICH NOTES THEY ARE WE CAN COMPARE IT AGAINST EACH OTHER
 
 
@@ -376,7 +378,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     group.extend([[future_line, future_line + round(line_height / 2)]])
 
     for group in invisible_lines:
-        last_row_notes = []
         #re-edit this logic to take two at a time and extend it by twooooo 2 above 
 
 
