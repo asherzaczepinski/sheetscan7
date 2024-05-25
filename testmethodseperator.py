@@ -341,6 +341,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     temp_difference = -1
 
+
+
+
+
+    #there's no need to extend anymore 
     for row_index in range(len(lines)):
         row = lines[row_index]
         current_y = row[1]
@@ -385,24 +390,20 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         #gonna have to teest it on the new part
         for [current_loop_y, new_y] in group:
 
-            #utilize our method here!!!
+            print(current_loop_y, new_y)
+            # Process the lines and get the notes
+            current_dashed_whites, current_black_notes, current_white_notes = process_line(
+                current_loop_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
+                difference_between_lines, white_notes.copy(), dashed_whites.copy(), black_notes.copy(), line_height
+            )
+            new_dashed_whites, new_black_notes, new_white_notes = process_line(
+                new_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
+                difference_between_lines, white_notes.copy(), dashed_whites.copy(), black_notes.copy(), line_height
+            )
 
-            #compare against each other just these two it is hella more efficient!
-            #we should make a newarray that equals the new thing
-
-            #current is just the thiung it is on rn 
-            current_dashed_whites, current_black_notes, current_white_notes = process_line(current_loop_y, img_array.copy(), width, difference_between_lines_for_line_drawing, difference_between_lines, white_notes.copy(), dashed_whites.copy(), black_notes.copy(), line_height)
-            new_dashed_whites, new_black_notes, new_white_notes = process_line(new_y, img_array.copy(), width, difference_between_lines_for_line_drawing, difference_between_lines, white_notes.copy(), dashed_whites.copy(), black_notes.copy(), line_height)
-            print('current dashed whites' + str(current_dashed_whites), 'current black notes' + str(current_black_notes), 'current white notes' + str(current_white_notes), 'new_dashed_whites' + str(new_dashed_whites), 'new black notes' + str(new_black_notes), 'new white notes' + str(new_white_notes) )
-            
-            
-            #first we test whenever it finds something we append just to make sure it is working right we can go thru each array
-            #After this! we do the compare and see ok if this note x appears in another array which y is closer otherwise append
-            black_notes = []
-            white_notes = []
-            dashed_whites = []
-
-
+            black_notes.append(current_black_notes + new_black_notes)
+            white_notes.append(current_white_notes + new_white_notes)
+            dashed_whites.append(current_dashed_whites + new_dashed_whites)
 
     for black_note in black_notes:
         top_left = black_note[0]
