@@ -379,6 +379,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.extend([[future_line, future_line + round(line_height / 2)]])
 
+    print(difference_between_lines)
     for group in invisible_lines:
         for [current_loop_y, new_y] in group:
             # Process the lines and get the notes
@@ -396,10 +397,36 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             all_blacks_in_line = sorted(current_black_notes + new_black_notes, key=lambda note: note[0][0])
 
             #then we are going to go thru this!
-            #print('hi') -> this proves it's working
-            for black_note in all_blacks_in_line:
-                #we can compare black note to next and whicever one is current we keep and add to the black_notes
-                print(black_note)
+            #print('hi') -> this proves it's working 
+
+            index = 0
+
+            #i'm worried what happens to that last note once index overlaps and there is nothing left lets go from here keep that in mind see if we get an index out of bounds error
+            #once this is working then we can do this to the other notes not just black notes
+            #then we adjust the logic to use the same as the normal for the dashed thru whites
+            #then we work on sharp and flat and natural
+            #we add back in columns
+            #we determine and know what to circle
+            #we're done and i make a website for this
+            while index < len(all_blacks_in_line):
+                black_note = all_blacks_in_line[index]
+                next_note = all_blacks_in_line[index + 1]
+                #the one closer to bottom will have been the 'second one' and not the one closer to current loop y
+                if next_note[0][0] - black_note[0][0] < int(difference_between_lines / 3):
+                    #compare which ones y is greater it doesn't matter the x
+                    if next_note[0][1] < black_note[0][1]:
+                        black_notes += black_note
+                    else:
+                        black_notes += next_note
+
+                    #so we can skip past the second note
+                    #maybe we say index += 1 again
+                    index += 1
+                    #have to add an index thing here
+                else:
+                    black_notes += black_note
+                index += 1
+            
             black_notes += (current_black_notes + new_black_notes)
             white_notes += (current_white_notes + new_white_notes)
             dashed_whites += (current_dashed_whites + new_dashed_whites)
