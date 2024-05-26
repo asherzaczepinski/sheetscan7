@@ -1,5 +1,6 @@
 
 
+
 #NEXT STEP:
 
 #+intlineheight/2 logic checkup
@@ -55,6 +56,225 @@ def draw_example_rectangle(image_path, rect):
     # Save the image with rectangles
     img.save(image_path)
 
+#going to process this of a current loop y and the new_y
+
+
+def process_line(input_y, img_array, width, difference_between_lines_for_line_drawing, difference_between_lines, line_height):
+    black_notes = []
+    white_notes = []
+    dashed_whites = []
+    
+    last_row_notes = []
+
+    #WE JUST NEED IT TO COMPARE TWO ARRAYS DON'T NEED TO KNOW WHICH NOTES THEY ARE WE CAN COMPARE IT AGAINST EACH OTHER
+
+
+    #ya it's gonna have to do something for both
+    temp_notes = []        
+    black_count = 0
+    difference_between_blacks = -1
+
+
+
+    #white notes
+    for x_index in range(width):
+        pixel = img_array[input_y, x_index]
+        #if it's black
+        if pixel != 255 and x_index != width - 1:
+            black_count += 1
+            if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
+                counter = 0
+                white_note = True
+                above = False
+                below = False
+                #quick up and down check
+                while True:
+                    temp_pixel_above = img_array[input_y - counter, x_index - int(difference_between_blacks / 2)]
+                    temp_pixel_below = img_array[input_y + counter, x_index - int(difference_between_blacks / 2)]
+                    if counter > difference_between_lines_for_line_drawing / 3:
+                        white_note = False
+                        break
+                    if temp_pixel_above != 255:
+                        above = True
+                    if temp_pixel_below != 255:
+                        below = True
+                    if above and below and counter < difference_between_lines_for_line_drawing / 3:
+                        break
+                    counter += 1
+                #this is a quick check to make sure this isn't dashed
+                for i in range (0, line_height):
+                    temp_pixel_below = img_array[input_y + i, x_index - int(difference_between_lines / 2)] 
+                    if temp_pixel_below != 255:
+                        white_note = False
+                #this is going across and then up and down 
+                if white_note:
+                    for new_x_index in range(x_index - difference_between_lines, x_index + 1):
+                        temp_y_above = input_y
+                        temp_y_below = input_y
+                        above_flag = False
+                        below_flag = False
+                        while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
+                            temp_pixel_above = img_array[temp_y_above, new_x_index]                                        
+                            if temp_pixel_above != 255:
+                                above_flag = True
+                                break
+                            temp_y_above -= 1
+                        if above_flag == False:
+                            white_note = False
+                        if white_note:
+                            while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+                                temp_pixel_below = img_array[temp_y_below, new_x_index]                                            
+                                if temp_pixel_below != 255:
+                                    below_flag = True
+                                    break
+                                temp_y_below += 1
+                            if below_flag == False:
+                                white_note = False
+                    #this will do the top right thing after determining everything else works 
+                    if white_note:
+                        up = 0
+                        up_right = 0
+                        counter = 1
+                        while True:
+                            temp_pixel_0 = input_y - up
+                            temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
+                            temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
+                                break
+                            if temp_pixel == 255:
+                                white_note = False
+                                break
+                            right_addend = 0
+                            while True:
+                                if temp_pixel_1 + right_addend >= width:
+                                    white_note = False
+                                    break
+                                new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
+                                if new_pixel == 255:
+                                    break
+                                right_addend += 1
+                            up += 1
+                            up_right += right_addend - 1
+                            counter += 1
+                    #always have the option to do bottom left later if that is neccesary!
+                    if white_note:
+                        top_left = [x_index - int(difference_between_blacks / 2) - 10, input_y - 10]
+                        bottom_right = [x_index - int(difference_between_blacks / 2) + 10, input_y + 10]   
+                        white_notes.append([top_left, bottom_right])
+            difference_between_blacks = 0
+        else:
+            #if it's white
+            if difference_between_blacks != -1:
+                difference_between_blacks += 1
+    
+    #black notes
+                
+    black_count = 0
+    
+    #black and dashed white
+    for x_index in range(width):
+        pixel = img_array[input_y, x_index]
+        if pixel != 255 and x_index != width - 1:
+            black_count += 1
+        elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
+            #apply my logic to see if it is a black note
+            middle_x = x_index - round(black_count / 2)
+            black_note = True
+            for add in range(1, round(difference_between_lines_for_line_drawing / 2) - 1 - round(line_height / 2)):
+                above_pixel = img_array[input_y - add, middle_x]
+                below_pixel = img_array[input_y + add, middle_x]
+                if above_pixel == 255 or below_pixel == 255:
+                    black_note = False
+            if black_note:
+                #black notes
+                top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
+                bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
+                roi = img_array[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]
+                total_pixels = roi.size
+                non_white_pixels = np.sum(roi < 255)
+                non_white_percentage = (non_white_pixels / total_pixels) * 100
+                if non_white_percentage > 70:
+                    if black_count >= difference_between_lines_for_line_drawing * 1.5:
+                        if last_row_notes == []:
+                            black_notes.append([top_left, bottom_right])
+                        else:
+                            none_above = True 
+                            for note in last_row_notes:
+                                #or we can account for the -10!!!!! by saying - 10
+                                if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
+                                    none_above = False
+                            if none_above:
+                                black_notes.append([top_left, bottom_right])
+                    else:
+                        temp_notes.append([top_left, bottom_right])
+                        black_notes.append([top_left, bottom_right])
+                elif black_count >= difference_between_lines_for_line_drawing * 1.5:
+                    little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
+                    new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
+                    new_total_pixels = new_roi.size
+                    new_non_white_pixels = np.sum(new_roi < 255)
+                    new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
+                    if new_non_white_percentage > 80:
+                        if last_row_notes == []:
+                            black_notes.append([top_left, bottom_right])
+
+                        else:
+                            none_above = True 
+                            for note in last_row_notes:
+                                #or we can account for the -10!!!!! by saying - 10
+                                if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
+                                    none_above = False
+                            if none_above:
+                                black_notes.append([top_left, bottom_right])
+                black_count = 0
+            else:
+
+
+                #dashed white notes
+
+                starting_above_white = input_y 
+                starting_below_white = input_y 
+                temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
+                temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]    
+                while temp_pixel_below != 255:
+                    starting_below_white += 1
+                    temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]
+                while temp_pixel_above != 255:
+                    starting_above_white -= 1
+                    temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
+                #point 1
+                counter = 0
+                above = False
+                below = False
+                white_note = True
+                while True:
+                    temp_pixel_above = img_array[starting_above_white - counter, x_index - int(black_count / 2)]
+                    temp_pixel_below = img_array[starting_below_white + counter, x_index - int(black_count / 2)]
+                    if counter > int(difference_between_lines_for_line_drawing / 3.5):
+                        white_note = False
+                        break
+                    if temp_pixel_above != 255:
+                        above = True
+                    if temp_pixel_below != 255:
+                        below = True
+                    if above and below:
+                        break
+                    counter += 1
+                #point 2                           
+                if white_note:
+                    #remove this eventually
+                    top_left = [x_index - int(black_count / 2) - 10, input_y - 10]
+                    bottom_right = [x_index - int(black_count / 2) + 10, input_y + 10]   
+                    dashed_whites.append([top_left, bottom_right])
+
+            black_count = 0       
+        else:
+            black_count = 0
+    last_row_notes = temp_notes
+
+    return dashed_whites, black_notes, white_notes
+
+
 def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     # Load the image
@@ -67,6 +287,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     width = img_array.shape[1]
 
     height = img_array.shape[0]
+
     # This will hold the lines found in the image
     lines = []
 
@@ -161,241 +382,20 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     group.extend([[future_line, future_line + round(line_height / 2)]])
 
     for group in invisible_lines:
-        last_row_notes = []
-        #re-edit this logic to take two at a time and extend it by twooooo 2 above 
-
-
-
-        #gonna have to teest it on the new part
         for [current_loop_y, new_y] in group:
+            # Process the lines and get the notes
+            current_dashed_whites, current_black_notes, current_white_notes = process_line(
+                current_loop_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
+                difference_between_lines, line_height
+            )
+            new_dashed_whites, new_black_notes, new_white_notes = process_line(
+                new_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
+                difference_between_lines, line_height
+            )
 
-
-            #ya it's gonna have to do something for both
-            temp_notes = []        
-            black_count = 0
-            difference_between_blacks = -1
-
-
-
-            #white notes
-            for x_index in range(width):
-                pixel = img_array[current_loop_y, x_index]
-                #if it's black
-                if pixel != 255 and x_index != width - 1:
-                    black_count += 1
-                    if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
-                        counter = 0
-                        white_note = True
-                        above = False
-                        below = False
-                        #quick up and down check
-                        while True:
-                            temp_pixel_above = img_array[current_loop_y - counter, x_index - int(difference_between_blacks / 2)]
-                            temp_pixel_below = img_array[current_loop_y + counter, x_index - int(difference_between_blacks / 2)]
-                            if counter > difference_between_lines_for_line_drawing / 3:
-                                white_note = False
-                                break
-                            if temp_pixel_above != 255:
-                                above = True
-                            if temp_pixel_below != 255:
-                                below = True
-                            if above and below and counter < difference_between_lines_for_line_drawing / 3:
-                                break
-                            counter += 1
-                        #this is a quick check to make sure this isn't dashed
-                        for i in range (0, line_height):
-                            temp_pixel_below = img_array[current_loop_y + i, x_index - int(difference_between_lines / 2)] 
-                            if temp_pixel_below != 255:
-                                white_note = False
-                        #this is going across and then up and down 
-                        if white_note:
-                            for new_x_index in range(x_index - difference_between_lines, x_index + 1):
-                                temp_y_above = current_loop_y
-                                temp_y_below = current_loop_y
-                                above_flag = False
-                                below_flag = False
-                                while temp_y_above > current_loop_y - round(difference_between_lines_for_line_drawing / 2):
-                                    temp_pixel_above = img_array[temp_y_above, new_x_index]                                        
-                                    if temp_pixel_above != 255:
-                                        above_flag = True
-                                        break
-                                    temp_y_above -= 1
-                                if above_flag == False:
-                                    white_note = False
-                                if white_note:
-                                    while temp_y_below < current_loop_y + round(difference_between_lines_for_line_drawing / 2):
-                                        temp_pixel_below = img_array[temp_y_below, new_x_index]                                            
-                                        if temp_pixel_below != 255:
-                                            below_flag = True
-                                            break
-                                        temp_y_below += 1
-                                    if below_flag == False:
-                                        white_note = False
-                            #this will do the top right thing after determining everything else works 
-                            if white_note:
-                                up = 0
-                                up_right = 0
-                                counter = 1
-                                while True:
-                                    temp_pixel_0 = current_loop_y - up
-                                    temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
-                                    temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                                    if temp_pixel_0 <= current_loop_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
-                                        break
-                                    if temp_pixel == 255:
-                                        white_note = False
-                                        break
-                                    right_addend = 0
-                                    while True:
-                                        if temp_pixel_1 + right_addend >= width:
-                                            white_note = False
-                                            break
-                                        new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
-                                        if new_pixel == 255:
-                                            break
-                                        right_addend += 1
-                                    up += 1
-                                    up_right += right_addend - 1
-                                    counter += 1
-                            #always have the option to do bottom left later if that is neccesary!
-                            if white_note:
-                                top_left = [x_index - int(difference_between_blacks / 2) - 10, current_loop_y - 10]
-                                bottom_right = [x_index - int(difference_between_blacks / 2) + 10, current_loop_y + 10]   
-                                white_notes.append([top_left, bottom_right])
-                    difference_between_blacks = 0
-                else:
-                    #if it's white
-                    if difference_between_blacks != -1:
-                        difference_between_blacks += 1
-
-            #black notes
-                        
-            black_count = 0
-            
-
-
-            #NEXT STEP IS HERE
-
-
-
-
-
-
-
-            #black and dashed white
-
-
-
-
-
-
-
-
-
-
-            for x_index in range(width):
-                pixel = img_array[current_loop_y, x_index]
-                if pixel != 255 and x_index != width - 1:
-                    black_count += 1
-                elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
-                    #apply my logic to see if it is a black note
-                    middle_x = x_index - round(black_count / 2)
-                    #-1 to discount the current one
-                    black_note = True
-                    for add in range(1, round(difference_between_lines_for_line_drawing / 2) - 1 - round(line_height / 2)):
-                        above_pixel = img_array[current_loop_y - add, middle_x]
-                        below_pixel = img_array[current_loop_y + add, middle_x]
-                        if above_pixel == 255 or below_pixel == 255:
-                            black_note = False
-                    if black_note:
-
-                        #black notes
-
-                        #has to be x, y tuple
-                        top_left = [x_index - black_count, current_loop_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                        bottom_right = [x_index, current_loop_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                        roi = img_array[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]
-                        total_pixels = roi.size
-                        non_white_pixels = np.sum(roi < 255)
-                        non_white_percentage = (non_white_pixels / total_pixels) * 100
-                        if non_white_percentage > 70:
-                            if black_count >= difference_between_lines_for_line_drawing * 1.5:
-                                if last_row_notes == []:
-                                    black_notes.append([top_left, bottom_right])
-                                else:
-                                    none_above = True 
-                                    for note in last_row_notes:
-                                        #or we can account for the -10!!!!! by saying - 10
-                                        if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                            none_above = False
-                                    if none_above:
-                                        black_notes.append([top_left, bottom_right])
-                            else:
-                                temp_notes.append([top_left, bottom_right])
-                                black_notes.append([top_left, bottom_right])
-                        elif black_count >= difference_between_lines_for_line_drawing * 1.5:
-                            little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
-                            new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
-                            new_total_pixels = new_roi.size
-                            new_non_white_pixels = np.sum(new_roi < 255)
-                            new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
-                            if new_non_white_percentage > 80:
-                                if last_row_notes == []:
-                                    black_notes.append([top_left, bottom_right])
-                                else:
-                                    none_above = True 
-                                    for note in last_row_notes:
-                                        #or we can account for the -10!!!!! by saying - 10
-                                        if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                            none_above = False
-                                    if none_above:
-                                        black_notes.append([top_left, bottom_right])
-                        black_count = 0
-                    else:
-
-
-                        #dashed white notes
-
-                        starting_above_white = current_loop_y 
-                        starting_below_white = current_loop_y 
-                        temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
-                        temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]    
-                        while temp_pixel_below != 255:
-                            starting_below_white += 1
-                            temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]
-                        while temp_pixel_above != 255:
-                            starting_above_white -= 1
-                            temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
-                        #point 1
-                        counter = 0
-                        above = False
-                        below = False
-                        white_note = True
-                        while True:
-                            temp_pixel_above = img_array[starting_above_white - counter, x_index - int(black_count / 2)]
-                            temp_pixel_below = img_array[starting_below_white + counter, x_index - int(black_count / 2)]
-                            if counter > int(difference_between_lines_for_line_drawing / 3.5):
-                                white_note = False
-                                break
-                            if temp_pixel_above != 255:
-                                above = True
-                            if temp_pixel_below != 255:
-                                below = True
-                            if above and below:
-                                break
-                            counter += 1
-                        #point 2                           
-                        if white_note:
-                            #remove this eventually
-                            top_left = [x_index - int(black_count / 2) - 10, current_loop_y - 10]
-                            bottom_right = [x_index - int(black_count / 2) + 10, current_loop_y + 10]   
-                            dashed_whites.append([top_left, bottom_right])
-                        #I'm marking up the working code to know where to replicate from             
-
-                    black_count = 0       
-                else:
-                    black_count = 0
-            last_row_notes = temp_notes
+            black_notes += (current_black_notes + new_black_notes)
+            white_notes += (current_white_notes + new_white_notes)
+            dashed_whites += (current_dashed_whites + new_dashed_whites)
 
     for black_note in black_notes:
         top_left = black_note[0]
