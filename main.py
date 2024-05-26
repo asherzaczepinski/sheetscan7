@@ -33,8 +33,6 @@ threshold = 0.6
 
 all_rows = []
 
-all_black_notes = []
-
 #for testing purposes only
 def draw_example_rectangle(image_path, rect):
     # Validate rectangle coordinates
@@ -393,6 +391,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 difference_between_lines, line_height
             )
 
+            #this is where the comparison proessing will go down!!!
+
+            all_blacks_in_line = sorted(current_black_notes + new_black_notes, key=lambda note: note[0][0])
+
+            #then we are going to go thru this!
+            #print('hi') -> this proves it's working
+            for black_note in all_blacks_in_line:
+                print(black_note)
             black_notes += (current_black_notes + new_black_notes)
             white_notes += (current_white_notes + new_white_notes)
             dashed_whites += (current_dashed_whites + new_dashed_whites)
