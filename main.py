@@ -398,6 +398,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             #then we are going to go thru this!
             #print('hi') -> this proves it's working
             for black_note in all_blacks_in_line:
+                #we can compare black note to next and whicever one is current we keep and add to the black_notes
                 print(black_note)
             black_notes += (current_black_notes + new_black_notes)
             white_notes += (current_white_notes + new_white_notes)
