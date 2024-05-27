@@ -1,18 +1,3 @@
-
-
-
-#NEXT STEP:
-
-#+intlineheight/2 logic checkup
-#everytime we find a note we will have an int in that section such as black_note
-
-#we will create a dictionary where the number integer of that thing such as 0 for the first and 1 for second 
-
-#if there is greater than 1 we access the x, y values in the dictionary and delete the second one below, however if there is only one we keep whatever was put there whether it be one or two
-
-#ONCE THIS IS REMOVED WE WILL CONTINUE WORKING ON THE DASH THRU WHITES
-
-
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -379,7 +364,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.extend([[future_line, future_line + round(line_height / 2)]])
 
-    print(difference_between_lines)
     for group in invisible_lines:
         for [current_loop_y, new_y] in group:
             # Process the lines and get the notes
@@ -401,33 +385,42 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             index = 0
 
-            #i'm worried what happens to that last note once index overlaps and there is nothing left lets go from here keep that in mind see if we get an index out of bounds error
             #once this is working then we can do this to the other notes not just black notes
             #then we adjust the logic to use the same as the normal for the dashed thru whites
             #then we work on sharp and flat and natural
             #we add back in columns
             #we determine and know what to circle
             #we're done and i make a website for this
+
+            #this new error has something to do w how the black note is appending
+            #HAVE TO RETAIN THE TOP LEFT AND BOTTOM RIGHT BC THEY WORK FOR BIGGER NOTES
+            #THE OTHER THING I HAVE TO DO IS DO THIS LOGIC ABOVE MORE SO THAT OUR CHECKER TO SEE IF THERE IS A NOTe BETWEEN BLACK NOTES WORKS!
+
+
+
             while index < len(all_blacks_in_line):
                 black_note = all_blacks_in_line[index]
+                if index == len(all_blacks_in_line) - 1:
+                    black_notes.append(black_note)
+                    break
                 next_note = all_blacks_in_line[index + 1]
                 #the one closer to bottom will have been the 'second one' and not the one closer to current loop y
-                if next_note[0][0] - black_note[0][0] < int(difference_between_lines / 3):
+                if next_note[0][0] - black_note[0][0] < int(difference_between_lines / 2):
                     #compare which ones y is greater it doesn't matter the x
                     if next_note[0][1] < black_note[0][1]:
-                        black_notes += black_note
+                        black_notes.append(black_note)
                     else:
-                        black_notes += next_note
+                        black_notes.append(next_note)
 
                     #so we can skip past the second note
                     #maybe we say index += 1 again
                     index += 1
                     #have to add an index thing here
                 else:
-                    black_notes += black_note
+                    black_notes.append(black_note)
                 index += 1
             
-            black_notes += (current_black_notes + new_black_notes)
+            #black_notes += (current_black_notes + new_black_notes)
             white_notes += (current_white_notes + new_white_notes)
             dashed_whites += (current_dashed_whites + new_dashed_whites)
 
