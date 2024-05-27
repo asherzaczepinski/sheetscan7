@@ -364,6 +364,25 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 if add_row_index != 3:
                     group.extend([[future_line, future_line + round(line_height / 2)]])
 
+
+
+
+
+
+    #then we are going to go thru this!
+    #print('hi') -> this proves it's working 
+
+    #once this is working then we can do this to the other notes not just black notes
+    #then we adjust the logic to use the same as the normal for the dashed thru whites
+    #then we work on sharp and flat and natural
+    #we add back in columns
+    #we determine and know what to circle
+    #we're done and i make a website for this
+
+    #this new error has something to do w how the black note is appending
+    #HAVE TO RETAIN THE TOP LEFT AND BOTTOM RIGHT BC THEY WORK FOR BIGGER NOTES
+    #THE OTHER THING I HAVE TO DO IS DO THIS LOGIC ABOVE MORE SO THAT OUR CHECKER TO SEE IF THERE IS A NOTe BETWEEN BLACK NOTES WORKS!
+
     for group in invisible_lines:
         for [current_loop_y, new_y] in group:
             # Process the lines and get the notes
@@ -379,24 +398,10 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             #this is where the comparison proessing will go down!!!
 
             all_blacks_in_line = sorted(current_black_notes + new_black_notes, key=lambda note: note[0][0])
-
-            #then we are going to go thru this!
-            #print('hi') -> this proves it's working 
+            all_whites_in_line = sorted(current_white_notes + new_white_notes, key=lambda note: note[0][0])
+            all_dashed_whites_in_line = sorted(current_dashed_whites + new_dashed_whites, key=lambda note: note[0][0])
 
             index = 0
-
-            #once this is working then we can do this to the other notes not just black notes
-            #then we adjust the logic to use the same as the normal for the dashed thru whites
-            #then we work on sharp and flat and natural
-            #we add back in columns
-            #we determine and know what to circle
-            #we're done and i make a website for this
-
-            #this new error has something to do w how the black note is appending
-            #HAVE TO RETAIN THE TOP LEFT AND BOTTOM RIGHT BC THEY WORK FOR BIGGER NOTES
-            #THE OTHER THING I HAVE TO DO IS DO THIS LOGIC ABOVE MORE SO THAT OUR CHECKER TO SEE IF THERE IS A NOTe BETWEEN BLACK NOTES WORKS!
-
-
 
             while index < len(all_blacks_in_line):
                 black_note = all_blacks_in_line[index]
@@ -420,8 +425,30 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     black_notes.append(black_note)
                 index += 1
             
-            #black_notes += (current_black_notes + new_black_notes)
-            white_notes += (current_white_notes + new_white_notes)
+            index = 0
+
+            while index < len(all_whites_in_line):
+                white_note = all_whites_in_line[index]
+                if index == len(all_whites_in_line) - 1:
+                    white_notes.append(white_note)
+                    break
+                next_note = all_whites_in_line[index + 1]
+                #the one closer to bottom will have been the 'second one' and not the one closer to current loop y
+                if next_note[0][0] - white_note[0][0] < int(difference_between_lines / 2):
+                    #compare which ones y is greater it doesn't matter the x
+                    if next_note[0][1] < white_note[0][1]:
+                        white_notes.append(white_note)
+                    else:
+                        white_notes.append(next_note)
+
+                    #so we can skip past the second note
+                    #maybe we say index += 1 again
+                    index += 1
+                    #have to add an index thing here
+                else:
+                    white_notes.append(white_note)
+                index += 1
+
             dashed_whites += (current_dashed_whites + new_dashed_whites)
 
     for black_note in black_notes:
