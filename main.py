@@ -410,7 +410,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     break
                 next_note = all_blacks_in_line[index + 1]
                 #the one closer to bottom will have been the 'second one' and not the one closer to current loop y
-                if next_note[0][0] - black_note[0][0] < int(difference_between_lines / 2):
+                if next_note[0][0] - black_note[0][0] < difference_between_lines:
                     #compare which ones y is greater it doesn't matter the x
                     if next_note[0][1] < black_note[0][1]:
                         black_notes.append(black_note)
@@ -434,7 +434,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     break
                 next_note = all_whites_in_line[index + 1]
                 #the one closer to bottom will have been the 'second one' and not the one closer to current loop y
-                if next_note[0][0] - white_note[0][0] < int(difference_between_lines / 2):
+                if next_note[0][0] - white_note[0][0] < difference_between_lines:
                     #compare which ones y is greater it doesn't matter the x
                     if next_note[0][1] < white_note[0][1]:
                         white_notes.append(white_note)
@@ -449,7 +449,29 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     white_notes.append(white_note)
                 index += 1
 
-            dashed_whites += (current_dashed_whites + new_dashed_whites)
+            index = 0
+
+            while index < len(all_dashed_whites_in_line):
+                dashed_white = all_dashed_whites_in_line[index]
+                if index == len(all_dashed_whites_in_line) - 1:
+                    dashed_whites.append(dashed_white)
+                    break
+                next_note = all_dashed_whites_in_line[index + 1]
+                #the one closer to bottom will have been the 'second one' and not the one closer to current loop y
+                if next_note[0][0] - dashed_white[0][0] < difference_between_lines:
+                    #compare which ones y is greater it doesn't matter the x
+                    if next_note[0][1] < dashed_white[0][1]:
+                        dashed_whites.append(dashed_white)
+                    else:
+                        dashed_whites.append(next_note)
+
+                    #so we can skip past the second note
+                    #maybe we say index += 1 again
+                    index += 1
+                    #have to add an index thing here
+                else:
+                    dashed_whites.append(dashed_white)
+                index += 1
 
     for black_note in black_notes:
         top_left = black_note[0]
