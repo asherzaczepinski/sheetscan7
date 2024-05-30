@@ -47,13 +47,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
     white_notes = []
     dashed_whites = []
     
-    last_row_notes = []
-
     #WE JUST NEED IT TO COMPARE TWO ARRAYS DON'T NEED TO KNOW WHICH NOTES THEY ARE WE CAN COMPARE IT AGAINST EACH OTHER
 
 
     #ya it's gonna have to do something for both
-    temp_notes = []        
     black_count = 0
     difference_between_blacks = -1
 
@@ -178,18 +175,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 non_white_percentage = (non_white_pixels / total_pixels) * 100
                 if non_white_percentage > 70:
                     if black_count >= difference_between_lines_for_line_drawing * 1.5:
-                        if last_row_notes == []:
-                            black_notes.append([top_left, bottom_right])
-                        else:
-                            none_above = True 
-                            for note in last_row_notes:
-                                #or we can account for the -10!!!!! by saying - 10
-                                if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                    none_above = False
-                            if none_above:
-                                black_notes.append([top_left, bottom_right])
+                        black_notes.append([top_left, bottom_right]) 
                     else:
-                        temp_notes.append([top_left, bottom_right])
                         black_notes.append([top_left, bottom_right])
                 elif black_count >= difference_between_lines_for_line_drawing * 1.5:
                     little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
@@ -198,17 +185,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     new_non_white_pixels = np.sum(new_roi < 255)
                     new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
                     if new_non_white_percentage > 80:
-                        if last_row_notes == []:
-                            black_notes.append([top_left, bottom_right])
-
-                        else:
-                            none_above = True 
-                            for note in last_row_notes:
-                                #or we can account for the -10!!!!! by saying - 10
-                                if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                    none_above = False
-                            if none_above:
-                                black_notes.append([top_left, bottom_right])
+                        black_notes.append([top_left, bottom_right])
                 black_count = 0
             else:
 
@@ -253,7 +230,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             black_count = 0       
         else:
             black_count = 0
-    last_row_notes = temp_notes
 
     return dashed_whites, black_notes, white_notes
 
