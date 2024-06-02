@@ -380,6 +380,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     
 
     #let's just do this bc it's processing only one line so it is fine
+                    
+
+    #maybe in the black and dashed notes and white and dashed notes or some shit we make the dashed account for both or idfk
     for group in invisible_lines:
         for [current_loop_y, new_y] in group:
             # Process the lines and get the notes

@@ -389,12 +389,29 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 difference_between_lines, line_height
             )
 
-            all_blacks_in_line = sorted(current_black_notes + new_black_notes, key=lambda note: note[0][0])
-            all_whites_in_line = sorted(current_white_notes + new_white_notes, key=lambda note: note[0][0])
-            all_dashed_whites_in_line = sorted(current_dashed_whites + new_dashed_whites, key=lambda note: note[0][0])
+            all_blacks_in_line = sorted(current_black_notes + new_black_notes, key=lambda note: note[1][0])
+            all_whites_in_line = sorted(current_white_notes + new_white_notes, key=lambda note: note[1][0])
+            all_dashed_whites_in_line = sorted(current_dashed_whites + new_dashed_whites, key=lambda note: note[1][0])
 
             index = 0
 
+
+
+
+
+            #work here first
+            #work on this for that different x overlap
+
+
+
+
+            #OOOH I KNOW WHY IT'S WRONG
+            #IT'S WRONG BC WHAT IT IS DOING IS THAT IT'S ORGANIZING BY THE X!!!!
+            #THIS MAKES IT SO THAT WE ONLY GO ACROSS AND IT ENDS UP DOING THE BIG ONE FIRST THEN A SNALL ONE AND A SMALL ONE
+            #THE BETTER WAY TO DO THIS IS TO MAKE PAIRS
+            #SHIT I KNOW WHY NOW
+            #NO I HAVE BETTER IDEA!!!!
+            #ORGAINZE BY THE SECOND X AT THE END
             while index < len(all_blacks_in_line):
                 black_note = all_blacks_in_line[index]
                 if index == len(all_blacks_in_line) - 1:
@@ -402,7 +419,16 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     break
                 next_note = all_blacks_in_line[index + 1]
                 #the one closer to bottom will have been the 'second one' and not the one closer to current loop y
-                if next_note[0][0] - black_note[0][0] < difference_between_lines:
+
+
+
+
+
+
+
+                #I THINK THE ISSUE IS THAT IT IS APPENDING IF ITS NOT
+                #SO LIKE SAY IT IS IN THAT RANGE THEN WHAT DO WE DO
+                if abs(next_note[0][0] - black_note[0][0]) < difference_between_lines:
                     #compare which ones y is greater it doesn't matter the x
                     if next_note[0][1] < black_note[0][1]:
                         black_notes.append(black_note)
@@ -417,6 +443,15 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     black_notes.append(black_note)
                 index += 1
             
+
+
+
+
+
+
+
+
+
             index = 0
 
             while index < len(all_whites_in_line):
@@ -425,7 +460,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     white_notes.append(white_note)
                     break
                 next_note = all_whites_in_line[index + 1]
-                if next_note[0][0] - white_note[0][0] < difference_between_lines:
+                if abs(next_note[0][0] - white_note[0][0]) < difference_between_lines:
                     if next_note[0][1] < white_note[0][1]:
                         white_notes.append(white_note)
                     else:
@@ -443,7 +478,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     dashed_whites.append(dashed_white)
                     break
                 next_note = all_dashed_whites_in_line[index + 1]
-                if next_note[0][0] - dashed_white[0][0] < difference_between_lines:
+                if abs(next_note[0][0] - dashed_white[0][0]) < difference_between_lines:
                     if next_note[0][1] < dashed_white[0][1]:
                         dashed_whites.append(dashed_white)
                     else:
