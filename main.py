@@ -440,6 +440,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     dashed_whites.append(dashed_white)
                 index += 1
 
+
+    #First step is adding back to the black notes in current loop y formats of note clusters
+    #then we do this comparison
+    for group in invisible_lines:
+        for [current_loop_y, _] in group:
+            #take this current_loop y and apply it to the black notes we have to go across some shit and find all the black notes w this shit
+            print("")
     for black_note in black_notes:
         top_left = black_note[0]
         bottom_right = black_note[1]
