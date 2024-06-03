@@ -365,7 +365,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     group.extend([[future_line, future_line + round(line_height / 2)]])
 
     for group in invisible_lines:
+        #every thing we add it to a row_black notes
         for [current_loop_y, new_y] in group:
+            row_black_notes = []
             # Process the lines and get the notes
             current_dashed_whites, current_black_notes, current_white_notes = process_line(
                 current_loop_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
@@ -385,23 +387,23 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             while index < len(all_blacks_in_line):
                 black_note = all_blacks_in_line[index]
                 if index == len(all_blacks_in_line) - 1:
-                    black_notes.append(black_note)
+                    row_black_notes.append(black_note)
                     break
                 next_note = all_blacks_in_line[index + 1]
                 
                 if next_note[0][0] - black_note[0][0] < difference_between_lines:
                     #compare which ones y is greater it doesn't matter the x
                     if next_note[0][1] < black_note[0][1]:
-                        black_notes.append(black_note)
+                        row_black_notes.append(black_note)
                     else:
-                        black_notes.append(next_note)
+                        row_black_notes.append(next_note)
 
                     #so we can skip past the second note
                     #maybe we say index += 1 again
                     index += 1
                     #have to add an index thing here
                 else:
-                    black_notes.append(black_note)
+                    row_black_notes.append(black_note)
                 index += 1
             
             index = 0
@@ -439,25 +441,23 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 else:
                     dashed_whites.append(dashed_white)
                 index += 1
-
+            black_notes.append(row_black_notes)
 
     #First step is adding back to the black notes in current loop y formats of note clusters
     #then we do this comparison
-    for group in invisible_lines:
-        for [current_loop_y, _] in group:
-            #take this current_loop y and apply it to the black notes we have to go across some shit and find all the black notes w this shit
-            print("")
-    for black_note in black_notes:
-        top_left = black_note[0]
-        bottom_right = black_note[1]
-        #right side
-        img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
-        #left side
-        img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
-        #top side
-        img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
-        #bottom side
-        img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0  
+    
+    for row in black_notes:
+        for black_note in row:
+            top_left = black_note[0]
+            bottom_right = black_note[1]
+            #right side
+            img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
+            #left side
+            img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
+            #top side
+            img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
+            #bottom side
+            img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0  
 
     for white_note in white_notes:
         top_left = white_note[0]
