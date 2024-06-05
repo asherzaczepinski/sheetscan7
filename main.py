@@ -232,17 +232,63 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         break
                     if temp_pixel_above != 255:
                         above = True
+                        starting_above_white = starting_above_white - counter
                     if temp_pixel_below != 255:
                         below = True
+                        starting_below_white = starting_below_white + counter
                     if above and below:
                         break
                     counter += 1
-                #point 2                           
+                #point 2      
+                if white_note:
+                    up = 0
+                    up_right = 0
+                    counter = 1
+
+                    #work from here
+
+
+
+
+                    
+                    #have to adjust the above prob bc the dif is 17 and /2 is the thing
+                    while True:
+                        temp_pixel_0 = starting_above_white - up
+                        temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
+                        temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                        if temp_pixel_0 <= input_y - difference_between_lines / 3 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
+                            break
+                        if temp_pixel == 255:
+                            white_note = False
+                            break
+                        right_addend = 0
+                        while True:
+                            if temp_pixel_1 + right_addend >= width:
+                                white_note = False
+                                break
+                            new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
+                            if new_pixel == 255:
+                                break
+                            right_addend += 1
+                        up += 1
+                        up_right += right_addend - 1
+                        counter += 1
+
+
+
+                #point 3                     
                 if white_note:
                     #remove this eventually
                     top_left = [x_index - int(black_count / 2) - 10, input_y - 10]
                     bottom_right = [x_index - int(black_count / 2) + 10, input_y + 10]   
                     dashed_whites.append([top_left, bottom_right])
+
+
+
+                    #keep working here!!!!
+
+
+
 
             black_count = 0       
         else:

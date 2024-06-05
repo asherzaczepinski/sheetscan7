@@ -109,6 +109,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 white_note = False
                     #this will do the top right thing after determining everything else works 
                     if white_note:
+                        #point 2
                         up = 0
                         up_right = 0
                         counter = 1
