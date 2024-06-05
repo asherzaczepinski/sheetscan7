@@ -447,23 +447,24 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     #then we do this comparison
     
     #have this working
+            
+
+
+
     past_notes = []
+    #don't need the third index just if anything equals it on the second time thru we remove it and keep going
     for index, row in enumerate(black_notes):
         if index != 0:
-            for index3, black_note in enumerate(row):
-                second_index = 0
-                for i in range(second_index, len(past_notes)):
-                    if past_notes[i][0][0] >= black_note[0][0]:
-                        if second_index == 0:
-                            break
-                        else:
-                            second_index -= 1
-                            break
-                    second_index+=1
-                #we use the second index to compare with the current black note
-                if abs(black_note[0][0] - past_notes[second_index][0][0]) <= difference_between_lines:
-                    black_notes[index].pop(index3)
+            for index2, black_note in enumerate(row):
+                for past_note in enumerate(past_notes):
+                    if abs(past_note[0][0] - black_note[0][0]) <= difference_between_lines:
+                        black_notes[index].pop(index2)
+                        break
         past_notes = row
+
+
+
+
     for row in black_notes:
         for black_note in row:
             top_left = black_note[0]
