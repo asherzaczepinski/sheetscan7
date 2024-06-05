@@ -250,13 +250,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
 
-                    
+
                     #have to adjust the above prob bc the dif is 17 and /2 is the thing
                     while True:
                         temp_pixel_0 = starting_above_white - up
                         temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
                         temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                        if temp_pixel_0 <= input_y - difference_between_lines / 3 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
+                        if temp_pixel_0 <= input_y - int(difference_between_lines / 4) or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
                             break
                         if temp_pixel == 255:
                             white_note = False
@@ -486,7 +486,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     for index, row in enumerate(black_notes):
         if index != 0:
             for index2, black_note in enumerate(row):
-                for past_note in enumerate(past_notes):
+                for past_note in past_notes:
                     if abs(past_note[0][0] - black_note[0][0]) <= difference_between_lines:
                         black_notes[index].pop(index2)
                         break
