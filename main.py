@@ -262,7 +262,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_pixel_0 = starting_above_white - up
                         temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right 
                         temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                        img_array[temp_pixel_0, temp_pixel_1] = 0
+                        img_array[temp_pixel_0, temp_pixel_1] = 255
                         if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - int(difference_between_blacks / 2) - 1:
                             #if it surpasses this point and it is not white yet so it is basically the outline still then we  determine it is a white note
                             break
@@ -270,7 +270,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                             #it's getting here almost every time let's check where here it is getting to
                             #shit it's on the very first one it is having issues!
-                            print('fuuuuck'+ str(counter))
                             white_note = False
                             break
                         right_addend = 0
@@ -286,6 +285,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         up_right += right_addend - 1
                         counter += 1
                     print('wasup')
+
                 #point 3                     
                 if white_note:
                     print('pop')
