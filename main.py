@@ -250,28 +250,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     up = 0
                     up_right = 0
                     counter = 1
-
-                    #work from here
-
-
-
-
-
                     #it's not temp_pixel_1 - the difference whatever bc that will be far out at the end of the black line
-                    #it has to start pixel_1 at like -difference between black s * by some percentage!
-                    #have to adjust the above prob bc the dif is 17 and /2 is the thing
                     while True:
                         temp_pixel_0 = starting_above_white - up
-                        temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right 
+                        temp_pixel_1 = x_index - int(difference_between_blacks / 3.5) - 1 + up_right 
                         temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                        img_array[temp_pixel_0, temp_pixel_1] = 255
                         if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - int(difference_between_blacks / 2) - 1:
-                            #if it surpasses this point and it is not white yet so it is basically the outline still then we  determine it is a white note
                             break
                         if temp_pixel == 255:
-
-                            #it's getting here almost every time let's check where here it is getting to
-                            #shit it's on the very first one it is having issues!
                             white_note = False
                             break
                         right_addend = 0
@@ -286,23 +272,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         up += 1
                         up_right += right_addend - 1
                         counter += 1
-                    print('wasup')
-
                 #point 3                     
                 if white_note:
-                    print('pop')
-                    #remove this eventually
                     top_left = [x_index - int(black_count / 2) - 10, input_y - 10]
                     bottom_right = [x_index - int(black_count / 2) + 10, input_y + 10]   
                     dashed_whites.append([top_left, bottom_right])
-
-
-
-                    #keep working here!!!!
-
-
-
-
             black_count = 0       
         else:
             black_count = 0
