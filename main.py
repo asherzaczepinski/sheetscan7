@@ -117,6 +117,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
                             temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
                             if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
+                                #if it surpasses this point and it is not white yet so it is basically the outline still then we  determine it is a white note
                                 break
                             if temp_pixel == 255:
                                 white_note = False
@@ -133,6 +134,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             up += 1
                             up_right += right_addend - 1
                             counter += 1
+
+
+
+
+
                     #always have the option to do bottom left later if that is neccesary!
                     if white_note:
                         top_left = [x_index - int(difference_between_blacks / 2) - 10, input_y - 10]
@@ -254,9 +260,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     #have to adjust the above prob bc the dif is 17 and /2 is the thing
                     while True:
                         temp_pixel_0 = starting_above_white - up
-                        temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
+                        temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right 
                         temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                        if temp_pixel_0 <= input_y - int(difference_between_lines / 4) or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
+                        img_array[temp_pixel_0, temp_pixel_1] = 0
+                        if temp_pixel_0 <= input_y - int(difference_between_lines / 2) or temp_pixel_1 > x_index - int(difference_between_blacks / 3):
+                            #if it surpasses this point and it is not white yet so it is basically the outline still then we  determine it is a white note
                             break
                         if temp_pixel == 255:
                             white_note = False
