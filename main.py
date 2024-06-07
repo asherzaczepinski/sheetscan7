@@ -257,6 +257,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
 
+                    #it's not temp_pixel_1 - the difference whatever bc that will be far out at the end of the black line
+                    #it has to start pixel_1 at like -difference between black s * by some percentage!
                     #have to adjust the above prob bc the dif is 17 and /2 is the thing
                     while True:
                         temp_pixel_0 = starting_above_white - up
