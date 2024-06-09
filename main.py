@@ -7,6 +7,7 @@ import os
 
 import argparse
 
+#EVENTUALLY ORGANIZE THE NOTe OPERATIONS BY N AMOUNT W DAVID CUZ IT WILL MAKE IT MORE EFFICIENT
 # Initialize parser
 parser = argparse.ArgumentParser()
 parser.add_argument("inputfolder", help="Input Folder", nargs='?', default="input")
@@ -40,7 +41,6 @@ def draw_example_rectangle(image_path, rect):
     img.save(image_path)
 
 #going to process this of a current loop y and the new_y
-
 
 def process_line(input_y, img_array, width, difference_between_lines_for_line_drawing, difference_between_lines, line_height):
     black_notes = []
@@ -107,39 +107,19 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 temp_y_below += 1
                             if below_flag == False:
                                 white_note = False
-                    #this will do the top right thing after determining everything else works 
-                    if white_note:
-                        up = 0
-                        up_right = 0
-                        counter = 1
-                        while True:
-                            temp_pixel_0 = input_y - up
-                            temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
-                            temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
-                                #if it surpasses this point and it is not white yet so it is basically the outline still then we  determine it is a white note
-                                break
-                            if temp_pixel == 255:
-                                white_note = False
-                                break
-                            right_addend = 0
-                            while True:
-                                if temp_pixel_1 + right_addend >= width:
-                                    white_note = False
-                                    break
-                                new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
-                                if new_pixel == 255:
-                                    break
-                                right_addend += 1
-                            up += 1
-                            up_right += right_addend - 1
-                            counter += 1
+
+
+
+                    #IN WHITE AND DAHSED WHITE WE NEED NEW LOGIC HERE
 
 
 
 
 
-                    #always have the option to do bottom left later if that is neccesary!
+
+
+
+
                     if white_note:
                         top_left = [x_index - int(difference_between_blacks / 2) - 10, input_y - 10]
                         bottom_right = [x_index - int(difference_between_blacks / 2) + 10, input_y + 10]   
@@ -245,34 +225,24 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     if above and below:
                         break
                     counter += 1
-                #point 2      
-                if white_note:
-                    up = 0
-                    up_right = 0
-                    counter = 1
-                    #it's not temp_pixel_1 - the difference whatever bc that will be far out at the end of the black line
-                    while True:
-                        temp_pixel_0 = starting_above_white - up
-                        temp_pixel_1 = x_index - int(difference_between_blacks / 3.5) - 1 + up_right 
-                        temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                        if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - int(difference_between_blacks / 2) - 1:
-                            break
-                        if temp_pixel == 255:
-                            white_note = False
-                            break
-                        right_addend = 0
-                        while True:
-                            if temp_pixel_1 + right_addend >= width:
-                                white_note = False
-                                break
-                            new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
-                            if new_pixel == 255:
-                                break
-                            right_addend += 1
-                        up += 1
-                        up_right += right_addend - 1
-                        counter += 1
-                #point 3                     
+
+                
+                
+                
+                
+                
+                
+                
+                #IN WHITE AND DAHSED WHITE WE NEED NEW LOGIC HERE
+
+                    #point 3         
+                    """ if white_note:
+                        top_y = starting_above_white - up
+                        bottom_y = starting_below_white + up
+                        start_x = x_index - int(difference_between_blacks / 3.5) - 1
+                        end_x =x_index - int(difference_between_blacks / 3.5) - 1 +  """
+                        #it is going to go to the top and get the range of pixels and see what percent r black on the top and bottom
+                #point 4          
                 if white_note:
                     top_left = [x_index - int(black_count / 2) - 10, input_y - 10]
                     bottom_right = [x_index - int(black_count / 2) + 10, input_y + 10]   
@@ -479,6 +449,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         break
         past_notes = row
 
+
+    #PUT BACK LATER AWAY FOR TESTING
     for row in black_notes:
         for black_note in row:
             top_left = black_note[0]
@@ -515,7 +487,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
         #bottom side
         img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
-
+ 
     img = Image.fromarray(img_array)
     img.save(image_path)
 
@@ -556,7 +528,6 @@ for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
         image_path = os.path.join(input_folder, filename)
         #extract_highlighted_lines_and_columns_from_image(image_path)
-
         try:
             extract_highlighted_lines_and_columns_from_image(image_path)
         except IndexError as e:
