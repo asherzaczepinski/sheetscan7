@@ -1,3 +1,7 @@
+#1. our next step is to incorporate the new white note logic in oldmain.py to the white notes
+#we can do this and then integrate it into the dashed whites
+#then we fix up black notes
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -39,26 +43,15 @@ def draw_example_rectangle(image_path, rect):
     # Save the image with rectangles
     img.save(image_path)
 
-#going to process this of a current loop y and the new_y
-
-
 def process_line(input_y, img_array, width, difference_between_lines_for_line_drawing, difference_between_lines, line_height):
     black_notes = []
     white_notes = []
     dashed_whites = []
-    
     last_row_notes = []
-
-    #WE JUST NEED IT TO COMPARE TWO ARRAYS DON'T NEED TO KNOW WHICH NOTES THEY ARE WE CAN COMPARE IT AGAINST EACH OTHER
-
-
     #ya it's gonna have to do something for both
     temp_notes = []        
     black_count = 0
     difference_between_blacks = -1
-
-
-
     #white notes
     for x_index in range(width):
         pixel = img_array[input_y, x_index]
@@ -149,11 +142,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             #if it's white
             if difference_between_blacks != -1:
                 difference_between_blacks += 1
-    
-    #black notes
-                
+    #black notes   
     black_count = 0
-    
     #black and dashed white
     for x_index in range(width):
         pixel = img_array[input_y, x_index]
@@ -200,7 +190,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     if new_non_white_percentage > 80:
                         if last_row_notes == []:
                             black_notes.append([top_left, bottom_right])
-
                         else:
                             none_above = True 
                             for note in last_row_notes:
@@ -211,10 +200,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 black_notes.append([top_left, bottom_right])
                 black_count = 0
             else:
-
-
                 #dashed white notes
-
                 starting_above_white = input_y 
                 starting_below_white = input_y 
                 temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
@@ -365,7 +351,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     group.extend([[future_line, future_line + round(line_height / 2)]])
 
     for group in invisible_lines:
-        #every thing we add it to a row_black notes
         for [current_loop_y, new_y] in group:
             row_black_notes = []
             # Process the lines and get the notes
@@ -397,11 +382,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         row_black_notes.append(black_note)
                     else:
                         row_black_notes.append(next_note)
-
-                    #so we can skip past the second note
-                    #maybe we say index += 1 again
                     index += 1
-                    #have to add an index thing here
                 else:
                     row_black_notes.append(black_note)
                 index += 1
@@ -443,16 +424,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 index += 1
             black_notes.append(row_black_notes)
 
-    #First step is adding back to the black notes in current loop y formats of note clusters
-    #then we do this comparison
-    
-    #have this working
-            
-
-
-
     past_notes = []
-    #don't need the third index just if anything equals it on the second time thru we remove it and keep going
+
     for index, row in enumerate(black_notes):
         if index != 0:
             for index2, black_note in enumerate(row):
@@ -461,9 +434,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         black_notes[index].pop(index2)
                         break
         past_notes = row
-
-
-
 
     for row in black_notes:
         for black_note in row:
