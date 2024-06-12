@@ -431,6 +431,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 index += 1
             black_notes.append(row_black_notes)
 
+
+
+
+
+    #there is like one straggling bit at end have to figure that out
     past_notes = []
     for index, row in enumerate(black_notes):
         if index != 0:
@@ -441,8 +446,28 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         break
         past_notes = row
 
+    past_notes = []
+    for index, row in enumerate(white_notes):
+        print(row)
+        if index != 0:
+            for index2, white_note in enumerate(row):
+                for past_note in past_notes:
+                    print(past_note)
+                    if abs(past_note[0][0] - white_note[0][0]) <= difference_between_lines:
+                        white_notes[index].pop(index2)
+                        break
+        past_notes = row
 
-    #PUT BACK LATER AWAY FOR TESTING
+    past_notes = []
+    for index, row in enumerate(dashed_whites):
+        if index != 0:
+            for index2, dashed_white in enumerate(row):
+                for past_note in past_notes:
+                    if abs(past_note[0][0] - dashed_white[0][0]) <= difference_between_lines:
+                        dashed_whites[index].pop(index2)
+                        break
+        past_notes = row
+
     for row in black_notes:
         for black_note in row:
             top_left = black_note[0]
