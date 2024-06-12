@@ -357,12 +357,14 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         #every thing we add it to a row_black notes
         for [current_loop_y, new_y] in group:
             row_black_notes = []
+            row_white_notes = []
+            row_dashed_whites = []
             current_dashed_whites, current_black_notes, current_white_notes = process_line(
-                current_loop_y, img_array, width, difference_between_lines_for_line_drawing, 
+                current_loop_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
                 difference_between_lines, line_height
             )
             new_dashed_whites, new_black_notes, new_white_notes = process_line(
-                new_y, img_array, width, difference_between_lines_for_line_drawing, 
+                new_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
                 difference_between_lines, line_height
             )
 
@@ -372,6 +374,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             index = 0
 
+            #THIS IS FOR OVERLAPPING OF THE NEXT THING
+
             while index < len(all_blacks_in_line):
                 black_note = all_blacks_in_line[index]
                 if index == len(all_blacks_in_line) - 1:
@@ -379,7 +383,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     break
                 next_note = all_blacks_in_line[index + 1]
                 
-                if next_note[0][0] - black_note[0][0] < difference_between_lines:
+                if abs(next_note[0][0] - black_note[0][0]) < difference_between_lines:
                     #compare which ones y is greater it doesn't matter the x
                     if next_note[0][1] < black_note[0][1]:
                         row_black_notes.append(black_note)
@@ -395,41 +399,44 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 index += 1
             
             index = 0
-
+    
             while index < len(all_whites_in_line):
                 white_note = all_whites_in_line[index]
                 if index == len(all_whites_in_line) - 1:
-                    white_notes.append(white_note)
+                    row_white_notes.append(white_note)
                     break
                 next_note = all_whites_in_line[index + 1]
-                if next_note[0][0] - white_note[0][0] < difference_between_lines:
+                
+                if abs(next_note[0][0] - white_note[0][0]) < difference_between_lines:
+                    #compare which ones y is greater it doesn't matter the x
                     if next_note[0][1] < white_note[0][1]:
-                        white_notes.append(white_note)
+                        row_white_notes.append(white_note)
                     else:
-                        white_notes.append(next_note)
+                        row_white_notes.append(next_note)
                     index += 1
                 else:
-                    white_notes.append(white_note)
+                    row_white_notes.append(white_note)
                 index += 1
-
             index = 0
-
             while index < len(all_dashed_whites_in_line):
                 dashed_white = all_dashed_whites_in_line[index]
                 if index == len(all_dashed_whites_in_line) - 1:
-                    dashed_whites.append(dashed_white)
+                    row_dashed_whites.append(dashed_white)
                     break
                 next_note = all_dashed_whites_in_line[index + 1]
-                if next_note[0][0] - dashed_white[0][0] < difference_between_lines:
+                if abs(next_note[0][0] - dashed_white[0][0]) < difference_between_lines:
                     if next_note[0][1] < dashed_white[0][1]:
-                        dashed_whites.append(dashed_white)
+                        row_dashed_whites.append(dashed_white)
                     else:
-                        dashed_whites.append(next_note)
+                        row_dashed_whites.append(next_note)
                     index += 1
                 else:
-                    dashed_whites.append(dashed_white)
+                    row_dashed_whites.append(dashed_white)
                 index += 1
+
             black_notes.append(row_black_notes)
+            white_notes.append(row_white_notes)
+            dashed_whites.append(row_dashed_whites)
 
     past_notes = []
     for index, row in enumerate(black_notes):
@@ -440,7 +447,28 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         black_notes[index].pop(index2)
                         break
         past_notes = row
+    
+    past_notes = []
+    for index, row in enumerate(dashed_whites):
+        if index != 0:
+            for index2, dashed_white in enumerate(row):
+                for past_note in past_notes:
+                    if abs(past_note[0][0] - dashed_white[0][0]) <= difference_between_lines:
+                        dashed_whites[index].pop(index2)
+                        break
+        past_notes = row
 
+    past_notes = []
+    for index, row in enumerate(white_notes):
+        if index != 0:
+            for index2, white_note in enumerate(row):
+                for past_note in past_notes:
+                    if abs(past_note[0][0] - white_note[0][0]) <= difference_between_lines:
+                        white_notes[index].pop(index2)
+                        break
+        past_notes = row
+
+    #DONT REALLY NEED THE ROW IN ANYTHING BUT BLACKS BUT IT HELPS
     for row in black_notes:
         for black_note in row:
             top_left = black_note[0]
@@ -453,31 +481,31 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
             #bottom side
             img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0  
-
-    for white_note in white_notes:
-        top_left = white_note[0]
-        bottom_right = white_note[1]
-        #right side
-        img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
-        #left side
-        img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
-        #top side
-        img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
-        #bottom side
-        img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
+    for row in white_notes:
+        for white_note in row:
+            top_left = white_note[0]
+            bottom_right = white_note[1]
+            #right side
+            img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
+            #left side
+            img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
+            #top side
+            img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
+            #bottom side
+            img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
+    for row in dashed_whites:
+        for dashed_white in row:
+            top_left = dashed_white[0]
+            bottom_right = dashed_white[1]
+            #right side
+            img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
+            #left side
+            img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
+            #top side
+            img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
+            #bottom side
+            img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
     
-    for dashed_white in dashed_whites:
-        top_left = dashed_white[0]
-        bottom_right = dashed_white[1]
-        #right side
-        img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
-        #left side
-        img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
-        #top side
-        img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
-        #bottom side
-        img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
- 
     img = Image.fromarray(img_array)
     img.save(image_path)
 
