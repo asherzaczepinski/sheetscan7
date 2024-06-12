@@ -7,25 +7,12 @@ import os
 
 import argparse
 
+#fix up errors
+#we got our logic working for white notes
+#need to transfer over to dashed whites will be easy
+#fix up black note logic
 
 
-
-
-
-
-
-
-#STUPID DAMN NOT USING COPY IS SCREWING EVERYTHING UP
-
-#ITS ALSO TH BLACK NOTE THAT NEEDS SOME IMPROVING
-#I'M GOING TO STOP W 
-
-
-
-
-
-
-#EVENTUALLY ORGANIZE THE NOTe OPERATIONS BY N AMOUNT W DAVID CUZ IT WILL MAKE IT MORE EFFICIENT
 # Initialize parser
 parser = argparse.ArgumentParser()
 parser.add_argument("inputfolder", help="Input Folder", nargs='?', default="input")
@@ -376,7 +363,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
             #THIS IS FOR OVERLAPPING OF THE NEXT THING
 
-            while index < len(all_blacks_in_line):
+            while index < len(all_blacks_in_line) - 1:
                 black_note = all_blacks_in_line[index]
                 if index == len(all_blacks_in_line) - 1:
                     row_black_notes.append(black_note)
