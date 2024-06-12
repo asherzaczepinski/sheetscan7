@@ -7,6 +7,24 @@ import os
 
 import argparse
 
+
+
+
+
+
+
+
+
+#STUPID DAMN NOT USING COPY IS SCREWING EVERYTHING UP
+
+#ITS ALSO TH BLACK NOTE THAT NEEDS SOME IMPROVING
+#I'M GOING TO STOP W 
+
+
+
+
+
+
 #EVENTUALLY ORGANIZE THE NOTe OPERATIONS BY N AMOUNT W DAVID CUZ IT WILL MAKE IT MORE EFFICIENT
 # Initialize parser
 parser = argparse.ArgumentParser()
@@ -32,7 +50,7 @@ def draw_example_rectangle(image_path, rect):
 
     # Draw each rectangle
     try:
-        draw.rectangle(rect, fill=None, outline="black", width=1)
+        draw.rectangle(rect, fill=None, outline="grey", width=1)
     except ValueError as e:
         print(f"Failed to draw rectangle {rect} on {image_path}: {e}")
         return
@@ -83,43 +101,34 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     temp_pixel_below = img_array[input_y + i, x_index - int(difference_between_lines / 2)] 
                     if temp_pixel_below != 255:
                         white_note = False
-                #this is going across and then up and down 
                 if white_note:
-                    for new_x_index in range(x_index - difference_between_lines, x_index + 1):
+                    past_temp_y_above = -1
+                    past_temp_y_below = -1
+                    #testing where it is here
+                    for new_x_index in range(x_index - difference_between_lines + 1, x_index - 1):
+                        temp_pixel = img_array[input_y, new_x_index]
+                        if temp_pixel != 255:
+                            continue
                         temp_y_above = input_y
                         temp_y_below = input_y
-                        above_flag = False
-                        below_flag = False
+                        
                         while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
-                            temp_pixel_above = img_array[temp_y_above, new_x_index]                                        
-                            if temp_pixel_above != 255:
-                                above_flag = True
+                            temp_pixel_above = img_array[temp_y_above, new_x_index]       
+                            if temp_pixel_above == 0:
                                 break
                             temp_y_above -= 1
-                        if above_flag == False:
-                            white_note = False
                         if white_note:
                             while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
-                                temp_pixel_below = img_array[temp_y_below, new_x_index]                                            
-                                if temp_pixel_below != 255:
-                                    below_flag = True
+                                temp_pixel_below = img_array[temp_y_below, new_x_index]      
+                                if temp_pixel_below == 0:
                                     break
                                 temp_y_below += 1
-                            if below_flag == False:
-                                white_note = False
-
-
-
-                    #IN WHITE AND DAHSED WHITE WE NEED NEW LOGIC HERE
-
-
-
-
-
-
-
-
-
+                        if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
+                            past_temp_y_above = temp_y_above
+                            past_temp_y_below = temp_y_below
+                        else:
+                            white_note = False
+                            break
                     if white_note:
                         top_left = [x_index - int(difference_between_blacks / 2) - 10, input_y - 10]
                         bottom_right = [x_index - int(difference_between_blacks / 2) + 10, input_y + 10]   
@@ -210,6 +219,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 above = False
                 below = False
                 white_note = True
+                
                 while True:
                     temp_pixel_above = img_array[starting_above_white - counter, x_index - int(black_count / 2)]
                     temp_pixel_below = img_array[starting_below_white + counter, x_index - int(black_count / 2)]
@@ -225,23 +235,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     if above and below:
                         break
                     counter += 1
-
-                
-                
-                
-                
-                
-                
-                
-                #IN WHITE AND DAHSED WHITE WE NEED NEW LOGIC HERE
-
-                    #point 3         
-                    """ if white_note:
-                        top_y = starting_above_white - up
-                        bottom_y = starting_below_white + up
-                        start_x = x_index - int(difference_between_blacks / 3.5) - 1
-                        end_x =x_index - int(difference_between_blacks / 3.5) - 1 +  """
-                        #it is going to go to the top and get the range of pixels and see what percent r black on the top and bottom
                 #point 4          
                 if white_note:
                     top_left = [x_index - int(black_count / 2) - 10, input_y - 10]
@@ -364,13 +357,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         #every thing we add it to a row_black notes
         for [current_loop_y, new_y] in group:
             row_black_notes = []
-            # Process the lines and get the notes
             current_dashed_whites, current_black_notes, current_white_notes = process_line(
-                current_loop_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
+                current_loop_y, img_array, width, difference_between_lines_for_line_drawing, 
                 difference_between_lines, line_height
             )
             new_dashed_whites, new_black_notes, new_white_notes = process_line(
-                new_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
+                new_y, img_array, width, difference_between_lines_for_line_drawing, 
                 difference_between_lines, line_height
             )
 
