@@ -135,10 +135,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break
-                    if white_note:
-                        top_left = [x_index - int(difference_between_blacks / 2) - 10, input_y - 10]
-                        bottom_right = [x_index - int(difference_between_blacks / 2) + 10, input_y + 10]   
-                        white_notes.append([top_left, bottom_right])
+                        if white_note:
+                            top_left = [x_index - int(difference_between_blacks / 2) - 10, input_y - 10]
+                            bottom_right = [x_index - int(difference_between_blacks / 2) + 10, input_y + 10]   
+                            white_notes.append([top_left, bottom_right])
             difference_between_blacks = 0
         else:
             #if it's white
@@ -213,7 +213,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 while temp_pixel_above != 255:
                     starting_above_white -= 1
                     temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
-                #point 1
                 counter = 0
                 above = False
                 below = False
@@ -231,7 +230,40 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     if above and below:
                         break
                     counter += 1
-                #point 2                           
+
+
+
+
+                #we're working on adjusting this for the dashed whites
+                if white_note:
+                    past_temp_y_above = -1
+                    past_temp_y_below = -1
+                    #testing where it is here
+                    for new_x_index in range(x_index - difference_between_lines + 1, x_index - 1):
+                        temp_pixel = img_array[input_y, new_x_index]
+                        if temp_pixel != 255:
+                            continue
+                        temp_y_above = input_y
+                        temp_y_below = input_y
+                        
+                        while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
+                            temp_pixel_above = img_array[temp_y_above, new_x_index]       
+                            if temp_pixel_above == 0:
+                                break
+                            temp_y_above -= 1
+                        if white_note:
+                            while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+                                temp_pixel_below = img_array[temp_y_below, new_x_index]      
+                                if temp_pixel_below == 0:
+                                    break
+                                temp_y_below += 1
+                        if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
+                            past_temp_y_above = temp_y_above
+                            past_temp_y_below = temp_y_below
+                        else:
+                            white_note = False
+                            break
+                
                 if white_note:
                     #remove this eventually
                     top_left = [x_index - int(black_count / 2) - 10, input_y - 10]
