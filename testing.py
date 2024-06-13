@@ -235,11 +235,19 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                 #we're working on adjusting this for the dashed whites
+                    
+
+                #WE SHOULD SPLIT IT INTO TWO ARRAYS
+                #ONE FOR THE TOP PART AND ONE FOR BOTTOM OF THE DASHED WHITES
+                #WE GO THROUGH UNTIL WE FIND STARTING POINT
+                #THEN WE EXPECT IT TO GO A CERTAIN NUMBER OF PIXELS
+                #THEN WE END AND HOPE THE VARIATION STAYS THE SAME
+                #WE CAN DO THIS IN TWO SEPERATE IF WHITE NOTe: STATEMENTS
                 if white_note:
                     past_temp_y_above = -1
                     past_temp_y_below = -1
                     #testing where it is here
-                    for new_x_index in range(x_index - difference_between_lines * 1.5, x_index - 1):
+                    for new_x_index in range(x_index - round(difference_between_lines * 1.5), x_index - 1):
                         img_array[input_y, new_x_index] = 50
                         """ temp_pixel = img_array[input_y, new_x_index]
                         if temp_pixel != 255:
@@ -390,11 +398,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             row_black_notes = []
             # Process the lines and get the notes
             current_dashed_whites, current_black_notes, current_white_notes = process_line(
-                current_loop_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
+                current_loop_y, img_array, width, difference_between_lines_for_line_drawing, 
                 difference_between_lines, line_height
             )
             new_dashed_whites, new_black_notes, new_white_notes = process_line(
-                new_y, img_array.copy(), width, difference_between_lines_for_line_drawing, 
+                new_y, img_array, width, difference_between_lines_for_line_drawing, 
                 difference_between_lines, line_height
             )
 
