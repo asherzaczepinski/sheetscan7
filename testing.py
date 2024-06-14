@@ -251,6 +251,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                 #its ok its doing it twice it's bc it is drawing it on the new y and the current y before they decide which one is better
+                    
+
+
+
+
+
+                #THE LOGIC IS HERE JUST WORK ON IT!
                 if white_note:
                     first_switch = False
                     space_counter = 0
@@ -274,7 +281,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_above == 0:
                                     break
                                 temp_y_above -= 1
-                            if past_temp_y == -1 or (abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 10)):
+                            if past_temp_y == -1 or (abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 10)):
                                 past_temp_y = temp_y_above
                             else:
                                 white_note = False
