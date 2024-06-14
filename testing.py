@@ -264,12 +264,21 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     past_temp_y = -1
                     for new_x_index in range(x_index - round(difference_between_lines * 1.5), x_index - round(difference_between_lines * 0.5)):
                         temp_pixel = img_array[starting_above_white, new_x_index]
+
+
+
+                        #oh i know the issue
+                        #it's cuz it goes like its black and then immeditely does this
+                        #it has to go whit for this to happen lol
+                        #this is getting confusing fast
                         if temp_pixel != 255:
                             if space_counter > 0:
                                 if not first_switch:
+                                    print('here')
                                     first_switch = True
                                 else:
                                     white_note = False
+                                    print('hi')
                                     break
                             continue
                         else:
