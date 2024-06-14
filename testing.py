@@ -1,7 +1,5 @@
-#1. our next step is to incorporate the new white note logic in oldmain.py to the white notes
-#we can do this and then integrate it into the dashed whites
-#then we fix up black notes
-
+#COPY AND PASTE THE NEW WHITE NOTe STATEMENTS INTO OUR MAIN.PY THIS IS OUR FINAL GOAL!!!!!
+#THE IMG ARRAYS AND OTHER STUFF HAS BEEN EDITED FOR TESTING ANYWAYS!
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -129,12 +127,12 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if temp_pixel_below == 0:
                                         break
                                     temp_y_below += 1
-                            if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
-                                past_temp_y_above = temp_y_above
-                                past_temp_y_below = temp_y_below
-                            else:
-                                white_note = False
-                                break
+                                if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
+                                    past_temp_y_above = temp_y_above
+                                    past_temp_y_below = temp_y_below
+                                else:
+                                    white_note = False
+                                    break
                         if white_note:
                             top_left = [x_index - int(difference_between_blacks / 2) - 10, input_y - 10]
                             bottom_right = [x_index - int(difference_between_blacks / 2) + 10, input_y + 10]   
@@ -243,35 +241,56 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 #THEN WE EXPECT IT TO GO A CERTAIN NUMBER OF PIXELS
                 #THEN WE END AND HOPE THE VARIATION STAYS THE SAME
                 #WE CAN DO THIS IN TWO SEPERATE IF WHITE NOTe: STATEMENTS
+                
+
+
+                #unlike the white notes there is no check rn for how much white section there is
+                #we should add a coounter between the first time we find a white an the last time or past a certain point or some shit
+
+                #the starting y and temp pixel above are very differnt the above is for when it hits a black pixel off the line
+
+
+                #its ok its doing it twice it's bc it is drawing it on the new y and the current y before they decide which one is better
                 if white_note:
-                    past_temp_y_above = -1
-                    past_temp_y_below = -1
-                    #testing where it is here
-                    for new_x_index in range(x_index - round(difference_between_lines * 1.5), x_index - 1):
-                        img_array[input_y, new_x_index] = 50
-                        """ temp_pixel = img_array[input_y, new_x_index]
+                    first_switch = False
+                    space_counter = 0
+                    past_temp_y = -1
+                    for new_x_index in range(x_index - round(difference_between_lines * 1.5), x_index - round(difference_between_lines * 0.5)):
+                        temp_pixel = img_array[starting_above_white, new_x_index]
                         if temp_pixel != 255:
-                            continue
-                        temp_y_above = input_y
-                        temp_y_below = input_y
-                        
-                        while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
-                            temp_pixel_above = img_array[temp_y_above, new_x_index]       
-                            if temp_pixel_above == 0:
-                                break
-                            temp_y_above -= 1
-                        if white_note:
-                            while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
-                                temp_pixel_below = img_array[temp_y_below, new_x_index]      
-                                if temp_pixel_below == 0:
+                            if space_counter > 0:
+                                if not first_switch:
+                                    first_switch = True
+                                else:
+                                    white_note = False
                                     break
-                                temp_y_below += 1
-                        if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
-                            past_temp_y_above = temp_y_above
-                            past_temp_y_below = temp_y_below
+                            continue
                         else:
-                            white_note = False
-                            break """
+                            space_counter += 1
+                        temp_y_above = starting_above_white
+                        if white_note:
+                            while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
+                                temp_pixel_above = img_array[temp_y_above, new_x_index]
+                                if temp_pixel_above == 0:
+                                    break
+                                temp_y_above -= 1
+                            if past_temp_y == -1 or (abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 10)):
+                                past_temp_y = temp_y_above
+                            else:
+                                white_note = False
+                                break
+
+
+
+
+                        """ 
+
+                    if white_note:
+                        space_counter = 0
+                        #lower going down
+                        for new_x_index in range(x_index - round(difference_between_lines * 2), x_index - difference_between_lines):
+                            temp_pixel = img_array[starting_below_white, new_x_index]
+                             """
                 
                 if white_note:
                     #remove this eventually
