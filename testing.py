@@ -280,11 +280,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if temp_pixel != 255:
                             if space_counter > 0 and last_pixel != 255 and last_pixel != -1:
                                 if not first_switch:
-                                    print('here')
                                     first_switch = True
                                 else:
                                     white_note = False
-                                    print('hi')
                                     break
                             continue
                         else:
