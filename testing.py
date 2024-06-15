@@ -258,10 +258,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                 #THE LOGIC IS HERE JUST WORK ON IT!
+                    
+
+                #its going across on just above the top line and bottom line
+                #its making sure there is not more than one gap while also making sure there is 
                 if white_note:
                     first_switch = False
                     space_counter = 0
                     past_temp_y = -1
+                    last_pixel = -1
                     for new_x_index in range(x_index - round(difference_between_lines * 1.5), x_index - round(difference_between_lines * 0.5)):
                         temp_pixel = img_array[starting_above_white, new_x_index]
 
@@ -271,8 +276,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         #it's cuz it goes like its black and then immeditely does this
                         #it has to go whit for this to happen lol
                         #this is getting confusing fast
+                        #yeah we need it to stop until white
                         if temp_pixel != 255:
-                            if space_counter > 0:
+                            if space_counter > 0 and last_pixel != 255 and last_pixel != -1:
                                 if not first_switch:
                                     print('here')
                                     first_switch = True
@@ -282,6 +288,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                             continue
                         else:
+                            if last_pixel != 255 and last_pixel != -1:
+                                space_counter = 0
                             space_counter += 1
                         temp_y_above = starting_above_white
                         if white_note:
@@ -295,10 +303,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break
-
-
-
-
+                        last_pixel = temp_pixel
                         """ 
 
                     if white_note:
