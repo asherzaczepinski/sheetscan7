@@ -231,10 +231,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         break
                     counter += 1
 
-
-
-
-                #we're working on adjusting this for the dashed whites
+                #top part
                 if white_note:
                     first_switch = False
                     space_counter = 0
@@ -262,6 +259,37 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 temp_y_above -= 1
                             if past_temp_y == -1 or (abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 10)):
                                 past_temp_y = temp_y_above
+                            else:
+                                white_note = False
+                                break
+                #bottom part
+                if white_note:
+                    first_switch = False
+                    space_counter = 0
+                    past_temp_y = -1
+                    for new_x_index in range(x_index - round(difference_between_lines * 2), x_index - difference_between_lines):
+                        temp_pixel = img_array[starting_below_white, new_x_index]
+                        if temp_pixel != 255:
+                            if space_counter > 0:
+                                if not first_switch:
+                                    first_switch = True
+                                    space_counter = 0
+                                else:
+                                    white_note = False
+                                    break
+                            continue
+                        else:
+                            space_counter += 1
+                        temp_y_below = starting_below_white
+
+                        if white_note:
+                            while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+                                temp_pixel_below = img_array[temp_y_below, new_x_index]
+                                if temp_pixel_below == 0:
+                                    break
+                                temp_y_below += 1
+                            if past_temp_y == -1 or (abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 10) and abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 10)):
+                                past_temp_y = temp_y_below
                             else:
                                 white_note = False
                                 break
