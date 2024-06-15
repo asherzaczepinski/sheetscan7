@@ -1,6 +1,5 @@
-#1. our next step is to incorporate the new white note logic in oldmain.py to the white notes
-#we can do this and then integrate it into the dashed whites
-#then we fix up black notes
+#UPDATE BLACK NOTe LOGIC
+
 
 from PIL import Image, ImageDraw
 from pathlib import Path
