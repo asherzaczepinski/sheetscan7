@@ -1,5 +1,18 @@
 #COPY AND PASTE THE NEW WHITE NOTe STATEMENTS INTO OUR MAIN.PY THIS IS OUR FINAL GOAL!!!!!
 #THE IMG ARRAYS AND OTHER STUFF HAS BEEN EDITED FOR TESTING ANYWAYS!
+
+
+#for black notes we could incorporate our same concept we did on the white notes but just w black pixels
+
+
+
+
+
+
+
+
+
+#I JUST REALIZE FOR EVERY NOTe WE SHOULD FIGURE OUT WHICH CURRENT LOOP Y IT IS CLOSEST TO AND REASSIGN ITS Y BASED OFF THIS FOR THE CENTER Y THIS IS AN IMPORTANT STEP I CAN IMPLEMENT AFTER THE BLACK NOTE SHIT
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -534,7 +547,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
         #bottom side
         img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
-    
+
+        img_array[round((bottom_right[1] + top_left[1]) / 2), bottom_right[0] + 10] = 0
+
     for dashed_white in dashed_whites:
         top_left = dashed_white[0]
         bottom_right = dashed_white[1]
