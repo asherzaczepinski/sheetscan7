@@ -103,7 +103,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             temp_y_above -= 1
                         if above_flag == False:
                             white_note = False
-                        if white_note:
                             while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
                                 temp_pixel_below = img_array[temp_y_below, new_x_index]                                            
                                 if temp_pixel_below != 255:
@@ -129,12 +128,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_above == 0:
                                     break
                                 temp_y_above -= 1
-                            if white_note:
-                                while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
-                                    temp_pixel_below = img_array[temp_y_below, new_x_index]      
-                                    if temp_pixel_below == 0:
-                                        break
-                                    temp_y_below += 1
+                            while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+                                temp_pixel_below = img_array[temp_y_below, new_x_index]      
+                                if temp_pixel_below == 0:
+                                    break
+                                temp_y_below += 1
                             if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
                                 past_temp_y_above = temp_y_above
                                 past_temp_y_below = temp_y_below
@@ -150,9 +148,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             #if it's white
             if difference_between_blacks != -1:
                 difference_between_blacks += 1
-
-
-                
     #black notes   
     black_count = 0
     #black and dashed white

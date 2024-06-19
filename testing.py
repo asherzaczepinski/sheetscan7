@@ -180,14 +180,42 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
 
-                
+
                 #working here!!!!
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
-                    #normal black note
+                    past_temp_y_above = -1
+                    past_temp_y_below = -1
+                    #testing where it is here
+                    for new_x_index in range(x_index - black_count + 1, x_index - 1):
+                        temp_pixel = img_array[input_y, new_x_index]
+                        if temp_pixel != 255:
+                            continue
+                        temp_y_above = input_y
+                        temp_y_below = input_y
+                        
+                        while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
+                            temp_pixel_above = img_array[temp_y_above, new_x_index]       
+                            if temp_pixel_above == 0:
+                                break
+                            temp_y_above -= 1
+                        while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+                            temp_pixel_below = img_array[temp_y_below, new_x_index]      
+                            if temp_pixel_below == 0:
+                                break
+                            temp_y_below += 1
+                        if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
+                            past_temp_y_above = temp_y_above
+                            past_temp_y_below = temp_y_below
+                        else:
+                            black_note = False
+                            break
+                    
 
+                    #temp note comparison
 
                 else:
                     #black note w/ slash thru
+
 
                 black_count = 0
 
