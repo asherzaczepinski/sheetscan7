@@ -12,7 +12,7 @@
 
 
 
-#I JUST REALIZE FOR EVERY NOTe WE SHOULD FIGURE OUT WHICH CURRENT LOOP Y IT IS CLOSEST TO AND REASSIGN ITS Y BASED OFF THIS FOR THE CENTER Y THIS IS AN IMPORTANT STEP I CAN IMPLEMENT AFTER THE BLACK NOTE SHIT
+#I JUST REALIZE FOR EVERY NOTe WE SHOULD FIGURE OUT WHICH CURRENT LOOP Y IT IS CLOSEST TO AND REASSIGN ITS Y BASED OFF THIS FOR THE CENTER Y THIS IS AN IMPORTANT STEP I CAN IMPLEMENT AFTER THE BLACK NOTe SHIT
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -172,46 +172,30 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 if above_pixel == 255 or below_pixel == 255:
                     black_note = False
             if black_note:
-                #black notes
-                top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                roi = img_array[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]
-                total_pixels = roi.size
-                non_white_pixels = np.sum(roi < 255)
-                non_white_percentage = (non_white_pixels / total_pixels) * 100
-                if non_white_percentage > 70:
-                    if black_count >= difference_between_lines_for_line_drawing * 1.5:
-                        if last_row_notes == []:
-                            black_notes.append([top_left, bottom_right])
-                        else:
-                            none_above = True 
-                            for note in last_row_notes:
-                                #or we can account for the -10!!!!! by saying - 10
-                                if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                    none_above = False
-                            if none_above:
-                                black_notes.append([top_left, bottom_right])
-                    else:
-                        temp_notes.append([top_left, bottom_right])
-                        black_notes.append([top_left, bottom_right])
-                elif black_count >= difference_between_lines_for_line_drawing * 1.5:
-                    little_increment = int(difference_between_lines_for_line_drawing / (7/3))          
-                    new_roi = img_array[top_left[1]:bottom_right[1], top_left[0] + little_increment:bottom_right[0] - little_increment]
-                    new_total_pixels = new_roi.size
-                    new_non_white_pixels = np.sum(new_roi < 255)
-                    new_non_white_percentage = (new_non_white_pixels / new_total_pixels) * 100
-                    if new_non_white_percentage > 80:
-                        if last_row_notes == []:
-                            black_notes.append([top_left, bottom_right])
-                        else:
-                            none_above = True 
-                            for note in last_row_notes:
-                                #or we can account for the -10!!!!! by saying - 10
-                                if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                    none_above = False
-                            if none_above:
-                                black_notes.append([top_left, bottom_right])
+
+
+
+
+                #put in the last row notes temp notes after this
+
+
+
+                
+                #working here!!!!
+                if black_count < difference_between_lines_for_line_drawing * 1.5:
+                    #normal black note
+
+
+                else:
+                    #black note w/ slash thru
+
                 black_count = 0
+
+
+
+
+
+
             else:
                 #dashed white notes
                 starting_above_white = input_y 
@@ -309,14 +293,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break
-                        """ 
-
-                    if white_note:
-                        space_counter = 0
-                        #lower going down
-                        for new_x_index in range(x_index - round(difference_between_lines * 2), x_index - difference_between_lines):
-                            temp_pixel = img_array[starting_below_white, new_x_index]
-                             """
+                     
                 
                 if white_note:
                     #remove this eventually

@@ -150,6 +150,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             #if it's white
             if difference_between_blacks != -1:
                 difference_between_blacks += 1
+
+
+                
     #black notes   
     black_count = 0
     #black and dashed white
