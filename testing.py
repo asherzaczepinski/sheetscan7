@@ -226,9 +226,42 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
                                 black_notes.append([top_left, bottom_right])
                 else:
-                    print('we work on this for dashed later')
-
-
+                    print('found a dashed black --- edited it to calculate before on the above below part')
+                    starting_above_white = input_y 
+                    starting_below_white = input_y 
+                    #changing it has to start before
+                    temp_pixel_above = img_array[starting_above_white, x_index - black_count + 1]
+                    temp_pixel_below = img_array[starting_below_white, x_index - black_count + 1]    
+                    while temp_pixel_below != 255:
+                        starting_below_white += 1
+                        temp_pixel_below = img_array[starting_below_white, x_index - black_count + 1]
+                    while temp_pixel_above != 255:
+                        starting_above_white -= 1
+                        temp_pixel_above = img_array[starting_above_white, x_index - black_count + 1]
+                    counter = 0
+                    above = False
+                    below = False
+                    white_note = True
+                    print(black_note)
+                    while True:
+                        temp_pixel_above = img_array[starting_above_white - counter, x_index - black_count + 1]
+                        temp_pixel_below = img_array[starting_below_white + counter, x_index - black_count + 1]
+                        if counter > int(difference_between_lines_for_line_drawing / 3.5):
+                            black_note = False
+                            break
+                        if temp_pixel_above != 255:
+                            above = True
+                        if temp_pixel_below != 255:
+                            below = True
+                        if above and below:
+                            break
+                        counter += 1
+                    #copy and paste the rest in here
+                    if black_note:
+                        print(img_array[starting_above_white - 0, x_index - black_count + 1])
+                    #AFTER WE GET TOP WE FIGURE WHERE THE note STARTS AND ENDS
+                    #WE DO THE WHITE note SHIT ON THE BLCK note STUFF
+                    #EVENTUALLY MAKE EVERY note Y ASSIGNED TO ITS CLOSEST CURRENT LOOP Y WILL BE A SUPER QUICK THING
                 black_count = 0
 
 
