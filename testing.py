@@ -226,6 +226,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
                                 black_notes.append([top_left, bottom_right])
                 else:
+
                     print('found a dashed black --- edited it to calculate before on the above below part')
                     starting_above_white = input_y 
                     starting_below_white = input_y 
@@ -487,7 +488,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 group.extend([[int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + round(line_height / 2)]])
                 if add_row_index != 3:
                     group.extend([[future_line, future_line + round(line_height / 2)]])
-
+    print(invisible_lines)
     for group in invisible_lines:
         for [current_loop_y, new_y] in group:
             row_black_notes = []
