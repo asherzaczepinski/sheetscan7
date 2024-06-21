@@ -269,27 +269,40 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if end_down - start_down < difference_between_lines / 5:
                             black_note = False
 
-
-
-
-
-
-                    #apply black note logic to start up and end up and start down and end down
-                    print(start_up, end_up)
-                    print(start_down, end_down)
-                    #copy and paste the rest in here
+                    past_temp_y_above = -1
+                    past_temp_y_below = -1
+                    start = max(start_up, start_down)
+                    end = min(end_up, end_down)
+                    for new_x_index in range(start, end):
+                        temp_pixel = img_array[input_y, new_x_index]
+                        if temp_pixel != 0:
+                            continue
+                        temp_y_above = input_y
+                        temp_y_below = input_y
+                        
+                        while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
+                            temp_pixel_above = img_array[temp_y_above, new_x_index]       
+                            if temp_pixel_above == 255:
+                                break
+                            temp_y_above -= 1
+                        while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+                            temp_pixel_below = img_array[temp_y_below, new_x_index]      
+                            if temp_pixel_below == 255:
+                                break
+                            temp_y_below += 1
+                        if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
+                            past_temp_y_above = temp_y_above
+                            past_temp_y_below = temp_y_below
+                        else:
+                            black_note = False
+                            break
                     if black_note:
-                        print(img_array[starting_above_white - 0, x_index - black_count + 1])
-                    #AFTER WE GET TOP WE FIGURE WHERE THE note STARTS AND ENDS
-                    #WE DO THE WHITE note SHIT ON THE BLCK note STUFF
-                    #EVENTUALLY MAKE EVERY note Y ASSIGNED TO ITS CLOSEST CURRENT LOOP Y WILL BE A SUPER QUICK THING
-                black_count = 0
-
-
-
-
-
-
+                        print('dashed black')
+                        #add in temp stuff here
+                        top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
+                        bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
+                        black_notes.append([top_left, bottom_right])
+                    black_count = 0
             else:
                 #dashed white notes
                 starting_above_white = input_y 
@@ -617,8 +630,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
         img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
         #bottom side
         img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0      
-
-        img_array[round((bottom_right[1] + top_left[1]) / 2), bottom_right[0] + 10] = 0
 
     for dashed_white in dashed_whites:
         top_left = dashed_white[0]
