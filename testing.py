@@ -1,18 +1,11 @@
-#COPY AND PASTE THE NEW WHITE NOTe STATEMENTS INTO OUR MAIN.PY THIS IS OUR FINAL GOAL!!!!!
-#THE IMG ARRAYS AND OTHER STUFF HAS BEEN EDITED FOR TESTING ANYWAYS!
+#that one 3/4 time signature is looked at as a dashed black --- we can fix this by editing the logic on dashed black
+#for the other stuff it doesn't identify it's because is starts and then stops and then starts
+#need something to recognize to only count it as a black if it doesn't go above a bunch ----- we can do this at the start of the blakc note until first found is true
 
 
-#for black notes we could incorporate our same concept we did on the white notes but just w black pixels
+#add in temp note comparison logic later i have it stored ina note
 
-
-
-
-
-
-
-
-
-#I JUST REALIZE FOR EVERY NOTe WE SHOULD FIGURE OUT WHICH CURRENT LOOP Y IT IS CLOSEST TO AND REASSIGN ITS Y BASED OFF THIS FOR THE CENTER Y THIS IS AN IMPORTANT STEP I CAN IMPLEMENT AFTER THE BLACK NOTe SHIT
+#the issue with the black notes it i think its saying when they're combined it goes all the way down and sees it keeps going so it doesn't work
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -210,21 +203,12 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             black_note = False
                             break
                     if black_note:
-                        if last_row_notes == []:
-                            top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                            bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                            black_notes.append([top_left, bottom_right])
-                        else:
-                            none_above = True 
-                            for note in last_row_notes:
-                                #or we can account for the -10!!!!! by saying - 10
-                                if note[0][0] - 10 >= top_left[0] - 5 and note[0][0] - 10 <= top_left[0] + 5:
-                                    none_above = False
-                            if none_above:
-                                #black notes
-                                top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                                bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
-                                black_notes.append([top_left, bottom_right])
+
+
+                        #add in the row comparison later
+                        top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
+                        bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
+                        black_notes.append([top_left, bottom_right])
                 else:
                     #dashed black
                     starting_above_white = input_y 
@@ -273,6 +257,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     past_temp_y_below = -1
                     start = max(start_up, start_down)
                     end = min(end_up, end_down)
+
                     for new_x_index in range(start, end):
                         temp_pixel = img_array[input_y, new_x_index]
                         if temp_pixel != 0:
@@ -296,6 +281,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         else:
                             black_note = False
                             break
+
+
+                    #need to keep this a black note here
                     if black_note:
                         print('dashed black')
                         #add in temp stuff here
