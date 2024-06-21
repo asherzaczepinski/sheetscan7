@@ -6,6 +6,10 @@
 #add in temp note comparison logic later i have it stored ina note
 
 #the issue with the black notes it i think its saying when they're combined it goes all the way down and sees it keeps going so it doesn't work
+
+
+
+#when we deal with teh centers of notes for comparisons do the top left and add a average note height bc the new way i'm adjusting blacks is going to make it so the height at bottom could be slightly off
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -175,6 +179,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                 #working here!!!!
+
+
+                #make it stop once it hits the line height
+
+
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
                     past_temp_y_above = -1
                     past_temp_y_below = -1
@@ -202,6 +211,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         else:
                             black_note = False
                             break
+
+
+
                     if black_note:
 
 
