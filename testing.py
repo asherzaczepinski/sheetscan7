@@ -140,7 +140,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if temp_pixel_below == 0:
                                         break
                                     temp_y_below += 1
-                                if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
+                                if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
                                     past_temp_y_above = temp_y_above
                                     past_temp_y_below = temp_y_below
                                 else:
@@ -203,7 +203,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if temp_pixel_below == 255:
                                 break
                             temp_y_below += 1
-                        if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 10)):
+                        if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
                             past_temp_y_above = temp_y_above
                             past_temp_y_below = temp_y_below
                         else:
@@ -226,8 +226,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
                                 black_notes.append([top_left, bottom_right])
                 else:
-
-                    print('found a dashed black --- edited it to calculate before on the above below part')
+                    #dashed black
                     starting_above_white = input_y 
                     starting_below_white = input_y 
                     #changing it has to start before
@@ -239,24 +238,45 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     while temp_pixel_above != 255:
                         starting_above_white -= 1
                         temp_pixel_above = img_array[starting_above_white, x_index - black_count + 1]
-                    counter = 0
-                    above = False
-                    below = False
-                    white_note = True
-                    print(black_note)
-                    while True:
-                        temp_pixel_above = img_array[starting_above_white - counter, x_index - black_count + 1]
-                        temp_pixel_below = img_array[starting_below_white + counter, x_index - black_count + 1]
-                        if counter > int(difference_between_lines_for_line_drawing / 3.5):
+                    #going across and finding where it starts and ends for the black_note
+                    #the upper start
+                    start_up = -1
+                    end_up = -1
+                    if black_note:
+                        found_black = False
+                        for new_x_index in range(x_index - black_count + 1, x_index):
+                            new_pixel = img_array[starting_above_white, new_x_index]
+                            if new_pixel == 0 and not found_black:
+                                found_black = True
+                                start_up = new_x_index
+                            elif found_black:
+                                #white and a black has been found
+                                end_up = new_x_index - 1
+                        if end_up - start_up < difference_between_lines / 5:
                             black_note = False
-                            break
-                        if temp_pixel_above != 255:
-                            above = True
-                        if temp_pixel_below != 255:
-                            below = True
-                        if above and below:
-                            break
-                        counter += 1
+                    start_down = -1
+                    end_down = -1
+                    if black_note:
+                        found_black = False
+                        for new_x_index in range(x_index - black_count + 1, x_index):
+                            new_pixel = img_array[starting_below_white, new_x_index]
+                            if new_pixel == 0 and not found_black:
+                                found_black = True
+                                start_down = new_x_index
+                            elif found_black:
+                                #white and a black has been found
+                                end_down = new_x_index - 1
+                        if end_down - start_down < difference_between_lines / 5:
+                            black_note = False
+
+
+
+
+
+
+                    #apply black note logic to start up and end up and start down and end down
+                    print(start_up, end_up)
+                    print(start_down, end_down)
                     #copy and paste the rest in here
                     if black_note:
                         print(img_array[starting_above_white - 0, x_index - black_count + 1])
@@ -331,7 +351,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_above == 0:
                                     break
                                 temp_y_above -= 1
-                            if past_temp_y == -1 or (abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 10) and abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 10)):
+                            if past_temp_y == -1 or (abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y - temp_y_above) <= round(difference_between_lines / 5)):
                                 past_temp_y = temp_y_above
                             else:
                                 white_note = False
@@ -362,7 +382,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_below == 0:
                                     break
                                 temp_y_below += 1
-                            if past_temp_y == -1 or (abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 10) and abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 10)):
+                            if past_temp_y == -1 or (abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 5) and abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 5)):
                                 past_temp_y = temp_y_below
                             else:
                                 white_note = False
