@@ -190,6 +190,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     #testing where it is here
                     for new_x_index in range(x_index - black_count + 1, x_index - 1):
                         temp_pixel = img_array[input_y, new_x_index]
+                        continued = True
+                        #this is finding the part where it goes up forever
+                        for new_y_index in range (input_y - int(difference_between_lines / 2), input_y + int(difference_between_lines / 2)):
+                            if img_array[new_y_index, new_x_index] == 255:
+                                continued = False
+                        if continued:
+                            continue
                         if temp_pixel != 0:
                             continue
                         temp_y_above = input_y
