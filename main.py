@@ -22,6 +22,7 @@
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
+import bisect
 
 import numpy as np
 import os
@@ -491,43 +492,29 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 def sort_pairs(input_array):
     # Initialize an empty list to store the pairs
     pairs = []
-
-    # Iterate over each sublist in the input array
     for sublist in input_array:
-        # Add all pairs to the pairs list
         pairs.extend(sublist)
-
     # Sort the pairs list by the first element of each pair
     pairs.sort(key=lambda x: x[0])
-
-    # Initialize an empty list to store the middle values
-    middle_values = []
-
     # Calculate the middle value (rounded mean) for each pair and add to middle_values list
-    for pair in pairs:
-        middle = round((pair[0] + pair[1]) / 2)
-        middle_values.append(middle)
-
+    middle_values = [round((pair[0] + pair[1]) / 2) for pair in pairs]
     return middle_values
 
 def y_assigner(y_array, y):
     if not y_array:
         return None
-
-    # Calculate the approximate index using the spacing
-    spacing = y_array[1] - y_array[0]
-    index = round((y - y_array[0]) / spacing)
-
-    # Clamp the index to valid range
-    index = max(0, min(len(y_array) - 1, index))
-
-    # Ensure accuracy by checking adjacent values
-    if index > 0 and abs(y - y_array[index - 1]) < abs(y - y_array[index]):
-        index -= 1
-    if index < len(y_array) - 1 and abs(y - y_array[index + 1]) < abs(y - y_array[index]):
-        index += 1
-
-    return y_array[index]
+    # Find the closest value using binary search
+    pos = bisect.bisect_left(y_array, y)
+    if pos == 0:
+        return y_array[0]
+    if pos == len(y_array):
+        return y_array[-1]
+    before = y_array[pos - 1]
+    after = y_array[pos]
+    if after - y < y - before:
+        return after
+    else:
+        return before
 
 def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
@@ -720,16 +707,19 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                         break
         past_notes = row
 
+    sorted_middles = sort_pairs(invisible_lines)
+
     for row in black_notes:
         for black_note in row:
             top_left = black_note[0]
-
-            sorted_middles = sort_pairs(invisible_lines)
-            assigned_value = y_assigner(sorted_middles, top_left[1])
-            top_left[1] = assigned_value 
-
-
             bottom_right = black_note[1]
+
+            #FIX ISSUES HERE
+
+            assigned_value = y_assigner(sorted_middles, top_left[1] + (round(difference_between_lines_for_line_drawing / 2) - 1))
+            top_left[1] = assigned_value - (round(difference_between_lines_for_line_drawing / 2) - 1)
+            bottom_right[1] = assigned_value + (round(difference_between_lines_for_line_drawing / 2) - 1)
+
             #right side
             img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
             #left side
@@ -741,11 +731,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     for white_note in white_notes:
         top_left = white_note[0]
-
-        sorted_middles = sort_pairs(invisible_lines)
-        assigned_value = y_assigner(sorted_middles, top_left[1])
-        top_left[1] = assigned_value 
-
         bottom_right = white_note[1]
         #right side
         img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
@@ -758,11 +743,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     for dashed_white in dashed_whites:
         top_left = dashed_white[0]
-        
-        sorted_middles = sort_pairs(invisible_lines)
-        assigned_value = y_assigner(sorted_middles, top_left[1])
-        top_left[1] = assigned_value
-        
         bottom_right = dashed_white[1]
         #right side
         img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
