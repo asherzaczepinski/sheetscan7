@@ -723,6 +723,12 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     for row in black_notes:
         for black_note in row:
             top_left = black_note[0]
+
+            sorted_middles = sort_pairs(invisible_lines)
+            assigned_value = y_assigner(sorted_middles, top_left[1])
+            top_left[1] = assigned_value 
+
+
             bottom_right = black_note[1]
             #right side
             img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
@@ -735,6 +741,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     for white_note in white_notes:
         top_left = white_note[0]
+
+        sorted_middles = sort_pairs(invisible_lines)
+        assigned_value = y_assigner(sorted_middles, top_left[1])
+        top_left[1] = assigned_value 
+
         bottom_right = white_note[1]
         #right side
         img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
@@ -747,6 +758,11 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     for dashed_white in dashed_whites:
         top_left = dashed_white[0]
+        
+        sorted_middles = sort_pairs(invisible_lines)
+        assigned_value = y_assigner(sorted_middles, top_left[1])
+        top_left[1] = assigned_value
+        
         bottom_right = dashed_white[1]
         #right side
         img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
