@@ -2,11 +2,9 @@
 #if the notes aren't "extra long difference" --- make the mall the same... sometimes it'll be like the example where it's long cuz of where the line was cut out
 #also make chatgpt add comments for all the parts
 
-
-
-#THERE ARE ISSUES REMOVING ON THE BLACK AND DASHED BLACK
-#FIND ISSUES IDENTIFY FIX AND SEE IF THEY APPLY TO THE DASHED WHITE WE REMOVED THAT THING ON
-#there is no check for the white notes
+#for the y index stuff save it one time w something and then one without
+#then we can determine what happens in different scenarios
+#still it's good I've created reasoning for myself
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -111,6 +109,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if below_flag == False:
                                 white_note = False                    
                     #making sure there is not too much variation
+                    #don't need the for y index in range bc it isn't going to stop at the inner border and have a long line thru it
                     if white_note:
                         past_temp_y_above = -1
                         past_temp_y_below = -1
@@ -149,19 +148,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel == 255:
                                     left = left_x + 1
                                     break
-
-
-                                #dashed whites testing
-                                """ else:
-                                    #this is where we do the up thing and if so same result
-                                    black_column = True
-                                    #this is finding the part where it goes up forever
-                                    for new_y_index in range (input_y - int(difference_between_lines / 2), input_y + int(difference_between_lines / 2)):
-                                        if img_array[new_y_index, new_x_index] == 255:
-                                            black_column = False
-                                    if black_column:
-                                        left = left_x + 1
-                                        break """
                                 left_x -= 1
                             if left == -1:
                                 white_note = False
@@ -171,18 +157,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel == 255:
                                     right = right_x - 1
                                     break
-                                #dashed whites testing
-                                """
-                                else:
-                                    #this is where we do the up thing and if so same result
-                                    black_column = True
-                                    #this is finding the part where it goes up forever
-                                    for new_y_index in range (input_y - int(difference_between_lines / 2), input_y + int(difference_between_lines / 2)):
-                                        if img_array[new_y_index, new_x_index] == 255:
-                                            black_column = False
-                                    if black_column:
-                                        right = right_x - 1
-                                        break"""
                             if right == -1:
                                 white_note = False
                         if white_note:
@@ -214,34 +188,17 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
                     past_temp_y_above = -1
                     past_temp_y_below = -1
-                    #testing where it is here
+                    #need this to make sure it doesn't start the black note way above where is should be 
                     for new_x_index in range(x_index - black_count + 1, x_index - 1):
-                        temp_pixel = img_array[input_y, new_x_index]
-
-
-
-
-
-                        #it's having some particular issues here removing this part
-                
-                        #on regular black notes testing!!!
+                        temp_pixel = img_array[input_y, new_x_index]                
                         continued = True
-                        #this is finding the part where it goes up forever
+                        #this is finding the part where it goes up forever 
+                        #this is good bc it make sure it starts at the right position not before where it should be
                         for new_y_index in range (input_y - int(difference_between_lines / 2), input_y + int(difference_between_lines / 2)):
                             if img_array[new_y_index, new_x_index] == 255:
                                 continued = False
                         if continued:
                             continue
-
-
-
-
-
-
-
-
-
-
                         if temp_pixel != 0:
                             continue
                         temp_y_above = input_y
@@ -287,19 +244,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     if black_note:
                         found_black = False
                         for new_x_index in range(x_index - black_count + 1, x_index):
-
-                            #testing for dashed black  IT STARTED IT WAY LOWER / HIGHER
-
-                            """ continued = True
+                            #this is good because it makes sure when it starts it accurately tracks the starting position of the note above the line
+                            continued = True
                             #this is finding the part where it goes up forever
                             for new_y_index in range (input_y - int(difference_between_lines / 2), input_y + int(difference_between_lines / 2)):
                                 if img_array[new_y_index, new_x_index] == 255:
                                     continued = False
                             if continued:
-                                continue """
-                            
-
-
+                                continue 
                             new_pixel = img_array[starting_above_white, new_x_index]
                             if new_pixel == 0 and not found_black:
                                 found_black = True
@@ -314,22 +266,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     if black_note:
                         found_black = False
                         for new_x_index in range(x_index - black_count + 1, x_index):
-                            
-                            
-                            
-                            
-                            #testing for dashed black IT STARTED IT WAY LOWER
-
-                            """ continued = True
-                            #this is finding the part where it goes up forever
+                            continued = True
+                            #this is good because it makes sure when it starts it accurately tracks the starting position of the note below the line
                             for new_y_index in range (input_y - int(difference_between_lines / 2), input_y + int(difference_between_lines / 2)):
                                 if img_array[new_y_index, new_x_index] == 255:
                                     continued = False
                             if continued:
-                                continue """
-                            
-
-
+                                continue 
                             new_pixel = img_array[starting_below_white, new_x_index]
                             if new_pixel == 0 and not found_black:
                                 found_black = True
