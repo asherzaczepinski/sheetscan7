@@ -412,28 +412,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             #HA!!!! no wonder there are issues i think it is continuing the whole time
                                 
                             print('i am here on the black note dashed')
-                            if new_x_index == start:
-                                first = round((temp_y_above + temp_y_below) / 2)
-                                img_array[first - 5: first + 5, new_x_index] = 150
-                            elif new_x_index == round((start + end) / 2):
-                                middle = round((temp_y_above + temp_y_below) / 2)
-                                img_array[middle - 5: middle + 5, new_x_index] = 150
-                                if middle - first < int(difference_between_lines / 10):
-                                    black_note = False
-                                    break
-                            elif new_x_index == end - 1:
-                                ending = round((temp_y_above + temp_y_below) / 2)
-                                img_array[ending - 5: ending + 5, new_x_index] = 150
-                                if middle - ending < int(difference_between_lines / 10):
-                                    black_note = False
-                                    break
-                            if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
-                                past_temp_y_above = temp_y_above
-                                past_temp_y_below = temp_y_below
-                            else:
-                                black_note = False
-                                break
 
+                    print('i am her tfhfgh e on the black note dashed')
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
@@ -506,24 +486,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break
-                        print('i am at dashed whites')
-                        if new_x_index == start:
-                            first = temp_y_above
-                            img_array[first - 5: first, new_x_index] = 150
-                        elif new_x_index == round((start + end) / 2):
-                            print('at middle')
-                            middle = temp_y_above
-                            img_array[middle - 5: middle, new_x_index] = 150
-                            #preemptive breaking
-                            if middle - first < int(difference_between_lines / 10):
-                                white_note = False
-                                break
-                        elif new_x_index == end - 1:
-                            ending = temp_y_above
-                            img_array[ending - 5: ending, new_x_index] = 150
-                            if middle - ending < int(difference_between_lines / 10):
-                                white_note = False
-                                break
                 #bottom part
                 if white_note:
                     first_switch = False
@@ -558,19 +520,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if past_temp_y == -1 or (abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 5) and abs(past_temp_y - temp_y_below) <= round(difference_between_lines / 5)):
                                 past_temp_y = temp_y_below
                             else:
-                                white_note = False
-                                break
-                        if new_x_index == start:
-                            first = temp_y_below
-                        elif new_x_index == round((start + end) / 2):
-                            middle = temp_y_below
-                            #preemptive breaking
-                            if middle - first < int(difference_between_lines / 10):
-                                white_note = False
-                                break
-                        elif new_x_index == end - 1:
-                            ending = temp_y_below
-                            if middle - ending < int(difference_between_lines / 10):
                                 white_note = False
                                 break
                 if white_note:
@@ -630,12 +579,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     # Variable to track the start of a line
     start_line = -1
-
-    black_notes = []
-
-    white_notes = []
-
-    dashed_whites = []
 
     for row_index, row in enumerate(img_array):
         # Count non-white (in grayscale, white is 255) pixels in the row
