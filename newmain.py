@@ -375,21 +375,17 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         for new_x_index in range(start, end):
                             temp_pixel = img_array[input_y, new_x_index]
                             continued = True
-                            for new_y_index in range (input_y, input_y - int(difference_between_lines / 2)):
+                            for new_y_index in range (input_y - int(difference_between_lines / 2), input_y):
                                 if img_array[new_y_index, new_x_index] == 255:
                                     continued = False
                                     break
-                                else:
-                                    continued = True
                                 if continued:
                                     for new_y_index in range (input_y, input_y + int(difference_between_lines / 2)):
                                         if img_array[new_y_index, new_x_index] == 255:
                                             continued = False
                                             break
-                                        else:
-                                            continued = True
-                                if not continued:
-                                    break
+                                      
+                                
                             if continued:
                                 continue 
                             temp_y_above = input_y
@@ -405,15 +401,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_below == 255:
                                     break
                                 temp_y_below += 1
-
-
-                            #go thru eacha nd every one and figure out why they are working
                                 
-                            #HA!!!! no wonder there are issues i think it is continuing the whole time
-                                
-                            print('i am here on the black note dashed')
-
-                    print('i am her tfhfgh e on the black note dashed')
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
