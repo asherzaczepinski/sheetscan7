@@ -261,7 +261,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_pixel = img_array[input_y, new_x_index]                
                         continued = True
                         #this is good bc it make sure it starts at the right position not before where it should be
-                        for new_y_index in range (input_y, input_y - int(difference_between_lines / 2)):
+                        for new_y_index in range (input_y - int(difference_between_lines / 2), input_y):
                             if img_array[new_y_index, new_x_index] == 255:
                                 continued = False
                                 break
@@ -383,9 +383,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     for new_y_index in range (input_y, input_y + int(difference_between_lines / 2)):
                                         if img_array[new_y_index, new_x_index] == 255:
                                             continued = False
-                                            break
-                                      
-                                
+                                            break      
                             if continued:
                                 continue 
                             temp_y_above = input_y
@@ -401,8 +399,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_below == 255:
                                     break
                                 temp_y_below += 1
-                                
-
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
