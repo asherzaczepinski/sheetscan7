@@ -1,12 +1,6 @@
-#do top left after we fix start middle end
+#do top left 
+#eventually elimate the page to the music part no titles using AI ---- use AI to convert an image to sheet music
 
-#no wonder the others are all working without our new logic it is ignoring second get back to this
-
-#third and fourth for dashed whites we can just do the img_array printing and figure out what is wrong
-#we r in good place because it is working just have to know why and why it is ignoring the black notes part!!!
-
-
-#check every single one and remember we haven't adjusted the first - middle to middle - first or whatever it was cuz rn it's working that's when we don't change it
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -183,11 +177,37 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         break
                                 if right == -1:
                                     white_note = False
-                            if white_note:
-                                top_left = [left - 5, input_y - 10]
-                                bottom_right = [right + 5, input_y + 10]   
-                                white_notes.append([top_left, bottom_right])
-        
+                        #going up and to right top right outline
+                        if white_note:
+                            up = 0
+                            up_right = 0
+                            counter = 1
+                            while True:
+                                temp_pixel_0 = input_y - up
+                                temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
+                                temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                                if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
+                                    break
+                                if temp_pixel == 255:
+                                    white_note = False
+                                    break
+                                right_addend = 0
+                                while True:
+                                    if temp_pixel_1 + right_addend >= width:
+                                        white_note = False
+                                        break
+                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
+                                    if new_pixel == 255:
+                                        break
+                                    right_addend += 1
+                                up += 1
+                                up_right += right_addend - 1
+                                counter += 1
+                        if white_note:
+                            top_left = [left - 5, input_y - 10]
+                            bottom_right = [right + 5, input_y + 10]   
+                            white_notes.append([top_left, bottom_right])
+    
        
        
        
