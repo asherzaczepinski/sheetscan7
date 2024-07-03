@@ -372,11 +372,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     
                     #have to do the black note huge line up thing
                     #fuck i thought i fixed this
+                        
+                    #MAKE IT SHOW WHERE THE THING CUTS OFF AT ITLL BE FINE
                     if black_note:
                         up = 0
                         up_right = 0
                         while True:
-                            temp_pixel_0 = input_y + round(difference_between_lines / 2) - up
+                            temp_pixel_0 = input_y - up
                             temp_pixel_1 = (x_index - black_count)+ up_right
                             temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
                             continued = True
@@ -392,7 +394,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if continued:
                                 up_right += 1
                                 continue 
-                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - 1:
+                            if temp_pixel_0 <= input_y - int(difference_between_lines / 2) + 1 or temp_pixel_1 > x_index - 1:
                                 break
                             if temp_pixel == 255:
                                 black_note = False
@@ -406,7 +408,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_1 >= x_index:
                                     break
                                 new_pixel = img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1]   
-                                img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1] = 50
                                 if new_pixel == 255:
                                     break
                                 up_addend += 1
