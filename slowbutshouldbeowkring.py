@@ -368,8 +368,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     
                     
                     
-                    #Top Left Area going up and to the right: goes as much right and then increments by one up
-                    
+                    #Top Left Area going up and to the right: goes as much up and then increments by one right
                     if black_note:
                         up = 0
                         up_right = 0
@@ -380,7 +379,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - 1:
                                 break
                             if temp_pixel == 255:
-                                img_array[temp_pixel_0, temp_pixel_1] = 50
                                 black_note = False
                                 break
                             
@@ -392,7 +390,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_1 >= x_index:
                                     break
                                 new_pixel = img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1]   
-                                img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1] = 50
                                 if new_pixel == 255:
                                     break
                                 up_addend += 1
@@ -400,11 +397,34 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             up_right += 1
                     
 
-                    #Bottom Right Area
-                            
-                    #going
-
-
+                    #Bottom Right Area going as much right and then increment by one up
+                    print('here')
+                    #WORKING HERE 
+                    if black_note:
+                        up = 0
+                        up_right = 0
+                        while True:
+                            temp_pixel_0 = input_y + int(difference_between_lines / 2)
+                            temp_pixel_1 = x_index - round(black_count / 2) - 1 + up_right
+                            temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
+                                break
+                            if temp_pixel == 255:
+                                black_note = False
+                                break
+                            right_addend = 0
+                            while True:
+                                if temp_pixel_1 + right_addend >= width:
+                                    black_note = False
+                                    print('fateful')
+                                    break
+                                new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]    
+                                if new_pixel == 255:
+                                    break
+                                right_addend += 1
+                            up += 1
+                            up_right += right_addend - 1
+                    print('stuck in while loop not here yet')
 
 
                     if black_note:
