@@ -314,7 +314,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if new_x_index >= x_index - round(black_count / 2):
                                 left_zone = True
                             #make sure it is going in the right direction
-                            elif #put abs in here:
+                            elif abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
+                                past_temp_y_above = temp_y_above
+                                past_temp_y_below = temp_y_below
                             elif past_temp_y_above == -1:
                                 past_temp_y_above = temp_y_above
                                 past_temp_y_below = temp_y_below
@@ -327,7 +329,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 break
                         elif new_x_index <= x_index - 1 - round(difference_between_lines / 6):
                             #gotta make sure on these its decreasing in the right direction
-                            if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10:
+                            if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
                                 past_temp_y_above = temp_y_above
                                 past_temp_y_below = temp_y_below
                             elif temp_y_above - past_temp_y_above <= round(difference_between_lines / 5) and temp_y_above - past_temp_y_above >= 0 or bypass_top:
