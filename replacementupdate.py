@@ -1,19 +1,4 @@
-#only filling in the white notes not dashed cuz they haven't been replaced
-
-# split eveyrthing into two seperste parts above and below
-
-
-
-#number one add something to main.py where if anything in the loop range has a big line through it then we say this is not a black note
-#after we make the simple one difference or none up aand get to a certain specific height (we can test in here that height relative to difference between lines make it a lil under) and it has to get there before halfway
-#then halfway thru we make it go down
-#do this top and bottom
-#there is no way in hell our program isn't accurate
-
-
-#fuck this make chatgpt do this stuff
-#i will start working on black note in main.py
-#can do that when we land in the terminal
+#i want this done by tonight
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -96,10 +81,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     difference_between_lines = lines[1][1] - lines[0][3]
 
     #replace the part we took out
-    hits = 0
-    spotting_for_white = False
+
     white_space = 0
-    hits2 = 0
     for row in lines:
         upper_line_y = row[1] - 1
         bottom_line_y = row[3] 
@@ -110,34 +93,17 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                     img_array[y, x_index] = 0
                 got_hit = True
                     
-
-            if got_hit:
-                hits += 1
-                if spotting_for_white:
-                    hits2 += 1
+            if not got_hit:
+                white_space += 1
             else:
-                if spotting_for_white:
-                    white_space += 1
-                    if white_space >= difference_between_lines:
-                        hits2 = 0
-                        hits = 0
-                        white_space = 0
-                        spotting_for_white = False
-                    else:
-                        if hits2 <= round(difference_between_lines / 3):
-                            if white_space >= difference_between_lines / 3 and hits2 != 0:
-                                print('got to here will do replacing')
-                                img_array[round((upper_line_y + bottom_line_y) / 2), x_index - round(white_space / 2)] = 50
-                        else:
-                            hits = 0
-                            hits2 = 0
-                            white_space = 0
-                            spotting_for_white = False
-                if hits <= round(difference_between_lines / 3) and hits != 0:
-                    spotting_for_white = True
-
-                hits = 0
-
+                #can check the before here and what not
+                start = x_index - white_space
+                end = x_index - white_space
+                if white_space > difference_between_lines / 2 and white_space < difference_between_lines * 3:
+                    img_array[bottom_line_y, x_index - int(difference_between_lines / 2)] = 50
+                #go left or right in while loops
+                    
+                white_space = 0
     
     
     img = Image.fromarray(img_array)
