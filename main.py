@@ -1,10 +1,18 @@
 #eventually elimate the page to the music part no titles using AI ---- use AI to convert an image to sheet music
-#y do we have to do all this stuff when we can just compare the temp_y_above and make sure it just goes up
-#also de everywhere its thinking about replacing just replace with the pixels that were there in the original this will be important for the white notes that get completely cut thru
-#start w the black notes
+#LOGIC IS SUPER IDEAL FOR THE BLACK NOTES
 
 #seperate the blac knote into two different things and make sure we have the big line thing implemented
 #first things first let's fix up the replacement part
+
+
+
+#this is what i'm working on now:
+
+#I NEED TO IMPLEMENT SOMETHING WHERE IF RIGHTO R LEFT IT IS SUPER LONG
+#MAYBE SPLIT IT INTO FOUR DIFFERENT IF STATEMENTS AND KEEP IN MIND WHERE IT STARTS
+#FOR THE TEMP Y ABOVE BELOW AND WHAT NOT
+#OTHERWIE WHEN THERE IS A DASH ABOVE IT'S NOT GOOD
+#CREATE SOMETHING WITH NEW_Y_INDEX BUT FOR NEW_X_INDEX CONTINUED
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -137,8 +145,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         break
                                     temp_y_below += 1
 
-                            #THE OTHER ONES MIGHT BE WORKING SO WELL BC THEY ARE DIFFERENTLY STRUCTURED IDK WTF --- i'll test it
-
                             if white_note:
                                 if new_x_index == start:
                                     first = round((temp_y_above + temp_y_below) / 2)
@@ -203,24 +209,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 while True:
                     temp_pixel = img_array[input_y, left_x]
                     if temp_pixel != 255:
-                        
-                        continued = True
-                        #this is good bc it make sure it starts at the right position not before where it should be
-                        for new_y_index in range (input_y, input_y - int(difference_between_lines / 2)):
+                        continued = False
+                        for new_y_index in range (input_y - int(difference_between_lines / 2), input_y):
                             if img_array[new_y_index, new_x_index] == 255:
-                                continued = False
-                                break
-                            else:
                                 continued = True
-                            if continued:
-                                for new_y_index in range (input_y, input_y + int(difference_between_lines / 2)):
-                                    if img_array[new_y_index, new_x_index] == 255:
-                                        continued = False
-                                        break
-                                    else:
-                                        continued = True
-                            if not continued:
-                                break
+                            for new_y_index in range (input_y, input_y + int(difference_between_lines / 2)):
+                                if img_array[new_y_index, new_x_index] == 255:
+                                    continued = True
                         if continued:
                             continue 
                     else:
@@ -259,23 +254,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     ending = -1
                     for new_x_index in range(x_index - black_count + 1, x_index - 1):
                         temp_pixel = img_array[input_y, new_x_index]                
-                        continued = True
+                        continued = False
                         #this is good bc it make sure it starts at the right position not before where it should be
                         for new_y_index in range (input_y - int(difference_between_lines / 2), input_y):
                             if img_array[new_y_index, new_x_index] == 255:
-                                continued = False
-                                break
-                            else:
                                 continued = True
-                            if continued:
-                                for new_y_index in range (input_y, input_y + int(difference_between_lines / 2)):
-                                    if img_array[new_y_index, new_x_index] == 255:
-                                        continued = False
-                                        break
-                                    else:
-                                        continued = True
-                            if not continued:
-                                break
+                            for new_y_index in range (input_y, input_y + int(difference_between_lines / 2)):
+                                if img_array[new_y_index, new_x_index] == 255:
+                                    continued = True
                         if continued:
                             continue 
                        
@@ -308,13 +294,49 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if middle - ending < int(difference_between_lines / 10):
                                 black_note = False
                                 break
-                        #HERE IS WHERE WE IMPLEMENT THE CHECKS
-                        if past_temp_y_above == -1 or past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0:
-                            past_temp_y_above = temp_y_above
-                            past_temp_y_below = temp_y_below
-                        else:
-                            black_note = False
-                            break
+
+                        #THIS IS EXACTLY WHAT WE WANT TO DO ON ALL THE NOTES
+                        #once it gets past left zone we don't need a confirmation of the right zone 
+                        left_zone = False
+                        
+                        #WE CAN TAKE OUT THE ORS IF THEY MAKE IT HARD TO DISTINGUISH THINGS
+
+
+                        #we will use these when it hits something
+
+                        #we can reset them when it is in a different zone
+                        bypass_top = False
+                        bypass_bottom = False
+
+
+                        #Also if i remove the round /6 it should function as it was before! test this once i put the abs in and make sure the abs is going in the right direction by saying greater than 0
+                        if not left_zone and new_x_index >= x_index - black_count + 1 + round(difference_between_lines / 6):
+                            if new_x_index >= x_index - round(black_count / 2):
+                                left_zone = True
+                            #make sure it is going in the right direction
+                            elif #put abs in here:
+                            elif past_temp_y_above == -1:
+                                past_temp_y_above = temp_y_above
+                                past_temp_y_below = temp_y_below
+                            elif past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0 or bypass_top:
+                                if temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0 or bypass_bottom:
+                                    past_temp_y_above = temp_y_above
+                                    past_temp_y_below = temp_y_below
+                            else:
+                                black_note = False
+                                break
+                        elif new_x_index <= x_index - 1 - round(difference_between_lines / 6):
+                            #gotta make sure on these its decreasing in the right direction
+                            if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10:
+                                past_temp_y_above = temp_y_above
+                                past_temp_y_below = temp_y_below
+                            elif temp_y_above - past_temp_y_above <= round(difference_between_lines / 5) and temp_y_above - past_temp_y_above >= 0 or bypass_top:
+                                if past_temp_y_below - temp_y_below <= round(difference_between_lines / 5) and past_temp_y_below - temp_y_below >= 0 or bypass_bottom:
+                                    past_temp_y_above = temp_y_above
+                                    past_temp_y_below = temp_y_below
+                            else:
+                                black_note = False
+                                break
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
@@ -375,17 +397,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         black_note = False
                     if black_note:
                         for new_x_index in range(start, end):
-                            temp_pixel = img_array[input_y, new_x_index]
-                            continued = True
+                            temp_pixel = img_array[input_y, new_x_index]                
+                            continued = False
                             for new_y_index in range (input_y - int(difference_between_lines / 2), input_y):
                                 if img_array[new_y_index, new_x_index] == 255:
-                                    continued = False
-                                    break
-                                if continued:
-                                    for new_y_index in range (input_y, input_y + int(difference_between_lines / 2)):
-                                        if img_array[new_y_index, new_x_index] == 255:
-                                            continued = False
-                                            break      
+                                    continued = True
+                                for new_y_index in range (input_y, input_y + int(difference_between_lines / 2)):
+                                    if img_array[new_y_index, new_x_index] == 255:
+                                        continued = True
                             if continued:
                                 continue 
                             temp_y_above = input_y
