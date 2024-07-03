@@ -308,7 +308,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         bypass_top = False
                         bypass_bottom = False
 
-
+                        #do a check to make sure it doesn't exceed the size limit but reaches a certain point!!!!
+                        
                         #Also if i remove the round /6 it should function as it was before! test this once i put the abs in and make sure the abs is going in the right direction by saying greater than 0
                         if not left_zone and new_x_index >= x_index - black_count + 1 + round(difference_between_lines / 6):
                             if new_x_index >= x_index - round(black_count / 2):
