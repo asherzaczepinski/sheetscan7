@@ -371,6 +371,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     #Top Left Area going up and to the right: goes as much up and then increments by one right
                     
                     #have to do the black note huge line up thing
+                    #fuck i thought i fixed this
                     if black_note:
                         up = 0
                         up_right = 0
@@ -413,15 +414,32 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             up_right += 1
                     
 
+
+
+                    #def issues here
                     #Bottom Right Area going as much right and then increment by one up
-                    """  
+                    """ 
                     if black_note:
                         up = 0
                         up_right = 0
                         while True:
-                            temp_pixel_0 = input_y + int(difference_between_lines / 2)
+                            temp_pixel_0 = input_y + int(difference_between_lines / 2) - up
                             temp_pixel_1 = x_index - round(black_count / 2) - 1 + up_right
                             temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                            #for the lines under notes
+                            continued = True
+                            for new_x_index2 in range (x_index - black_count, x_index):
+                                if img_array[temp_pixel_0, new_x_index2] == 255:
+                                    continued = False
+                                    break
+                                if continued:
+                                    for new_x_index2 in range (x_index - black_count, x_index):
+                                        if img_array[temp_pixel_0, new_x_index2] == 255:
+                                            continued = False
+                                            break      
+                            if continued:
+                                up += 1
+                                continue 
                             if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
                                 break
                             if temp_pixel == 255:
@@ -431,15 +449,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             while True:
                                 if temp_pixel_1 + right_addend >= width:
                                     black_note = False
-                                    print('fateful')
                                     break
                                 new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]    
+                                img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend] = 50
                                 if new_pixel == 255:
                                     break
                                 right_addend += 1
                             up += 1
-                            up_right += right_addend - 1 """
-
+                            up_right += right_addend - 1 
+ """
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
