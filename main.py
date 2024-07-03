@@ -220,27 +220,30 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 up += 1
                                 up_right += right_addend - 1
                         """
-                            
+
                         #NOT WORKING:
                         #Bottom Right Area going up and to the right: goes as much up as possible then increments one to right
                         #i want to do this on all the notes in there respective places before we get back from Ohio will work onplane
+
+                        #only works when i have that img_array there
                         if white_note:
                             up = 0
                             up_right = 0
                             while True:
-                                temp_pixel_0 = temp_y_below - up
+                                temp_pixel_0 = input_y + round(difference_between_lines / 2) - up
                                 temp_pixel_1 = (x_index - round(difference_between_blacks / 2))+ up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
                                 if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
                                     print('hi')
                                     break
                                 if temp_pixel == 255:
+                                    #now it's going up too much
+                                    print('we r here')
                                     white_note = False
                                     break
                                 up_addend = 0
                                 while True:
                                     print('got to here')
-                                    img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1] = 50
                                     if temp_pixel_0 - up_addend <= input_y - difference_between_lines:
                                         white_note = False
                                         print('breaking here')
@@ -248,7 +251,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if temp_pixel_1 >= x_index:
                                         print('breaking here adfads')
                                         break
-                                    new_pixel = img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1]                       
+                                    new_pixel = img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1]   
+                                    img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1] = 50                    
                                     if new_pixel == 255:
                                         print('here')
                                         #testing
