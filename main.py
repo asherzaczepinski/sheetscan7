@@ -198,14 +198,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         white_note = False
                                         break
                                     new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]    
-                                    img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend] = 50                                       
                                     if new_pixel == 255:
                                         break
                                     right_addend += 1
                                 up += 1
                                 up_right += right_addend - 1
                         
-  
+    
                         #Bottom Right Area going up and to the right: goes as much up as possible then increments one to right
 
                         if white_note:
@@ -365,62 +364,51 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         else:
                             black_note = False
                             break
-#Top Left Area going up and to the right: goes as much right and then increments by one up
-                        
-                    if white_note:
-                        up = 0
-                        up_right = 0
-                        while True:
-                            temp_pixel_0 = input_y - up
-                            temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
-                            temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
-                                break
-                            if temp_pixel == 255:
-                                white_note = False
-                                break
-                            right_addend = 0
-                            while True:
-                                if temp_pixel_1 + right_addend >= width:
-                                    white_note = False
-                                    break
-                                new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]    
-                                img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend] = 50                                       
-                                if new_pixel == 255:
-                                    break
-                                right_addend += 1
-                            up += 1
-                            up_right += right_addend - 1
+                    
+                    
+                    
+                    
+                    #Top Left Area going up and to the right: goes as much right and then increments by one up
                     
 
                     #GEt above working first then update this
-                    """ #Bottom Right Area going up and to the right: goes as much up as possible then increments one to right
+                    #top Right Area going up and to the right: goes as much up as possible then increments one to right
+                    #keep aware of the positions throughout doing this
+                    #not done yet then we also need a bottom right
+                        
 
-                    if white_note:
+                    #edit up logic 
+                    if black_note:
                         up = 0
                         up_right = 0
                         while True:
                             temp_pixel_0 = input_y + round(difference_between_lines / 2) - up
-                            temp_pixel_1 = (x_index - round(difference_between_blacks / 2))+ up_right
+                            temp_pixel_1 = (x_index - black_count)+ up_right
                             temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
+                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - 1:
                                 break
                             if temp_pixel == 255:
-                                white_note = False
+                                img_array[temp_pixel_0, temp_pixel_1] = 50
+                                black_note = False
                                 break
+                            
                             up_addend = 0
                             while True:
                                 if temp_pixel_0 - up_addend <= input_y - difference_between_lines:
-                                    white_note = False
+                                    black_note = False
                                     break
                                 if temp_pixel_1 >= x_index:
                                     break
                                 new_pixel = img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1]   
+                                img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1] = 50
                                 if new_pixel == 255:
                                     break
                                 up_addend += 1
                             up += up_addend - 1
-                            up_right += 1 """
+                            up_right += 1
+                    
+
+                    #gonna need a bottom right where it is down as much as possible
 
 
 
