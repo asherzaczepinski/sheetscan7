@@ -3,6 +3,9 @@
 #also de everywhere its thinking about replacing just replace with the pixels that were there in the original this will be important for the white notes that get completely cut thru
 #start w the black notes
 
+#seperate the blac knote into two different things and make sure we have the big line thing implemented
+#first things first let's fix up the replacement part
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -279,6 +282,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_y_above = input_y
                         temp_y_below = input_y
                         
+
+                        #seperate it into two seperate parts budy!!!!
                         while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
                             if temp_pixel_above == 255 or temp_y_above <= input_y - (difference_between_lines / 2):
@@ -304,7 +309,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 black_note = False
                                 break
                         #HERE IS WHERE WE IMPLEMENT THE CHECKS
-                        if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
+                        if past_temp_y_above == -1 or past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0:
                             past_temp_y_above = temp_y_above
                             past_temp_y_below = temp_y_below
                         else:
