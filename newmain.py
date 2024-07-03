@@ -154,7 +154,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 else:
                                     white_note = False
                                     break
-        
+
                         if white_note:
                             left = -1
                             right = -1
@@ -177,7 +177,20 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         break
                                 if right == -1:
                                     white_note = False
-                        #going up and to right top right outline
+
+
+
+
+
+                        #fix up this to left logic number one it cannot start at the same temp y below so we will have to reiterate for all of them
+                        #fix up the starting points for both the first one should start second one follows
+                        #then we apply to all of them
+                        #going up and to right top left outline
+                                    
+
+                        #THIS IS WORKING
+                        #Top Left Area going up and to the right: goes as much right and then increments by one up
+                        """
                         if white_note:
                             up = 0
                             up_right = 0
@@ -186,23 +199,71 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 temp_pixel_0 = input_y - up
                                 temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
                                 temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
-                                if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index - (difference_between_blacks / 2) - 1:
+                                if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
                                     break
                                 if temp_pixel == 255:
                                     white_note = False
                                     break
                                 right_addend = 0
+
+
+                                #issue is it's going more right not up 
+                                #test this
                                 while True:
                                     if temp_pixel_1 + right_addend >= width:
                                         white_note = False
                                         break
                                     new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
                                     if new_pixel == 255:
+                                        print('hit here by accident')
                                         break
                                     right_addend += 1
                                 up += 1
                                 up_right += right_addend - 1
                                 counter += 1
+                        """
+                        
+                        #NOT WORKING:
+                        #Bottom Right Area going up and to the right: goes as much up as possible then increments one to right
+                        #i want to do this on all the notes in there respective places before we get back from Ohio will work onplane
+                        if white_note:
+                            up = 0
+                            up_right = 0
+                            counter = 1
+                            while True:
+                                temp_pixel_0 = temp_y_below - up
+                                temp_pixel_1 = (x_index - round(difference_between_blacks / 2))+ up_right
+                                temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                                if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
+                                    print('hi')
+                                    break
+                                if temp_pixel == 255:
+                                    white_note = False
+                                    break
+                                up_addend = 0
+                                while True:
+                                    if temp_pixel_0 - up_addend <= input_y - difference_between_lines:
+                                        white_note = False
+                                        break
+                                    if temp_pixel_1 >= x_index:
+                                        break
+                                    new_pixel = img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1]                       
+                                    if new_pixel == 255:
+                                        print('here')
+                                        #testing
+                                        img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1] = 200
+                                        break
+                                    up_addend += 1
+                                up -= up_addend
+                                up_right += 1
+                                counter += 1  
+
+ 
+
+
+
+                        
+                        #do bottom right then put it on all the notes
                         if white_note:
                             top_left = [left - 5, input_y - 10]
                             bottom_right = [right + 5, input_y + 10]   
