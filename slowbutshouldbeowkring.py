@@ -369,6 +369,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     
                     
                     #Top Left Area going up and to the right: goes as much up and then increments by one right
+                    
+                    #have to do the black note huge line up thing
                     if black_note:
                         up = 0
                         up_right = 0
@@ -398,8 +400,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     
 
                     #Bottom Right Area going as much right and then increment by one up
-                    print('here')
-                    #WORKING HERE 
+                    """ #WORKING HERE 
                     if black_note:
                         up = 0
                         up_right = 0
@@ -423,8 +424,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 right_addend += 1
                             up += 1
-                            up_right += right_addend - 1
-                    print('stuck in while loop not here yet')
+                            up_right += right_addend - 1 """
 
 
                     if black_note:
