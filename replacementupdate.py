@@ -1,5 +1,5 @@
 #i want this done by tonight
-
+#this is just for the white notes
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -82,6 +82,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     #replace the part we took out
 
+    #define ranges w imgarray
+    #make sure it's doing it all in the right spots and shit
     white_space = 0
     for row in lines:
         upper_line_y = row[1] - 1
@@ -99,6 +101,9 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 #can check the before here and what not
                 start = x_index - white_space
                 end = x_index - white_space
+                counter = 1
+                flag = True
+                while counter < 
                 if white_space > difference_between_lines / 2 and white_space < difference_between_lines * 3:
                     img_array[bottom_line_y, x_index - int(difference_between_lines / 2)] = 50
                 #go left or right in while loops
