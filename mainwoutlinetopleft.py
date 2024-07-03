@@ -1,6 +1,6 @@
-#do top left 
 #eventually elimate the page to the music part no titles using AI ---- use AI to convert an image to sheet music
-
+#y do we have to do all this stuff when we can just compare the temp_y_above and make sure it just goes up
+#also de everywhere its thinking about replacing just replace with the pixels that were there in the original
 
 from PIL import Image, ImageDraw
 from pathlib import Path
