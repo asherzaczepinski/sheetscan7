@@ -178,21 +178,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if right == -1:
                                     white_note = False
 
-
-
-
-
-                        #fix up this to left logic number one it cannot start at the same temp y below so we will have to reiterate for all of them
-                        #fix up the starting points for both the first one should start second one follows
-                        #then we apply to all of them
-                        #going up and to right top left outline
-                                    
-
-                        #THIS IS WORKING
                         #Top Left Area going up and to the right: goes as much right and then increments by one up
                         
-
-                        #use imgarray to make sure everything is working here i think it is
                         if white_note:
                             up = 0
                             up_right = 0
@@ -210,16 +197,16 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if temp_pixel_1 + right_addend >= width:
                                         white_note = False
                                         break
-                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]                                    
+                                    new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]    
+                                    img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend] = 50                                       
                                     if new_pixel == 255:
                                         break
                                     right_addend += 1
                                 up += 1
                                 up_right += right_addend - 1
                         
-
+  
                         #Bottom Right Area going up and to the right: goes as much up as possible then increments one to right
-                        #i want to do this on all the notes in there respective places before we get back from Ohio will work onplane
 
                         if white_note:
                             up = 0
@@ -378,6 +365,65 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         else:
                             black_note = False
                             break
+#Top Left Area going up and to the right: goes as much right and then increments by one up
+                        
+                    if white_note:
+                        up = 0
+                        up_right = 0
+                        while True:
+                            temp_pixel_0 = input_y - up
+                            temp_pixel_1 = x_index - difference_between_blacks - 1 + up_right
+                            temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
+                                break
+                            if temp_pixel == 255:
+                                white_note = False
+                                break
+                            right_addend = 0
+                            while True:
+                                if temp_pixel_1 + right_addend >= width:
+                                    white_note = False
+                                    break
+                                new_pixel = img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend]    
+                                img_array[temp_pixel_0 - 1, temp_pixel_1 + right_addend] = 50                                       
+                                if new_pixel == 255:
+                                    break
+                                right_addend += 1
+                            up += 1
+                            up_right += right_addend - 1
+                    
+
+                    #GEt above working first then update this
+                    """ #Bottom Right Area going up and to the right: goes as much up as possible then increments one to right
+
+                    if white_note:
+                        up = 0
+                        up_right = 0
+                        while True:
+                            temp_pixel_0 = input_y + round(difference_between_lines / 2) - up
+                            temp_pixel_1 = (x_index - round(difference_between_blacks / 2))+ up_right
+                            temp_pixel = img_array[temp_pixel_0, temp_pixel_1]
+                            if temp_pixel_0 <= input_y - difference_between_lines / 2 or temp_pixel_1 > x_index:
+                                break
+                            if temp_pixel == 255:
+                                white_note = False
+                                break
+                            up_addend = 0
+                            while True:
+                                if temp_pixel_0 - up_addend <= input_y - difference_between_lines:
+                                    white_note = False
+                                    break
+                                if temp_pixel_1 >= x_index:
+                                    break
+                                new_pixel = img_array[temp_pixel_0 - up_addend, temp_pixel_1 + 1]   
+                                if new_pixel == 255:
+                                    break
+                                up_addend += 1
+                            up += up_addend - 1
+                            up_right += 1 """
+
+
+
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
