@@ -1,5 +1,4 @@
 #eventually elimate the page to the music part no titles using AI ---- use AI to convert an image to sheet music
-#LOGIC IS SUPER IDEAL FOR THE BLACK NOTES
 
 #seperate the blac knote into two different things and make sure we have the big line thing implemented
 #first things first let's fix up the replacement part
@@ -7,12 +6,7 @@
 
 
 #this is what i'm working on now:
-
-#I NEED TO IMPLEMENT SOMETHING WHERE IF RIGHTO R LEFT IT IS SUPER LONG
-#MAYBE SPLIT IT INTO FOUR DIFFERENT IF STATEMENTS AND KEEP IN MIND WHERE IT STARTS
-#FOR THE TEMP Y ABOVE BELOW AND WHAT NOT
-#OTHERWIE WHEN THERE IS A DASH ABOVE IT'S NOT GOOD
-#CREATE SOMETHING WITH NEW_Y_INDEX BUT FOR NEW_X_INDEX CONTINUED
+#need something special for the white note
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -295,41 +289,41 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 black_note = False
                                 break
 
-                        #THIS IS EXACTLY WHAT WE WANT TO DO ON ALL THE NOTES
+
+
+
+
+                        #our next step is eliminating that above line it is screwing stuff up
                         #once it gets past left zone we don't need a confirmation of the right zone 
+                        #do a check to make sure it doesn't exceed the size limit but reaches a certain point in terms of y!!!!
+
                         left_zone = False
-                        
-                        #WE CAN TAKE OUT THE ORS IF THEY MAKE IT HARD TO DISTINGUISH THINGS
 
-
-                        #we will use these when it hits something
-
-                        #we can reset them when it is in a different zone
                         bypass_top = False
                         bypass_bottom = False
 
-                        #do a check to make sure it doesn't exceed the size limit but reaches a certain point!!!!
                         
-                        #Also if i remove the round /6 it should function as it was before! test this once i put the abs in and make sure the abs is going in the right direction by saying greater than 0
-                        if not left_zone and new_x_index >= x_index - black_count + 1 + round(difference_between_lines / 6):
+                        if not left_zone and new_x_index >= x_index - black_count + 1:
                             if new_x_index >= x_index - round(black_count / 2):
                                 left_zone = True
-                            #make sure it is going in the right direction
+                            #gives exception of if it increases proportiately
                             elif abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
                                 past_temp_y_above = temp_y_above
                                 past_temp_y_below = temp_y_below
+                            #have no past
                             elif past_temp_y_above == -1:
                                 past_temp_y_above = temp_y_above
                                 past_temp_y_below = temp_y_below
+                            #slowly increasing
                             elif past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0 or bypass_top:
                                 if temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0 or bypass_bottom:
                                     past_temp_y_above = temp_y_above
                                     past_temp_y_below = temp_y_below
+                            #not the correct note
                             else:
                                 black_note = False
                                 break
-                        elif new_x_index <= x_index - 1 - round(difference_between_lines / 6):
-                            #gotta make sure on these its decreasing in the right direction
+                        elif new_x_index <= x_index - 1:
                             if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
                                 past_temp_y_above = temp_y_above
                                 past_temp_y_below = temp_y_below
@@ -793,12 +787,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     lines.append(image_path)
     all_rows.append(lines)
     
-def open_pdf_into_input(pdf_path, input_folder):
+def open_pdf_into_input(pdf_path, input_folder, new_input):
     # Open the PDF file
     doc = fitz.open(pdf_path)
     
     # Ensure input folder exists
     os.makedirs(input_folder, exist_ok=True)
+    os.makedirs(new_input, exist_ok=True)
 
     # Iterate through each page
     for page_num in range(len(doc)):
@@ -812,16 +807,16 @@ def open_pdf_into_input(pdf_path, input_folder):
         
         # Save the image to a file
         image_path = os.path.join(input_folder, f"page_{page_num + 1}.png")
+        image_path2 = os.path.join(new_input, f"page_{page_num + 1}.png")
         img.save(image_path)
-    
-    # Close the document
-    doc.close()
+        img.save(image_path2)
 
 # Example usage
 pdf_path = "input.pdf"
 input_folder = "input"
+new_input = 'new_input'
 
-open_pdf_into_input(pdf_path, input_folder)
+open_pdf_into_input(pdf_path, input_folder, new_input)
 
 for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
