@@ -241,11 +241,19 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     black_note = False
             max_above = -1
             max_below = -1
+
+
+
+            #I KNOW WHAT IS WRONG WE NEED A MAX TYPE SHIT
             if black_note:
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
                     past_temp_y_above = -1
                     past_temp_y_below = -1
                     for new_x_index in range(x_index - black_count + 1, x_index - 1):
+
+                        #testing
+                        img_array[input_y, new_x_index] = 255
+
                         temp_pixel = img_array[input_y, new_x_index]      
                         #both have to have at least one white    
                         continued = True
@@ -262,19 +270,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if continued:
                             continue 
                         temp_y_above = input_y
-                        temp_y_below = input_y
-                
-                        most_above = -1
-
-                        #FOR MOST ABOVE WE CAN DO IT UP HERE AND MAKE SURE IT DOESN'T CUT ITSELF OFF PREMATURELY
-                        #do a while True incorporate a break at input_y - round(difference_between_lines_for_line_drawing / 2) or if the center becomes white keep inmind we would need somethng like blackcount
-
-                        #its already cutting off so just need a while true and were chilling
-                        #passing the above would ensure it is not a black note and we should define that and not run this logic
-
-
-
-                        #i am woreking here on geting it to have this stop thing it's not doing well tho
+                        temp_y_below = input_y                            
+                        
                         while True:
                             
                             if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing):
@@ -285,10 +282,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if max_above >= temp_y_above:
                                 break
                             continued = True
-
-                            #figure out how exactly it's working w the temp y above bc it is supposed to be iterating upwards so this should work to stop it at the right point!
-                            #once we fix this incorporate it into the below 
-                            #after tempybelow we put in a max and we are done
 
                             most_left = -1
                             flag = False
@@ -320,10 +313,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                             temp_y_above -= 1
 
+                        if temp_y_above > input_y - round(difference_between_lines / 4):
+                            black_note = False
 
                         if black_note:
-
-                            most_below = -1
 
                             while True:
 
@@ -363,6 +356,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 temp_y_below += 1
 
+                            if temp_y_below < input_y + round(difference_between_lines / 4):
+                                black_note = False
                             if black_note:
                                 #do a certain max temp_y_above!!!!!
                                     
