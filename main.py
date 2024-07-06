@@ -264,8 +264,24 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_y_above = input_y
                         temp_y_below = input_y
                 
-                        #if it is defining it here why is it defining it there debug
-                        while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
+                        most_above = -1
+
+                        #FOR MOST ABOVE WE CAN DO IT UP HERE AND MAKE SURE IT DOESN'T CUT ITSELF OFF PREMATURELY
+                        #do a while True incorporate a break at input_y - round(difference_between_lines_for_line_drawing / 2) or if the center becomes white keep inmind we would need somethng like blackcount
+
+                        #its already cutting off so just need a while true and were chilling
+                        #passing the above would ensure it is not a black note and we should define that and not run this logic
+
+
+
+                        #i am woreking here on geting it to have this stop thing it's not doing well tho
+                        while True:
+                            
+                            if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing):
+                                black_note = False
+                                break
+
+                            #this makes sure the continue stops immediately this logic seems confusing but think bc this loop is just for one pixels temp y above it's great
                             if max_above >= temp_y_above:
                                 break
                             continued = True
@@ -304,79 +320,81 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                             temp_y_above -= 1
 
-                        while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
-                            if max_below <= temp_y_below and max_below != -1:
-                                break
-                            continued = True
-                            
-                            
-                            most_left = -1
-                            flag = False
 
-                            while True:
-                                if most_left == -1:
-                                    most_left = x_index - black_count + 1
-                                temp_pixel = img_array[temp_y_below, most_left]
-                                if temp_pixel == 255:
-                                    most_left += 1
+                        if black_note:
+                            while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+                                if max_below <= temp_y_below and max_below != -1:
                                     break
-                                if x_index - most_left >= round(difference_between_lines * 2):
-                                    flag = True
-                                    break
-                                most_left -= 1
+                                continued = True
+                                
+                                
+                                most_left = -1
+                                flag = False
 
-                            if not flag:
-                                for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 2)):
-                                    if img_array[temp_y_below, new_x_index2] == 255:
-                                        continued = False
+                                while True:
+                                    if most_left == -1:
+                                        most_left = x_index - black_count + 1
+                                    temp_pixel = img_array[temp_y_below, most_left]
+                                    if temp_pixel == 255:
+                                        most_left += 1
                                         break
-                            if continued:
-                                max_below = temp_y_below
-                                continue 
-                            temp_pixel_below = img_array[temp_y_below, new_x_index]      
-                            if temp_pixel_below == 255 or temp_y_below >= input_y + (difference_between_lines / 2):
-                                break
-                            temp_y_below += 1
+                                    if x_index - most_left >= round(difference_between_lines * 2):
+                                        flag = True
+                                        break
+                                    most_left -= 1
 
-                            
-                        #do a certain max temp_y_above!!!!!
-                            
-                        left_zone = False
+                                if not flag:
+                                    for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 2)):
+                                        if img_array[temp_y_below, new_x_index2] == 255:
+                                            continued = False
+                                            break
+                                if continued:
+                                    max_below = temp_y_below
+                                    continue 
+                                temp_pixel_below = img_array[temp_y_below, new_x_index]      
+                                if temp_pixel_below == 255 or temp_y_below >= input_y + (difference_between_lines / 2):
+                                    break
+                                temp_y_below += 1
 
-                        bypass_top = False
-                        bypass_bottom = False
+                                
+                            #do a certain max temp_y_above!!!!!
+                                
+                            left_zone = False
 
-                        if not left_zone and new_x_index >= x_index - black_count + 1:
-                            if new_x_index >= x_index - round(black_count / 2):
-                                left_zone = True
-                            #gives exception of if it increases proportiately
-                            elif abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
-                                past_temp_y_above = temp_y_above
-                                past_temp_y_below = temp_y_below
-                            #have no past
-                            elif past_temp_y_above == -1:
-                                past_temp_y_above = temp_y_above
-                                past_temp_y_below = temp_y_below
-                            #slowly increasing
-                            elif past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0 or bypass_top:
-                                if temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0 or bypass_bottom:
+                            bypass_top = False
+                            bypass_bottom = False
+
+                            if not left_zone and new_x_index >= x_index - black_count + 1:
+                                if new_x_index >= x_index - round(black_count / 2):
+                                    left_zone = True
+                                #gives exception of if it increases proportiately
+                                elif abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
                                     past_temp_y_above = temp_y_above
                                     past_temp_y_below = temp_y_below
-                            #not the correct note
-                            else:
-                                black_note = False
-                                break
-                        elif new_x_index <= x_index - 1:
-                            if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
-                                past_temp_y_above = temp_y_above
-                                past_temp_y_below = temp_y_below
-                            elif temp_y_above - past_temp_y_above <= round(difference_between_lines / 5) and temp_y_above - past_temp_y_above >= 0 or bypass_top:
-                                if past_temp_y_below - temp_y_below <= round(difference_between_lines / 5) and past_temp_y_below - temp_y_below >= 0 or bypass_bottom:
+                                #have no past
+                                elif past_temp_y_above == -1:
                                     past_temp_y_above = temp_y_above
                                     past_temp_y_below = temp_y_below
-                            else:
-                                black_note = False
-                                break
+                                #slowly increasing
+                                elif past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0 or bypass_top:
+                                    if temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0 or bypass_bottom:
+                                        past_temp_y_above = temp_y_above
+                                        past_temp_y_below = temp_y_below
+                                #not the correct note
+                                else:
+                                    black_note = False
+                                    break
+                            elif new_x_index <= x_index - 1:
+                                if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
+                                    past_temp_y_above = temp_y_above
+                                    past_temp_y_below = temp_y_below
+                                elif temp_y_above - past_temp_y_above <= round(difference_between_lines / 5) and temp_y_above - past_temp_y_above >= 0 or bypass_top:
+                                    if past_temp_y_below - temp_y_below <= round(difference_between_lines / 5) and past_temp_y_below - temp_y_below >= 0 or bypass_bottom:
+                                        past_temp_y_above = temp_y_above
+                                        past_temp_y_below = temp_y_below
+                                else:
+                                    black_note = False
+                                    break
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
