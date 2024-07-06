@@ -277,6 +277,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                             #fix this and put in the check by the first airplane ride
                             
+
+                            #ALL THIS TMEP Y ABOVE SHIT IS IN THE WRONG SPOT TRY TO INCORPORATE IT WHERE IT IS NEEDED WITH THE PLACES THAT ACTUALLY USE TEMPYABOVE
                             most_left = -1
                             while True:
                                 if most_left == -1:
