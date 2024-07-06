@@ -248,7 +248,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     past_temp_y_above = -1
                     past_temp_y_below = -1
                     for new_x_index in range(x_index - black_count + 1, x_index - 1):
-                        temp_pixel = img_array[input_y, new_x_index]      
                         #both have to have at least one white    
                         continued = True
                         for new_y_index in range (input_y - difference_between_lines, input_y):
