@@ -1,7 +1,4 @@
-#main focus rn is to fix up the halfway blacks and figure out what is up then we move onto the right before it goes downwards making sure the tempyabove is enough
-#check email for javier work and check project notes!
-
-#One free pdf scan of one page and then $1 a month --- business model
+#primary focus here is when it cuts it off halfway why is it doing that???
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -183,7 +180,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             bottom_right = [right + 5, input_y + 10]   
                             white_notes.append([top_left, bottom_right])
     
-        
+       
        
        
             #sharps
@@ -245,6 +242,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
                     past_temp_y_above = -1
                     past_temp_y_below = -1
+                    first = -1
+                    middle = -1
+                    ending = -1
                     for new_x_index in range(x_index - black_count + 1, x_index - 1):
                         temp_pixel = img_array[input_y, new_x_index]      
                         #both have to have at least one white    
@@ -274,15 +274,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if max_above >= temp_y_above:
                                 break
                             continued = True
-
-
-                            #the ixsue is it is going 0.9 in each direction not as much as it can go one way and then continues the other way or some shiw like that like going back as much as possible then forward 1.8
                             for new_x_index2 in range (new_x_index - round(difference_between_lines * 0.9), new_x_index + round(difference_between_lines * 0.9)):
                                 if img_array[temp_y_above, new_x_index2] == 255:
                                     continued = False
                                     break
                             if continued:
-                                img_array[temp_y_above, new_x_index] = 255
                                 max_above = temp_y_above
                                 continue 
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
@@ -308,7 +304,24 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             #img_array[temp_y_below, new_x_index] = 50
                             temp_y_below += 1
 
-                            
+                        if new_x_index == x_index - black_count + 1:
+                            first = round((temp_y_above + temp_y_below) / 2)
+                        elif new_x_index == round(((x_index - black_count + 1) + (x_index - 1)) / 2):
+                            middle = round((temp_y_above + temp_y_below) / 2)
+                            #preemptive breaking
+                            if middle - first < int(difference_between_lines / 10):
+                                black_note = False
+                                break
+                        elif new_x_index == x_index - 1:
+                            ending = round((temp_y_above + temp_y_below) / 2)
+                            if middle - ending < int(difference_between_lines / 10):
+                                black_note = False
+                                break
+
+
+
+
+
                         #our next step is eliminating that above line it is screwing stuff up
                         #once it gets past left zone we don't need a confirmation of the right zone 
                         #do a check to make sure it doesn't exceed the size limit but reaches a certain point in terms of y!!!!
