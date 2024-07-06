@@ -270,41 +270,23 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 break
                             continued = True
 
-
-
-
-
-                            #CRANK THIS OUT IN THE MORNING THIS CHECK TO MAKE SURE THE TEMOYABOVE IS CAPPING OUT
-                            #ADD A LIL CAP TO THE BLACK NOTeS
-                            #FINISH THIS BEFORE LA CAN DO ON PLANE
-
-                            #Originally it was 1.8 now it is 3
-                            #something is obviously wrong here i just don't know what it is
-
-                            #THIS IS WORKING BUT IT IS ACTING WEiRD DEBUG IT!!!
                             #figure out how exactly it's working w the temp y above bc it is supposed to be iterating upwards so this should work to stop it at the right point!
                             #once we fix this incorporate it into the below 
                             #after tempybelow we put in a max and we are done
 
                             most_left = -1
                             flag = False
-                            #issue is it is tempyabove is not defined
 
-                            #this is where the issues come from
                             while True:
                                 if most_left == -1:
                                     most_left = x_index - black_count + 1
                                 temp_pixel = img_array[temp_y_above, most_left]
                                 if temp_pixel == 255:
                                     most_left += 1
-                                    print('never got to here')
                                     break
-                                #originally this was new_x_index
                                 if x_index - most_left >= round(difference_between_lines * 2):
                                     flag = True
-                                    print(x_index - most_left)
                                     break
-                                img_array[temp_y_above, most_left] = 50
                                 most_left -= 1
 
                             if not flag:
@@ -313,10 +295,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         continued = False
                                         break
 
-
-
                             if continued:
-                                img_array[temp_y_above, new_x_index] = 255
                                 max_above = temp_y_above
                                 continue 
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
@@ -329,10 +308,28 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if max_below <= temp_y_below and max_below != -1:
                                 break
                             continued = True
-                            for new_x_index2 in range (new_x_index - round(difference_between_lines * 0.9), new_x_index + round(difference_between_lines * 0.9)):
-                                if img_array[temp_y_below, new_x_index2] == 255:
-                                    continued = False
+                            
+                            
+                            most_left = -1
+                            flag = False
+
+                            while True:
+                                if most_left == -1:
+                                    most_left = x_index - black_count + 1
+                                temp_pixel = img_array[temp_y_below, most_left]
+                                if temp_pixel == 255:
+                                    most_left += 1
                                     break
+                                if x_index - most_left >= round(difference_between_lines * 2):
+                                    flag = True
+                                    break
+                                most_left -= 1
+
+                            if not flag:
+                                for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 2)):
+                                    if img_array[temp_y_below, new_x_index2] == 255:
+                                        continued = False
+                                        break
                             if continued:
                                 max_below = temp_y_below
                                 continue 
