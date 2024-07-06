@@ -56,8 +56,76 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
         if pixel != 255 and x_index != width - 1:
             black_count += 1
             if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
-
                 #start putting in the black logic here
+
+                past_temp_y_above = -1
+                past_temp_y_below = -1
+                for new_x_index in range(x_index - difference_between_blacks + 1, x_index - 1):
+                    #the long black line stem check
+                    temp_pixel = img_array[input_y, new_x_index]      
+                    #both have to have at least one white    
+                    continued = True
+                    for new_y_index in range (input_y - difference_between_lines, input_y):
+                        if img_array[new_y_index, new_x_index] == 255:
+                            continued = False
+                            break
+                    for new_y_index in range (input_y, input_y + difference_between_lines):
+                        if img_array[new_y_index, new_x_index] == 255:
+                            continued = False
+                            break
+                        else:
+                            continued = True
+                    if continued:
+                        continue 
+                    temp_y_above = input_y
+                    temp_y_below = input_y           
+
+                    #DONT THINK WE NEED THE LONG BLACK ACROSS SHIT BC IT WILL END ANYWAYS
+                    while True:
+                            
+                        if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing):
+                            white_note = False
+                            break
+
+                        #this makes sure the continue stops immediately this logic seems confusing but think bc this loop is just for one pixels temp y above it's great
+                        if max_above >= temp_y_above:
+                            break
+                        continued = True
+
+                        most_left = -1
+                        flag = False
+
+                        while True:
+                            if most_left == -1:
+                                most_left = x_index - black_count + 1
+                            temp_pixel = img_array[temp_y_above, most_left]
+                            if temp_pixel == 255:
+                                most_left += 1
+                                break
+                            if x_index - most_left >= round(difference_between_lines * 2):
+                                flag = True
+                                break
+                            most_left -= 1
+
+                        if not flag:
+                            for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 2)):
+                                if img_array[temp_y_above, new_x_index2] == 255:
+                                    continued = False
+                                    break
+
+                        if continued:
+                            max_above = temp_y_above
+                            continue 
+                        temp_pixel_above = img_array[temp_y_above, new_x_index]       
+                        if temp_pixel_above == 255 or temp_y_above <= input_y - (difference_between_lines / 2):
+                            break
+
+                        temp_y_above -= 1
+
+                    #after tempyabove is determined
+                    if temp_y_above <= max_above:
+                        max_above = temp_y_above
+
                 """ counter = 0
                 white_note = True
                 above = False
@@ -215,7 +283,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             """
 
 
-            #difference_between_blacks = 0
+            difference_between_blacks = 0
 
 
 

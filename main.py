@@ -3,6 +3,11 @@
 
 #One free pdf scan of one page and then $1 a month --- business model
 
+
+
+
+#CHECK TO MAKE SURE MAX ABOVE IS BEING USED RIGHT....
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
