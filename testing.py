@@ -1,4 +1,3 @@
-#main focus rn is to fix up the halfway blacks and figure out what is up then we move onto the right before it goes downwards making sure the tempyabove is enough
 #check email for javier work and check project notes!
 
 #One free pdf scan of one page and then $1 a month --- business model
@@ -57,7 +56,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
         if pixel != 255 and x_index != width - 1:
             black_count += 1
             if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
-                counter = 0
+
+                #start putting in the black logic here
+                """ counter = 0
                 white_note = True
                 above = False
                 below = False
@@ -82,8 +83,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         white_note = False
                 #this is going across and then up and down 
                 if white_note:
-                    first = -1
-                    middle = -1
                     start = x_index - difference_between_blacks
                     end = x_index + 1
                     for new_x_index in range(start, end):
@@ -182,9 +181,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             top_left = [left - 5, input_y - 10]
                             bottom_right = [right + 5, input_y + 10]   
                             white_notes.append([top_left, bottom_right])
-    
-        
-       
+                """
        
             #sharps
             #combine this w above logic to not have two seperate statements
@@ -218,7 +215,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             """
 
 
-            difference_between_blacks = 0
+            #difference_between_blacks = 0
+
+
+
         else:
             #if it's white
             if difference_between_blacks != -1:
@@ -877,12 +877,8 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
 
-    #I'm going to edit the logic here so that it does the row notes w the name of the note next to it so if there is a black line and a invisible line it will know what to do
     notes = []
     for group in invisible_lines:
-        #sort the lines here so there is no issue when we copare the things from two different lines way apart cuz it won't happen use key lambda stuff
-
-
         for [current_loop_y, new_y] in group:
             row_notes = []
             # Process the lines and get the notes

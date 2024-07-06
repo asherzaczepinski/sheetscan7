@@ -1,7 +1,4 @@
-#main focus rn is to fix up the halfway blacks and figure out what is up then we move onto the right before it goes downwards making sure the tempyabove is enough
-#check email for javier work and check project notes!
-
-#One free pdf scan of one page and then $1 a month --- business model
+#THIS CAN HELP US W EFFICIENCY ON ALL THE NOTES
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -82,8 +79,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         white_note = False
                 #this is going across and then up and down 
                 if white_note:
-                    first = -1
-                    middle = -1
                     start = x_index - difference_between_blacks
                     end = x_index + 1
                     for new_x_index in range(start, end):
