@@ -243,8 +243,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             max_below = -1
 
 
-
-            #I KNOW WHAT IS WRONG WE NEED A MAX TYPE SHIT
             if black_note:
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
                     past_temp_y_above = -1
