@@ -313,9 +313,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                             temp_y_above -= 1
 
-                        if temp_y_above > input_y - round(difference_between_lines / 4):
-                            black_note = False
-
                         if black_note:
 
                             while True:
@@ -356,8 +353,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 temp_y_below += 1
 
-                            if temp_y_below < input_y + round(difference_between_lines / 4):
-                                black_note = False
                             if black_note:
                                 #do a certain max temp_y_above!!!!!
                                     
@@ -397,7 +392,17 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     else:
                                         black_note = False
                                         break
-
+                    
+                    #do the max stuff here!!!
+                    #it will be after we finish everything
+                                    
+                    if black_note:
+                        if max_above > input_y - round(difference_between_lines / 4):
+                            black_note = False
+                        if black_note:
+                            if temp_y_below < input_y + round(difference_between_lines / 4):
+                                black_note = False
+                                
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
