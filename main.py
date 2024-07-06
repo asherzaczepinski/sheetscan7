@@ -269,17 +269,23 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 break
                             continued = True
 
+
+
+
+
+                            #CRANK THIS OUT IN THE MORNING THIS CHECK TO MAKE SURE THE TEMOYABOVE IS CAPPING OUT
+                            #ADD A LIL CAP TO THE BLACK NOTeS
+                            #FINISH THIS BEFORE LA CAN DO ON PLANE
+
+                            #Originally it was 1.8 now it is 3
+                            #something is obviously wrong here i just don't know what it is
+
                             #THIS IS WORKING BUT IT IS ACTING WEiRD DEBUG IT!!!
-                            #have to do all this stuff for below once i fix this
-                            #def fix on car ride maybe...
-                            #it has to do w the most_left and new_x_index its contuing multiple times below i think this is the issue bc it is of course 1.8 times in that position
-                            #think abt it
-
-                            #fix this and put in the check by the first airplane ride
-                            
-
-                            #ALL THIS TMEP Y ABOVE SHIT IS IN THE WRONG SPOT TRY TO INCORPORATE IT WHERE IT IS NEEDED WITH THE PLACES THAT ACTUALLY USE TEMPYABOVE
+                            #figure out how exactly it's working w the temp y above bc it is supposed to be iterating upwards so this should work to stop it at the right point!
+                            #once we fix this incorporate it into the below 
+                            #after tempybelow we put in a max and we are done
                             most_left = -1
+                            flag = False
                             while True:
                                 if most_left == -1:
                                     most_left = new_x_index
@@ -287,11 +293,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel == 255:
                                     most_left += 1
                                     break
-                                if new_x_index - most_left >= round(difference_between_lines * 1.8):
-                                    continued = True
+                                #originally this was new_x_index
+                                if x_index - most_left >= round(difference_between_lines * 1.8):
+                                    flag = True
                                     break
                                 most_left -= 1
-                            if not continued:
+
+                            if not flag:
                                 for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 1.8)):
                                     if img_array[temp_y_above, new_x_index2] == 255:
                                         continued = False
@@ -300,6 +308,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                             if continued:
+                                img_array[temp_y_above, new_x_index] = 255
                                 max_above = temp_y_above
                                 continue 
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
