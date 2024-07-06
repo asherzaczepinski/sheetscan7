@@ -276,13 +276,22 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             continued = True
 
 
-                            #the ixsue is it is going 0.9 in each direction not as much as it can go one way and then continues the other way or some shiw like that like going back as much as possible then forward 1.8
-                            for new_x_index2 in range (new_x_index - round(difference_between_lines * 0.9), new_x_index + round(difference_between_lines * 0.9)):
+                            #have to get a most left first and then do that + 1.8
+                            most_left = -1
+                            while True:
+                                if most_left == -1:
+                                    most_left = new_x_index
+                                #temp_y_above for this one
+                                temp_pixel = img_array[temp_y_above, new_x_index]
+                                if temp_pixel == 255:
+                                    most_left += 1
+                                    break
+                                most_left -= 1
+                            for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 1.8)):
                                 if img_array[temp_y_above, new_x_index2] == 255:
                                     continued = False
                                     break
                             if continued:
-                                img_array[temp_y_above, new_x_index] = 255
                                 max_above = temp_y_above
                                 continue 
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
