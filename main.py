@@ -2,7 +2,7 @@
 #check email for javier work and check project notes!
 
 #One free pdf scan of one page and then $1 a month --- business model
-
+#USE MONEY I MAKE FOR SABA AND SAFTA
 
 
 
@@ -271,19 +271,20 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_y_above = input_y
                         temp_y_below = input_y                            
                         
+
+
+                        #ananlyze max aove and finish up stuff in testing.py
+
+                        #FLAG SHIT JUST MAKES ITMORE EFFICIENT
                         while True:
                             
                             if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing):
                                 black_note = False
                                 break
 
-                            #this makes sure the continue stops immediately this logic seems confusing but think bc this loop is just for one pixels temp y above it's great
-                            if max_above >= temp_y_above:
-                                break
                             continued = True
 
                             most_left = -1
-                            flag = False
 
                             while True:
                                 if most_left == -1:
@@ -293,19 +294,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     most_left += 1
                                     break
                                 if x_index - most_left >= round(difference_between_lines * 2):
-                                    flag = True
                                     break
                                 most_left -= 1
 
-                            if not flag:
-                                for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 2)):
-                                    if img_array[temp_y_above, new_x_index2] == 255:
-                                        continued = False
-                                        break
-
-                            if continued:
-                                max_above = temp_y_above
-                                continue 
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
                             if temp_pixel_above == 255 or temp_y_above <= input_y - (difference_between_lines / 2):
                                 break
