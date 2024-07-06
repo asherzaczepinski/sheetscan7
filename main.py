@@ -264,40 +264,45 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_y_above = input_y
                         temp_y_below = input_y
                 
-
-                        #ITs working but everyone where we improve is starting so far right and its weird just figure out y
-                        #add in that needed tempyabove max amount for the total thing like at least one has to hit it or we just track when it goes down for first time and compare to this!!!!1
-                        #above is SMART
-
-                        #figure out y it's not working well rn
                         while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
                             if max_above >= temp_y_above:
                                 break
                             continued = True
 
+                            #THIS IS WORKING BUT IT IS ACTING WEiRD DEBUG IT!!!
+                            #have to do all this stuff for below once i fix this
+                            #def fix on car ride maybe...
+                            #it has to do w the most_left and new_x_index its contuing multiple times below i think this is the issue bc it is of course 1.8 times in that position
+                            #think abt it
 
-                            #have to get a most left first and then do that + 1.8
+                            #fix this and put in the check by the first airplane ride
+                            
                             most_left = -1
                             while True:
                                 if most_left == -1:
                                     most_left = new_x_index
-                                #temp_y_above for this one
                                 temp_pixel = img_array[temp_y_above, new_x_index]
                                 if temp_pixel == 255:
                                     most_left += 1
                                     break
-                                most_left -= 1
-                            for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 1.8)):
-                                if img_array[temp_y_above, new_x_index2] == 255:
-                                    continued = False
+                                if new_x_index - most_left >= round(difference_between_lines * 1.8):
+                                    continued = True
                                     break
+                                most_left -= 1
+                            if not continued:
+                                for new_x_index2 in range (most_left, most_left + round(difference_between_lines * 1.8)):
+                                    if img_array[temp_y_above, new_x_index2] == 255:
+                                        continued = False
+                                        break
+
+
+
                             if continued:
                                 max_above = temp_y_above
                                 continue 
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
                             if temp_pixel_above == 255 or temp_y_above <= input_y - (difference_between_lines / 2):
                                 break
-                            img_array[temp_y_above, new_x_index] = 50
                             temp_y_above -= 1
 
                         while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
@@ -314,20 +319,16 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             temp_pixel_below = img_array[temp_y_below, new_x_index]      
                             if temp_pixel_below == 255 or temp_y_below >= input_y + (difference_between_lines / 2):
                                 break
-                            #img_array[temp_y_below, new_x_index] = 50
                             temp_y_below += 1
 
                             
-                        #our next step is eliminating that above line it is screwing stuff up
-                        #once it gets past left zone we don't need a confirmation of the right zone 
-                        #do a check to make sure it doesn't exceed the size limit but reaches a certain point in terms of y!!!!
-
+                        #do a certain max temp_y_above!!!!!
+                            
                         left_zone = False
 
                         bypass_top = False
                         bypass_bottom = False
 
-                        #HAVE A MAX FOR SOMETHING LIKE SIZE LIMIT MAYBE WE IMPLEMENT IT ABOVE
                         if not left_zone and new_x_index >= x_index - black_count + 1:
                             if new_x_index >= x_index - round(black_count / 2):
                                 left_zone = True
