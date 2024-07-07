@@ -8,7 +8,7 @@
 
 
 
-#WILL ADD IN THAT EXTRA OR FOR IF THEY INCREASED IN THE SAME DIRECIOTN PROPORTIONALITY TO THE WHITE SHIT
+#WILL ADD IN THAT EXTRA OR FOR IF THEY INCREASED IN THE SAME DIRECIOTN PROPORTIONALITY TO THE WHITE SHIT -- for white and dashed white
 #make a rule that everything must increase in first fourth and decrease in last
 #in terms of the note shit
 #this will also allow us to take out beginning middle end once we implement
@@ -939,7 +939,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
 
             #KEEP WORKING ON THIS PAST NOTe STUFF
-            if past_note != -1 and note[1][0] - past_note:
+            if past_note != -1 and note[1][0] - past_note < (difference_between_lines * 2 / 3):
                 #past note will stay the same this way
                 continue
             top_left = note[0]
