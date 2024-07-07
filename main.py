@@ -5,14 +5,9 @@
 #such as difference between lines for the most at top should be difference between liens * 2/3
 
 
-
-
-
-#WILL ADD IN THAT EXTRA OR FOR IF THEY INCREASED IN THE SAME DIRECIOTN PROPORTIONALITY TO THE WHITE SHIT -- for white and dashed white
 #make a rule that everything must increase in first fourth and decrease in last
 #in terms of the note shit
 #this will also allow us to take out beginning middle end once we implement
-#mae something again to make sure two notes can't be next to each other
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -157,7 +152,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if middle - ending < int(difference_between_lines / 10):
                                         white_note = False
                                         break
-                                if past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
+                                if abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
+                                    past_temp_y_above = temp_y_above
+                                    past_temp_y_below = temp_y_below
+                                elif past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
                                     past_temp_y_above = temp_y_above
                                     past_temp_y_below = temp_y_below
                                 else:
@@ -692,6 +690,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break
+                
                 if white_note:
                     #remove this eventually
                     top_left = [x_index - black_count, input_y - 10]
