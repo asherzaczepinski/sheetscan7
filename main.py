@@ -256,32 +256,53 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if img_array[new_y_index, new_x_index] == 255:
                                 continued = False
                                 break
-                        for new_y_index in range (input_y, input_y + difference_between_lines):
-                            if img_array[new_y_index, new_x_index] == 255:
-                                continued = False
-                                break
-                            else:
-                                continued = True
+                        if not continued:
+                            for new_y_index in range (input_y, input_y + difference_between_lines):
+                                if img_array[new_y_index, new_x_index] == 255:
+                                    continued = False
+                                    break
+                                else:
+                                    continued = True
                         if continued:
                             continue 
                         temp_y_above = input_y
                         temp_y_below = input_y                            
                         while True:
-                            #go left and right to break at the right spots
+
+
+
+
+                            #go left and right to break at the right spots working right here
                             continued = True
                             for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
                                 if img_array[temp_y_above, new_x_index2] == 255:
                                     continued = False
+
                                     break
+
+
+
+
+
                             if continued:
                                 break
-                            if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing) / 2:
+                            if temp_y_above <= input_y - difference_between_lines_for_line_drawing:
                                 black_note = False
                                 break
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
+
+
+
+                            #took out safety net not on the part for below
                             if temp_pixel_above == 255:
                                 break
                             temp_y_above -= 1
+
+
+
+
+
+
                         if temp_y_above <= max_above or max_above == -1:
                             max_above = temp_y_above
                         if black_note:
