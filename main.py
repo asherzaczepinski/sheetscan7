@@ -207,13 +207,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if img_array[new_y_index, new_x_index] == 255:
                                 continued = False
                                 break
-                            
-                        for new_y_index in range (input_y, input_y + difference_between_lines):
-                            if img_array[new_y_index, new_x_index] == 255:
-                                continued = False
-                                break
-                            else:
-                                continued = True
+                        if not continued:
+                            for new_y_index in range (input_y, input_y + difference_between_lines):
+                                if img_array[new_y_index, new_x_index] == 255:
+                                    continued = False
+                                    break
+                                else:
+                                    continued = True
                         if continued:
                             continue 
                     else:
@@ -414,12 +414,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if img_array[new_y_index, new_x_index] == 255:
                                     continued = False
                                     break
-                            for new_y_index in range (starting_below_black, starting_below_black + difference_between_lines):
-                                if img_array[new_y_index, new_x_index] == 255:
-                                    continued = False
-                                    break
-                                else:
-                                    continued = True
+                            if not continued:
+                                for new_y_index in range (starting_below_black, starting_below_black + difference_between_lines):
+                                    if img_array[new_y_index, new_x_index] == 255:
+                                        continued = False
+                                        break
+                                    else:
+                                        continued = True
                             if continued:
                                 continue 
                             temp_y_above = starting_above_black
