@@ -266,9 +266,12 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if continued:
                             continue 
                         temp_y_above = input_y
-                        temp_y_below = input_y                            
+                        temp_y_below = input_y                  
+
+
+                        #APPLY THIS MAX OUT LOGIC TO ALL NOTES AND SWITCH UP FOR DASHED WHITES 
+                        #we can do the 3/4 bc it is rly just 1/2 and we get 1/4 of leniency here         
                         while True:
-                            #go left and right to break at the right spots working right here
                             continued = True
                             for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
                                 if img_array[temp_y_above, new_x_index2] == 255:
@@ -276,7 +279,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                             if continued:
                                 break
-                            if temp_y_above <= input_y - difference_between_lines_for_line_drawing:
+                            if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing * 3 / 4):
                                 black_note = False
                                 break
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
@@ -294,7 +297,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         break
                                 if continued:
                                     break
-                                if temp_y_below >= input_y + difference_between_lines_for_line_drawing:
+                                if temp_y_below >= input_y + round(difference_between_lines_for_line_drawing * 3 / 4):
                                     black_note = False
                                     break                                
                                 temp_pixel_below = img_array[temp_y_below, new_x_index]      
