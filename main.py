@@ -5,6 +5,7 @@
 #such as difference between lines for the most at top should be difference between liens * 2/3
 
 
+#for the difference between lines shit max out take out the second part and implement that across checker
 #make a rule that everything must increase in first fourth and decrease in last
 #in terms of the note shit
 #this will also allow us to take out beginning middle end once we implement
@@ -266,11 +267,19 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_y_above = input_y
                         temp_y_below = input_y                            
                         while True:
-                            if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing):
+                            #go left and right to break at the right spots
+                            continued = True
+                            for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
+                                if img_array[temp_y_above, new_x_index2] == 255:
+                                    continued = False
+                                    break
+                            if continued:
+                                break
+                            if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing) / 2:
                                 black_note = False
                                 break
                             temp_pixel_above = img_array[temp_y_above, new_x_index]       
-                            if temp_pixel_above == 255 or temp_y_above <= input_y - (difference_between_lines / 2):
+                            if temp_pixel_above == 255:
                                 break
                             temp_y_above -= 1
                         if temp_y_above <= max_above or max_above == -1:
@@ -395,7 +404,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             temp_y_above = starting_above_black
                             temp_y_below = starting_below_black   
                             while True:
-                                if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing):
+                                if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing) / 2:
                                     black_note = False
                                     break
                                 if max_above >= temp_y_above:
