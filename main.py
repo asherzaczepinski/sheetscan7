@@ -477,6 +477,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if temp_y_above <= max_above:
                                 max_above = temp_y_above
                             if black_note:
+                                #testing
+
+
+
+
+
+                                #somewhere in here before the not here is where the dashed black is getting screwed up
+                                #apply new logic to dashed white
+                                #work on doing 1/4 up shit 
                                 while True:
                                     continued = True
                                     for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
@@ -541,6 +550,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         #not the correct note
                                         else:
                                             black_note = False
+                                            #not here
                                             break
                                     elif new_x_index <= x_index - 1:
                                         if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
@@ -552,17 +562,22 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                                 past_temp_y_below = temp_y_below
                                         else:
                                             black_note = False
+                                            #not here
                                             break
                         if black_note:
                             #compenstae for the starting above black moving!
                             if max_above > input_y - round(difference_between_lines / 4) - (input_y - starting_above_black):
                                 black_note = False
+                                #not here
                             if black_note:
                                 if max_below < input_y + round(difference_between_lines / 4 + (starting_below_black - input_y)):
                                     black_note = False
+                                    #not here
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
+
+                        #not here
                         black_notes.append([top_left, bottom_right])
                     black_count = 0
             else:
@@ -767,15 +782,6 @@ def sort_pairs(input_array):
     middle_values = [round((pair[0] + pair[1]) / 2) for pair in pairs]
     return middle_values
 def sort_notes(notes):
-    """
-    Sorts the notes in each row by their [1][0] value.
-
-    Args:
-        notes (list): List of rows, where each row is a list of notes.
-
-    Returns:
-        list: Sorted list of rows.
-    """
     sorted_notes = []
     for row in notes:
         sorted_row = sorted(row, key=lambda note: note[1][0][0])
@@ -897,9 +903,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                 group.extend([[int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + round(line_height / 2)]])
                 if add_row_index != 3:
                     group.extend([[future_line, future_line + round(line_height / 2)]])
-
-
-
     notes = []
     for group in invisible_lines:
         for [current_loop_y, new_y] in group:
@@ -990,7 +993,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             break
                         else:
                             notes[index].pop(index2)
-
                             break
         past_notes = row
 
