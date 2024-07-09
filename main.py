@@ -470,7 +470,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 temp_y_above -= 1                                
                             if black_note:
-                                if temp_y_above <= max_above:
+                                if temp_y_above <= max_above or max_above == -1:
                                     max_above = temp_y_above
                                 while True:
                                     continued = True
@@ -705,7 +705,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 break                    
                 #bottom part
                 if white_note:
-                    if temp_y_above <= max_above:
+                    if temp_y_above <= max_above or max_above == -1:
                         max_above = temp_y_above
                     first_switch = False
                     space_counter = 0
@@ -750,10 +750,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                 if white_note:
                     #don't want adjuster cuz the top part is cut off quick
-                    if max_above > input_y - round(difference_between_lines / 5):
+                    if max_above > input_y - round(difference_between_lines / 10):
                         white_note = False
                     if white_note:
-                        if max_below < input_y + round(difference_between_lines / 5):
+                        if max_below < input_y + round(difference_between_lines / 10):
                             white_note = False
                 #put it in here
                 if white_note:
