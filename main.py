@@ -556,6 +556,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if black_note:
                                 if max_below < input_y + round(difference_between_lines / 5):
                                     black_note = False
+                                    
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
