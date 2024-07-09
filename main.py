@@ -270,7 +270,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                         #APPLY THIS MAX OUT LOGIC TO ALL NOTES AND SWITCH UP FOR DASHED WHITES 
-                        #we can do the 3/4 bc it is rly just 1/2 and we get 1/4 of leniency here         
+                        #we can do the 3/4 bc it is rly just 1/2 and we get 1/4 of leniency here  
+
+                        #do this on all notes do 1/4 and then work on sharps!       
                         while True:
                             continued = True
                             for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
@@ -416,7 +418,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             temp_y_above = starting_above_black
                             temp_y_below = starting_below_black   
                             while True:
-                                if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing) / 2:
+                                continued = True
+                                for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
+                                    if img_array[temp_y_above, new_x_index2] == 255:
+                                        continued = False
+                                        break
+                                if continued:
+                                    break
+                                #compensate for difference added on
+                                if temp_y_above <= input_y - (round(difference_between_lines_for_line_drawing) * 3 / 4) + (input_y - starting_above_black):
                                     black_note = False
                                     break
                                 if max_above >= temp_y_above:
@@ -444,13 +454,16 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     max_above = temp_y_above
                                     continue 
                                 temp_pixel_above = img_array[temp_y_above, new_x_index]       
-                                if temp_pixel_above == 255 or temp_y_above <= input_y - (difference_between_lines / 2):
+                                if temp_pixel_above == 255:
                                     break
                                 temp_y_above -= 1
                             if temp_y_above <= max_above:
                                 max_above = temp_y_above
                             if black_note:
                                 while True:
+
+
+                                    #working in here
                                     if temp_y_below >= input_y + round(difference_between_lines_for_line_drawing / 2):
                                         black_note = False
                                         break
