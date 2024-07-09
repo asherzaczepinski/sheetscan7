@@ -996,20 +996,13 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     sorted_middles = sort_pairs(invisible_lines)
 
-    #we have to sort the notes in the row
-    #think if it adds the black notes bf the white notes there is an issue
-    #maybe later we just make it do the notes off of sorted_middles and sort the pairs above we can do this later idec
     notes = sort_notes(notes)
-    #fuck i see where a lot of errors r coming from
     for row in notes:
-
         past_note = -1
         for note in row:
             note = note[1]
-            #sometimes they like encompass each other or overlap weird idk
+            #sometimes they like encompass each other thats y abs like it could start before end later
             if past_note != -1 and abs(note[1][0] - past_note) < (difference_between_lines * 2 / 3):
-                print(row)
-                print(note, past_note)
                 continue
             top_left = note[0]
             bottom_right = note[1]
