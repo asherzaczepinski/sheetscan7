@@ -1,15 +1,12 @@
 #One free pdf scan of one page and then $1 a month --- business model
 
-
-#make sure to adjust the max out values to be smaller than they are they are way to lenient can do this on flight to LA
-#such as difference between lines for the most at top should be difference between liens * 2/3
-
-
 #for the difference between lines shit max out take out the second part and implement that across checker
 #make a rule that everything must increase in first fourth and decrease in last
 #in terms of the note shit
 #this will also allow us to take out beginning middle end once we implement
+#for the one fourth stuff  do it in the abs comparison place and take out the needs for the abs!
 
+#i can do this all tn
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -130,12 +127,22 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             temp_y_below = input_y
                             
                             while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
+
+                                #well be working in here
+
+
+
                                 temp_pixel_above = img_array[temp_y_above, new_x_index]       
                                 if temp_pixel_above != 255:
                                     break
                                 temp_y_above -= 1
                             if white_note:
                                 while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+
+
+
+
+
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]      
                                     if temp_pixel_below != 255:
                                         break
@@ -294,7 +301,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             while True:
                                 continued = True
                                 for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
-                                    if img_array[temp_y_above, new_x_index2] == 255:
+                                    if img_array[temp_y_below, new_x_index2] == 255:
                                         continued = False
                                         break
                                 if continued:
@@ -435,7 +442,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 most_left = -1
                                 flag = False
                                 while True:
-
                                     if most_left == -1:
                                         most_left = x_index - black_count + 1
                                     temp_pixel = img_array[temp_y_above, most_left]
@@ -464,7 +470,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 while True:
                                     continued = True
                                     for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
-                                        if img_array[temp_y_above, new_x_index2] == 255:
+                                        if img_array[temp_y_below, new_x_index2] == 255:
                                             continued = False
                                             break
                                     if continued:
@@ -504,10 +510,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     max_below = temp_y_below
                                 if black_note:
                                     left_zone = False
-
                                     bypass_top = False
                                     bypass_bottom = False
-
                                     if not left_zone and new_x_index >= x_index - black_count + 1:
                                         if new_x_index >= x_index - round(black_count / 2):
                                             left_zone = True
