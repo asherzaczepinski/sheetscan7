@@ -202,7 +202,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     white_note = False
                                     break
                         if white_note:
-                            img_array[input_y: input_y + 50, x_index - round(difference_between_blacks / 2)] = 50
                             top_left = [left - 5, input_y - 10]
                             bottom_right = [right + 5, input_y + 10]   
                             white_notes.append([top_left, bottom_right])
@@ -767,6 +766,21 @@ def sort_pairs(input_array):
     # Calculate the middle value (rounded mean) for each pair and add to middle_values list
     middle_values = [round((pair[0] + pair[1]) / 2) for pair in pairs]
     return middle_values
+def sort_notes(notes):
+    """
+    Sorts the notes in each row by their [1][0] value.
+
+    Args:
+        notes (list): List of rows, where each row is a list of notes.
+
+    Returns:
+        list: Sorted list of rows.
+    """
+    sorted_notes = []
+    for row in notes:
+        sorted_row = sorted(row, key=lambda note: note[1][0][0])
+        sorted_notes.append(sorted_row)
+    return sorted_notes
 
 def y_assigner(y_array, y):
     if not y_array:
@@ -963,9 +977,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
 
     past_notes = []
     
-
-
-    #if they are close enough within a less than 2/3 a note distance
     for index, row in enumerate(notes):
         if index != 0:
             for index2, note in enumerate(row):
@@ -979,21 +990,26 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
                             break
                         else:
                             notes[index].pop(index2)
+
                             break
         past_notes = row
 
     sorted_middles = sort_pairs(invisible_lines)
 
+    #we have to sort the notes in the row
+    #think if it adds the black notes bf the white notes there is an issue
+    #maybe later we just make it do the notes off of sorted_middles and sort the pairs above we can do this later idec
+    notes = sort_notes(notes)
+    #fuck i see where a lot of errors r coming from
     for row in notes:
+
         past_note = -1
         for note in row:
             note = note[1]
-            #pretty positive it is organized
-
-
-            #KEEP WORKING ON THIS PAST NOTe STUFF
-            if past_note != -1 and note[1][0] - past_note < (difference_between_lines * 2 / 3):
-                #past note will stay the same this way
+            #sometimes they like encompass each other or overlap weird idk
+            if past_note != -1 and abs(note[1][0] - past_note) < (difference_between_lines * 2 / 3):
+                print(row)
+                print(note, past_note)
                 continue
             top_left = note[0]
             bottom_right = note[1]
