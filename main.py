@@ -442,8 +442,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         break
                                 if continued:
                                     break
-                                #compensate for difference added on
-                                if temp_y_above <= input_y - (round(difference_between_lines_for_line_drawing) * 3 / 4) + (input_y - starting_above_black):
+                                #don't want to do input_y - starting to compensate bc input y could be anywhere on that little line
+                                if temp_y_above <= input_y - (round(difference_between_lines_for_line_drawing) * 3 / 4) :
                                     black_note = False
                                     break
                                 if max_above >= temp_y_above:
@@ -477,15 +477,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if temp_y_above <= max_above:
                                 max_above = temp_y_above
                             if black_note:
-                                #testing
-
-
-
-
-
-                                #somewhere in here before the not here is where the dashed black is getting screwed up
-                                #apply new logic to dashed white
-                                #work on doing 1/4 up shit 
                                 while True:
                                     continued = True
                                     for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
@@ -494,7 +485,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                             break
                                     if continued:
                                         break
-                                    if temp_y_below >= input_y + (round(difference_between_lines_for_line_drawing) * 3 / 4) - (starting_below_black - input_y):
+                                    if temp_y_below >= input_y + (round(difference_between_lines_for_line_drawing) * 3 / 4):
                                         black_note = False
                                         break
                                     if max_below <= temp_y_below and max_below != -1:
@@ -533,6 +524,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     bypass_bottom = False
                                     if not left_zone and new_x_index >= x_index - black_count + 1:
                                         if new_x_index >= x_index - round(black_count / 2):
+                                            #note here
                                             left_zone = True
                                         #gives exception of if it increases proportiately
                                         elif abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
@@ -550,7 +542,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         #not the correct note
                                         else:
                                             black_note = False
-                                            #not here
                                             break
                                     elif new_x_index <= x_index - 1:
                                         if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
@@ -562,22 +553,18 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                                 past_temp_y_below = temp_y_below
                                         else:
                                             black_note = False
-                                            #not here
                                             break
+                                    
                         if black_note:
                             #compenstae for the starting above black moving!
                             if max_above > input_y - round(difference_between_lines / 4) - (input_y - starting_above_black):
                                 black_note = False
-                                #not here
                             if black_note:
                                 if max_below < input_y + round(difference_between_lines / 4 + (starting_below_black - input_y)):
                                     black_note = False
-                                    #not here
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
-
-                        #not here
                         black_notes.append([top_left, bottom_right])
                     black_count = 0
             else:
