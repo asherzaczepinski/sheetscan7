@@ -2,13 +2,7 @@
 #make it have a colleciton of all scanned sheets to easily identify stuff like if it matches up just return it immediately
 
 #do start middle end for everything
-#add max above below for the check in white notes shit did we not do that for dashed black damn...
-#maybe for dashed black and dashed white we keep the shit in middle ending start fuck
 
-
-#no apply max above shit to white notes and then do middle ending shit just greater than or less
-
-#once i finish this i will work on sharps
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -311,6 +305,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 temp_y_below += 1
                             if temp_y_below >= max_below:
                                 max_below = temp_y_below
+
+
+                            #work in here for black notes
                             if black_note:                                    
                                 left_zone = False
                                 if not left_zone and new_x_index >= x_index - black_count + 1:
@@ -344,6 +341,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     else:
                                         black_note = False
                                         break
+
+
+
+
+
                     if black_note:
                         if max_above > input_y - round(difference_between_lines / 4):
                             black_note = False
