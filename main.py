@@ -84,8 +84,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     temp_pixel_below = img_array[input_y + i, x_index - int(difference_between_blacks / 2)] 
                     if temp_pixel_below != 255:
                         white_note = False
-                left = -1
-                right = -1
                 #this is going across and then up and down 
                 if white_note:
                     first = -1
@@ -115,27 +113,25 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if below_flag == False:
                                 white_note = False             
                 
-
-                    if left == -1 and right == -1:
-                        left_x = x_index - difference_between_blacks - 1
-                        while left_x > x_index - difference_between_blacks - 1 - difference_between_blacks:
-                            temp_pixel = img_array[input_y, left_x]
+                    left = -1
+                    right = -1
+                    left_x = x_index - difference_between_blacks - 1
+                    while left_x > x_index - difference_between_blacks - 1 - difference_between_blacks:
+                        temp_pixel = img_array[input_y, left_x]
+                        if temp_pixel == 255:
+                            left = left_x + 1
+                            break
+                        left_x -= 1
+                    if left == -1:
+                        white_note = False
+                    if white_note:
+                        for right_x in range (x_index + 1, x_index + difference_between_blacks):
+                            temp_pixel = img_array[input_y, right_x]
                             if temp_pixel == 255:
-                                left = left_x + 1
+                                right = right_x - 1
                                 break
-                            left_x -= 1
-                        if left == -1:
+                        if right == -1:
                             white_note = False
-
-
-                        if white_note:
-                            for right_x in range (x_index + 1, x_index + difference_between_blacks):
-                                temp_pixel = img_array[input_y, right_x]
-                                if temp_pixel == 255:
-                                    right = right_x - 1
-                                    break
-                            if right == -1:
-                                white_note = False
 
                     #making sure there is not too much variation
                     if white_note:
@@ -152,10 +148,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             temp_y_below = input_y
                             while True:
                                 continued = True
-
-
-
-                                #NOW HERE WE HAVE TO ADd an eXTRA MINUS OF THE MOST LEFT
                                 for new_x_index2 in range(left - int(difference_between_lines / 4), right + int(difference_between_lines / 4)):
                                     if img_array[temp_y_above, new_x_index2] == 255:
                                         continued = False
@@ -170,8 +162,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 temp_y_above -= 1
                             if white_note:
-
-                                #turn this to a while true
                                 while True:
                                     continued = True
                                     for new_x_index2 in range(left - int(difference_between_lines / 4), right + int(difference_between_lines / 4)):
