@@ -133,19 +133,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         break
                                 if continued:
                                     break
-                                
                                 if temp_y_above <= input_y - round(difference_between_lines_for_line_drawing * 3 / 4):
-                                    black_note = False
+                                    white_note = False
                                     break
-
                                 temp_pixel_above = img_array[temp_y_above, new_x_index]       
                                 if temp_pixel_above != 255:
                                     break
                                 temp_y_above -= 1
-
-
-
-
                             if white_note:
                                 while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
                                     continued = True
@@ -156,7 +150,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if continued:
                                         break
                                     if temp_y_below >= input_y + round(difference_between_lines_for_line_drawing * 3 / 4):
-                                        black_note = False
+                                        white_note = False
                                         break
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]      
                                     if temp_pixel_below != 255:
