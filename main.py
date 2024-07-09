@@ -435,6 +435,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 most_left = -1
                                 flag = False
                                 while True:
+
                                     if most_left == -1:
                                         most_left = x_index - black_count + 1
                                     temp_pixel = img_array[temp_y_above, most_left]
@@ -461,10 +462,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 max_above = temp_y_above
                             if black_note:
                                 while True:
-
-
-                                    #working in here
-                                    if temp_y_below >= input_y + round(difference_between_lines_for_line_drawing / 2):
+                                    continued = True
+                                    for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
+                                        if img_array[temp_y_above, new_x_index2] == 255:
+                                            continued = False
+                                            break
+                                    if continued:
+                                        break
+                                    if temp_y_below >= input_y + (round(difference_between_lines_for_line_drawing) * 3 / 4) - (starting_below_black - input_y):
                                         black_note = False
                                         break
                                     if max_below <= temp_y_below and max_below != -1:
@@ -492,7 +497,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         max_below = temp_y_below
                                         continue 
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]      
-                                    if temp_pixel_below == 255 or temp_y_below >= input_y + (difference_between_lines / 2):
+                                    if temp_pixel_below == 255:
                                         break
                                     temp_y_below += 1
                                 if temp_y_below >= max_below:
