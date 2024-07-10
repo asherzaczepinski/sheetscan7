@@ -487,9 +487,25 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                                 #THIS ONE FUCKING -1 REMOVAL CHANGED EVERYTHING FIGURE OUT WTF WHY
+                                #FOR FUTURE REFERENCE WE SHOULD PROB MAKE MAXABOVE AND BELOW = INPUT Y AFTER WE FINISH FIGURING OUT WTF THIS MAKES A DIFFERENCE
+                                #think it easily made something have a tempyabve
+
+                                #after this see if we should apply this new found error fix to all notes
+                                #then, we should do start middle end w the little increments depending on each note --- idk look at up notes if we need this
+                                #def add change of direction thingy
+
+
+                                #then by sunday we should be good to move onto sharps
                                 #if temp_y_above <= max_above or max_above == -1:
                                 if temp_y_above <= max_above:
+                                    print('got to here')
+                                    print('fuck this is not happening')
                                     max_above = temp_y_above
+
+
+                                #i guess somehow if we make it happen then the other thing works
+                                #the logic might say idk fucking we'll debug in the morning
+                                #WE KNOW WHATS WRONG!
                                 while True:
                                     continued = True
                                     for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
@@ -567,38 +583,17 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         else:
                                             black_note = False
                                             break
-
-
-
-
-
-
-
-                                        
-
-                        #i put this in bc of oldmain.py     TAKE OUT THE STARTING ABOVE BLACK INPUT Y MINUS ONCE WE FIGURE OUT EXACTLY WHAT IS   
                         if black_note:
-                            #compenstae for the starting above black moving!
                             if max_above > input_y - round(difference_between_lines / 5):
                                 black_note = False
                             if black_note:
                                 if max_below < input_y + round(difference_between_lines / 5):
-                                    black_note = False
-
-
-
-
-
-
-
-                                    
+                                    black_note = False      
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         black_notes.append([top_left, bottom_right])
                     black_count = 0
-            
-            
             else:
                 #dashed white notes
                 max_above = -1
