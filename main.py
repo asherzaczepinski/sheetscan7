@@ -245,9 +245,17 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             #if it's white
             if difference_between_blacks != -1:
                 difference_between_blacks += 1
-    #black notes   
+    
+    
     black_count = 0
     #black and dashed white
+
+
+
+
+
+
+    #SOMETHING IN HERE THAT IS DIFFERENT it's not one singular thing
     for x_index in range(width):
         pixel = img_array[input_y, x_index]
         if pixel != 255 and x_index != width - 1:
@@ -263,6 +271,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     black_note = False
             max_above = -1
             max_below = -1
+
+
+            #its something bf here that is determining the difference
+            #ITS NOT IN HERE BUT IT IS SOMETHING ELSE THAT IS DOING IT IN HERE LOL or in the else and shit
             if black_note:
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
                     past_temp_y_above = -1
@@ -364,6 +376,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         black_notes.append([top_left, bottom_right])
                 else:
+
+
+
+
+
+                    #WHEN WE PASTED IN THE OLDMAIN.PY THIS AREA THIS IS WHAT CHANGED NOW WE HAVE TO FIGURE OUT WHAT IS DIFFERENT!!!!
+
+
                     #dashed black
                     starting_above_black = input_y 
                     starting_below_black = input_y 
@@ -549,19 +569,26 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         else:
                                             black_note = False
                                             break
-                                    
+
+                        #i put this in bc of oldmain.py        
                         if black_note:
-                            if max_above > input_y - round(difference_between_lines / 5):
+                            #compenstae for the starting above black moving!
+                            if max_above > input_y - round(difference_between_lines / 5) - (input_y - starting_above_black):
                                 black_note = False
                             if black_note:
-                                if max_below < input_y + round(difference_between_lines / 5):
+                                if max_below < input_y + round(difference_between_lines / 5) + (starting_below_black - input_y):
                                     black_note = False
+
+
+
                                     
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         black_notes.append([top_left, bottom_right])
                     black_count = 0
+            
+            
             else:
                 #dashed white notes
                 max_above = -1
@@ -765,6 +792,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             black_count = 0       
         else:
             black_count = 0
+
+
 
     return dashed_whites, black_notes, white_notes
 

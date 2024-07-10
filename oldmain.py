@@ -255,6 +255,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             max_above = -1
             max_below = -1
             if black_note:
+                #identifies here
+                #img_array[input_y: input_y + 50, x_index - round(black_count / 2)] = 50
+
+
+
+
+                #somewhere in here!!!
+                #img_array[input_y: input_y + 50, x_index - round(black_count / 2)] = 50
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
                     past_temp_y_above = -1
                     past_temp_y_below = -1
@@ -292,7 +300,17 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if temp_pixel_above == 255:
                                 break
                             temp_y_above -= 1
+
+
+
+
+
+
+
                         if black_note:
+                            img_array[input_y: input_y + 50, x_index - round(black_count / 2)] = 50
+                            #didn't get to here
+                            #img_array[input_y: input_y + 50, x_index - round(black_count / 2)] = 50
                             if temp_y_above <= max_above or max_above == -1:
                                 max_above = temp_y_above
                             while True:
