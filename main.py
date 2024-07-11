@@ -451,6 +451,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if continued:
                                     break
                                 #don't want to do input_y - starting to compensate bc input y could be anywhere on that little line
+
+
+
+                                #this is isssue it is passing on here which is fine but we need more logic!!!!
+                                #i need my change og direction shit
+                                #add some logic in for the direction change on god!!!!!
+                                #make it so that it has to change 2* and not only that but the first can't equal the middle and ending!!!!!!
                                 if temp_y_above <= input_y - (round(difference_between_lines_for_line_drawing) * 3 / 4) :
                                     black_note = False
                                     break
@@ -483,29 +490,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 temp_y_above -= 1      
 
+
+
+
+
                             if black_note:
-
-
-                                #THIS ONE FUCKING -1 REMOVAL CHANGED EVERYTHING FIGURE OUT WTF WHY
-                                #FOR FUTURE REFERENCE WE SHOULD PROB MAKE MAXABOVE AND BELOW = INPUT Y AFTER WE FINISH FIGURING OUT WTF THIS MAKES A DIFFERENCE
-                                #think it easily made something have a tempyabve
-
-                                #after this see if we should apply this new found error fix to all notes
-                                #then, we should do start middle end w the little increments depending on each note --- idk look at up notes if we need this
-                                #def add change of direction thingy
-
-
-                                #then by sunday we should be good to move onto sharps
-                                #if temp_y_above <= max_above or max_above == -1:
-                                if temp_y_above <= max_above:
-                                    print('got to here')
-                                    print('fuck this is not happening')
+                                #we can still figure out y when this was enabled it let the other black notes slide thru
+                                if temp_y_above <= max_above or max_above == -1:
                                     max_above = temp_y_above
 
-
-                                #i guess somehow if we make it happen then the other thing works
-                                #the logic might say idk fucking we'll debug in the morning
-                                #WE KNOW WHATS WRONG!
                                 while True:
                                     continued = True
                                     for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
@@ -549,8 +542,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if temp_y_below >= max_below:
                                         max_below = temp_y_below
                                     left_zone = False
-                                    bypass_top = False
-                                    bypass_bottom = False
                                     if not left_zone and new_x_index >= x_index - black_count + 1:
                                         if new_x_index >= x_index - round(black_count / 2):
                                             #note here
@@ -564,8 +555,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                             past_temp_y_above = temp_y_above
                                             past_temp_y_below = temp_y_below
                                         #slowly increasing
-                                        elif past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0 or bypass_top:
-                                            if temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0 or bypass_bottom:
+                                        elif past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0:
+                                            if temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0:
                                                 past_temp_y_above = temp_y_above
                                                 past_temp_y_below = temp_y_below
                                         #not the correct note
@@ -576,19 +567,23 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
                                             past_temp_y_above = temp_y_above
                                             past_temp_y_below = temp_y_below
-                                        elif temp_y_above - past_temp_y_above <= round(difference_between_lines / 5) and temp_y_above - past_temp_y_above >= 0 or bypass_top:
-                                            if past_temp_y_below - temp_y_below <= round(difference_between_lines / 5) and past_temp_y_below - temp_y_below >= 0 or bypass_bottom:
+                                        elif temp_y_above - past_temp_y_above <= round(difference_between_lines / 5) and temp_y_above - past_temp_y_above >= 0:
+                                            if past_temp_y_below - temp_y_below <= round(difference_between_lines / 5) and past_temp_y_below - temp_y_below >= 0:
                                                 past_temp_y_above = temp_y_above
                                                 past_temp_y_below = temp_y_below
                                         else:
                                             black_note = False
                                             break
+
+                    if black_note:
+                        #if it's -1 during this then it won't be greater and no issue here
+                        if max_above > input_y - round(difference_between_lines / 5):
+                            black_note = False
                         if black_note:
-                            if max_above > input_y - round(difference_between_lines / 5):
-                                black_note = False
-                            if black_note:
-                                if max_below < input_y + round(difference_between_lines / 5):
-                                    black_note = False      
+                            #max below is adjusted when there is anote
+                            if max_below < input_y + round(difference_between_lines / 5):
+                                black_note = False   
+
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
