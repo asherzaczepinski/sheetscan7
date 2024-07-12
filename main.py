@@ -9,7 +9,9 @@
 #need to adjust where it starts and ends inside the note too for the dashed whites
 #should calculate a left and right this way we can keep the dsame logic as the normal white notes
 #can calculate from dashed white the outer right left and iner for top and bottom have this running at the top of the note this kills two birds w one stone
-
+#remember ot the / 3 and do the start end difference check too!
+#it's important for fair calculations of above and below white
+#distance check!
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -616,23 +618,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if above and below:
                             break
                         counter += 1
-
-
-
-
-
-                #remember ot the / 3 and do the start end difference check too!
-                #it's important for fair calculations of above and below white
-                #distance check!
                 starting_of_space_above_outside = -1
                 ending_of_space_above_outside = -1
                 starting_of_space_above_inside = -1
                 ending_of_space_above_inside = -1
                 
-                starting_of_space_below_outside = -1
-                ending_of_space_below_outside = -1
-                starting_of_space_below_inside = -1
-                ending_of_space_below_inside = -1
                 #starting
                 temporary_x = x_index - round(black_count / 2)
                 #getting starting inside
@@ -683,9 +673,60 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 if distance_above < (difference_between_lines / 3):
                     white_note = False
 
+                starting_of_space_below_outside = -1
+                ending_of_space_below_outside = -1
+                starting_of_space_below_inside = -1
+                ending_of_space_below_inside = -1
                 if white_note:
-                    #finish up this based off the above part
-                    print('working here later')
+                    #starting
+                    temporary_x = x_index - round(black_count / 2)
+                    #getting starting inside
+                    while True:
+                        if temporary_x < 0: 
+                            white_note = False
+                        temp_pixel = img_array[starting_below_white, temporary_x]
+                        if temp_pixel != 255:
+                            starting_of_space_below_inside = temporary_x + 1
+                            break
+                        temporary_x -= 1
+                    #calculate the x
+                    while True:
+                        if temporary_x < 0:
+                            white_note = False
+                            break
+                        #think this is the right area
+                        temp_pixel = img_array[starting_below_white, temporary_x]
+                        if temp_pixel == 255:
+                            starting_of_space_below_outside = temporary_x + 1
+                        temporary_x -= 1
+                    #ending
+                    temporary_x = x_index - round(black_count / 2)
+
+                    while True:
+                        if temporary_x >= width - 1: 
+                            white_note = False
+                        temp_pixel = img_array[starting_below_white, temporary_x]
+                        if temp_pixel != 255:
+                            ending_of_space_below_inside = temporary_x - 1
+                            break
+                        temporary_x += 1
+                    #calculate the x
+                    while True:
+                        if temporary_x >= width - 1:
+                            white_note = False
+                            break
+                        #think this is the right area
+                        temp_pixel = img_array[starting_below_white, temporary_x]
+                        if temp_pixel == 255:
+                            ending_of_space_below_outside = temporary_x - 1
+                        temporary_x += 1
+
+
+                    #+1 bc of how it is the inside white pixels spacing have to compensate
+                    distance_below = ending_of_space_below_inside - starting_of_space_below_inside + 1
+
+                    if distance_below < (difference_between_lines / 3):
+                        white_note = False
 
 
 
