@@ -367,7 +367,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         black_note = False
                                         break
                     if black_note:
-                        if max_above > input_y - round(difference_between_lines_for_line_drawing / 2) + (line_height) * 2:
+                        if max_above > input_y - round(difference_between_lines_for_line_drawing / 2) + (line_height * 2):
                             black_note = False
                         if black_note:
                             if max_below < input_y + round(difference_between_lines_for_line_drawing / 2) - (line_height * 2):
@@ -563,22 +563,22 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         else:
                                             black_note = False
                                             break
-                    #before here
                     if black_note:
-                        #if it's -1 during this then it won't be greater and no issue here
-                        if max_above > input_y - round(difference_between_lines / 5):
+                        if max_above > input_y - round(difference_between_lines_for_line_drawing / 2) + (line_height * 2):
                             black_note = False
                         if black_note:
-                            #max below is adjusted when there is anote
-                            if max_below < input_y + round(difference_between_lines / 5):
+                            if max_below < input_y + round(difference_between_lines_for_line_drawing / 2) - (line_height * 2):
                                 black_note = False   
-                                
+                        if black_note:
+                            if max_below - max_above > difference_between_lines_for_line_drawing + (line_height * 3):
+                                black_note = False
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         black_notes.append([top_left, bottom_right])
                     black_count = 0
+                    
             else:
                 #dashed white notes
                 max_above = -1
