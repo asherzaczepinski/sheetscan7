@@ -198,15 +198,16 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     white_note = False
                                     break
                         if white_note:
+                            #little /5 cuz it is not all the way
                             if max_above > input_y - round(difference_between_lines / 5):
                                 white_note = False
                             if white_note:
                                 if max_below < input_y + round(difference_between_lines / 5):
                                     white_note = False
-
-
-                            if max_below - max_above > difference_between_lines + (line_height * 2):
-                                white_note = False
+                            #overall height check
+                            if white_note:
+                                if max_below - max_above > difference_between_lines + line_height:
+                                    white_note = False
                         if white_note:
                             top_left = [left - 5, input_y - 10]
                             bottom_right = [right + 5, input_y + 10]   
@@ -366,10 +367,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         black_note = False
                                         break
                     if black_note:
-                        if max_above > input_y - round(difference_between_lines / 5):
+                        if max_above > input_y - round(difference_between_lines_for_line_drawing / 2) + (line_height) * 2:
                             black_note = False
                         if black_note:
-                            if max_below < input_y + round(difference_between_lines / 5):
+                            if max_below < input_y + round(difference_between_lines_for_line_drawing / 2) - (line_height * 2):
+                                black_note = False
+                        if black_note:
+                            if max_below - max_above > difference_between_lines_for_line_drawing + (line_height * 3):
                                 black_note = False
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
