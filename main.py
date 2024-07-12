@@ -458,7 +458,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 #i need my change og direction shit
                                 #add some logic in for the direction change on god!!!!!
                                 #make it so that it has to change 2* and not only that but the first can't equal the middle and ending!!!!!!
+
+
+
+
                                 if temp_y_above <= input_y - (round(difference_between_lines_for_line_drawing) * 3 / 4) :
+                                    #my best guess is it goes thru once and on second time thru somehow the tempyabove is -1 still cuz it wasn' tupdated for some reason
+                                    #THIS IS WHERE THE 3/4 breaks when THE -1 shit is gone
+                                    img_array[input_y: input_y + 50, x_index - round(black_count / 2)]= 50
                                     black_note = False
                                     break
                                 if max_above >= temp_y_above:
@@ -492,9 +499,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                             if black_note:
-                                #we can still figure out y when this wasn't max_above == -1 enabled it didn't let the other ones t ogo thru
+                                #no -1 they go thru
 
-                                if temp_y_above <= max_above or max_above == -1:
+
+
+                                # or max_above == -1
+
+
+                                #up above is where the dif is made that it says its a black note
+                                if temp_y_above <= max_above:
                                     max_above = temp_y_above
 
                                 while True:
@@ -506,6 +519,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if continued:
                                         break
                                     if temp_y_below >= input_y + (round(difference_between_lines_for_line_drawing) * 3 / 4):
+
                                         black_note = False
                                         break
                                     if max_below <= temp_y_below and max_below != -1:
@@ -532,12 +546,25 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]      
                                     if temp_pixel_below == 255:
                                         break
-                                    temp_y_below += 1                                    
+                                    temp_y_below += 1        
+
                                 if black_note:
+
+
+                                    #somwhere in here
+                                    
+
                                     if temp_y_below >= max_below:
                                         max_below = temp_y_below
                                     left_zone = False
                                     if not left_zone and new_x_index >= x_index - black_count + 1:
+                                        
+
+                                        #my theory is the -1 has something to do w this --- wiithout the other stuff it couldn't count it as a black note but if it has the -1 and a temp_y_aboe it counts it!
+                                        #then it goes to the black_note
+                                        #we can test by drawing where it says black_note = False but even better we can test by doing the other things and seeing what it is qualifying it thru
+
+                                        #we can prove this
                                         if new_x_index >= x_index - round(black_count / 2):
                                             #note here
                                             left_zone = True
@@ -546,7 +573,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                             past_temp_y_above = temp_y_above
                                             past_temp_y_below = temp_y_below
                                         #have no past
-                                        elif past_temp_y_above == -1:
+                                        elif past_temp_y_above == -1:                                            
                                             past_temp_y_above = temp_y_above
                                             past_temp_y_below = temp_y_below
                                         #slowly increasing
@@ -567,9 +594,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                                 past_temp_y_above = temp_y_above
                                                 past_temp_y_below = temp_y_below
                                         else:
+
                                             black_note = False
                                             break
 
+
+
+
+                    #before here
                     if black_note:
                         #if it's -1 during this then it won't be greater and no issue here
                         if max_above > input_y - round(difference_between_lines / 5):
