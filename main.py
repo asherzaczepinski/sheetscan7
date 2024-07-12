@@ -596,40 +596,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     temp_pixel_below = img_array[starting_below_white, x_index - int(black_count / 2)]
                 while temp_pixel_above != 255:
                     starting_above_white -= 1
-                    temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
-                
-                if white_note:
-
-                    white_to_black_first = True
-                    black_to_white_second = False
-                    white_to_black_third = False
-                    starting_of_space = -1
-                    ending_of_space = -1
-                    temporary_x = x_index - black_count + 1
-                    while True:
-                        if temporary_x >= width - 1:
-                            white_note = False
-                            break
-                        temp_pixel = img_array[starting_below_white, temporary_x]
-                        if white_to_black_first:
-                            if temp_pixel != 255:
-                                black_to_white_second = True
-                                white_to_black_first = False
-                        elif black_to_white_second:
-                            if temp_pixel == 255:
-                                starting_of_space = temporary_x
-                                black_to_white_second = False
-                                white_to_black_third = True
-                        elif white_to_black_third:
-                            if temp_pixel != 255:
-                                ending_of_space = temporary_x
-                                break
-                        temporary_x += 1
-
-                    distance = ending_of_space - starting_of_space
-
-                    if distance < (difference_between_lines / 3):
-                        white_note = False        
+                    temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]  
 
                 if white_note:    
                     counter = 0
@@ -654,18 +621,29 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
 
-
-                
+                #remember ot the / 3 and do the start end difference check too!
+                #it's important for fair calculations of above and below white
                 #distance check!
                 starting_of_space_above_outside = -1
                 ending_of_space_above_outside = -1
                 starting_of_space_above_inside = -1
                 ending_of_space_above_inside = -1
-                white_to_black_first = True
-                black_to_white_second = False
-                white_to_black_third = False
                 
-                temporary_x = x_index - black_count + 1
+                starting_of_space_below_outside = -1
+                ending_of_space_below_outside = -1
+                starting_of_space_below_inside = -1
+                ending_of_space_below_inside = -1
+                #starting
+                temporary_x = x_index - round(black_count / 2)
+                #getting starting inside
+                while True:
+                    if temporary_x < 0: 
+                        white_note = False
+                    temp_pixel = img_array[starting_above_white, temporary_x]
+                    if temp_pixel != 255:
+                        starting_of_space_above_inside = temporary_x + 1
+                        break
+                    temporary_x -= 1
                 #calculate the x
                 while True:
                     if temporary_x < 0:
@@ -673,19 +651,20 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         break
                     #think this is the right area
                     temp_pixel = img_array[starting_above_white, temporary_x]
-                    
+                    if temp_pixel == 255:
+                        starting_of_space_above_outside = temporary_x + 1
+                #ending
+                temporary_x = x_index - round(black_count / 2)
 
-                distance_above = ending_of_space_above_inside - starting_of_space_above_inside
+                #+1 bc of how it is the inside white pixels spacing have to compensate
+                distance_above = ending_of_space_above_inside - starting_of_space_above_inside + 1
 
                 if distance_above < (difference_between_lines / 3):
                     white_note = False
 
                 if white_note:
                     #finish up this based off the above part
-                    starting_of_space_below_outside = -1
-                    ending_of_space_below_outside = -1
-                    starting_of_space_below_inside = -1
-                    ending_of_space_below_inside = -1
+                    print('working here later')
 
 
 
