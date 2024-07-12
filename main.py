@@ -682,7 +682,37 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                 #define a new start end here!!!!
                 #need it to be accurate then we can apply the same thing we did on dashed black!
+                #something around these lines!
+                """start_up = -1
+                    end_up = -1
+                    if black_note:
+                        found_black = False
+                        for new_x_index in range(x_index - black_count + 1, x_index):
+                            new_pixel = img_array[starting_above_black, new_x_index]
+                            if new_pixel == 0 and not found_black:
+                                found_black = True
+                                start_up = new_x_index
+                            elif found_black:
+                                #white and a black has been found
+                                end_up = new_x_index - 1
+                        if end_up - start_up < difference_between_lines / 5:
+                            black_note = False
+                    start_down = -1
+                    end_down = -1
+                    if black_note:
+                        found_black = False
+                        for new_x_index in range(x_index - black_count + 1, x_index):
+                            new_pixel = img_array[starting_below_black, new_x_index]
+                            if new_pixel == 0 and not found_black:
+                                found_black = True
+                                start_down = new_x_index
+                            elif found_black:
+                                end_down = new_x_index - 1
+                        if end_down - start_down < difference_between_lines / 5:
+                            black_note = False
 
+                    start = max(start_up, start_down)
+                    end = min(end_up, end_down)"""
 
                 #top part 
                 if white_note:
