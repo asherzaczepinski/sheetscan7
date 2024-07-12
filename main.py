@@ -8,6 +8,9 @@
 
 #need to adjust where it starts and ends inside the note too for the dashed whites
 #should calculate a left and right this way we can keep the dsame logic as the normal white notes
+#can calculate from dashed white the outer right left and iner for top and bottom have this running at the top of the note this kills two birds w one stone
+#see if we want to add an across parameter for the dashed black the other ones already have it!
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -595,40 +598,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 while temp_pixel_above != 255:
                     starting_above_white -= 1
                     temp_pixel_above = img_array[starting_above_white, x_index - int(black_count / 2)]
-
-                #make sure when the notes r double stemmed it is ok
-                #distance check!
-                white_to_black_first = True
-                black_to_white_second = False
-                white_to_black_third = False
-                starting_of_space = -1
-                ending_of_space = -1
-                temporary_x = x_index - black_count + 1
-                while True:
-                    if temporary_x >= width - 1:
-                        white_note = False
-                        break
-                    #think this is the right area
-                    temp_pixel = img_array[starting_above_white, temporary_x]
-                    if white_to_black_first:
-                        if temp_pixel != 255:
-                            black_to_white_second = True
-                            white_to_black_first = False
-                    elif black_to_white_second:
-                        if temp_pixel == 255:
-                            starting_of_space = temporary_x
-                            black_to_white_second = False
-                            white_to_black_third = True
-                    elif white_to_black_third:
-                        if temp_pixel != 255:
-                            ending_of_space = temporary_x
-                            break
-                    temporary_x += 1
-
-                distance = ending_of_space - starting_of_space
-
-                if distance < (difference_between_lines / 3):
-                    white_note = False
                 
                 if white_note:
 
@@ -642,7 +611,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if temporary_x >= width - 1:
                             white_note = False
                             break
-                        #think this is the right area
                         temp_pixel = img_array[starting_below_white, temporary_x]
                         if white_to_black_first:
                             if temp_pixel != 255:
@@ -688,54 +656,32 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
 
-                #too tired for this shit do it in the morning!!!!!
-                #truly solve this make it end on the outer blacks of this
+                
+                #distance check!
+                starting_of_space_above_outside = -1
+                ending_of_space_above_outside = -1
+                starting_of_space_above_inside = -1
+                ending_of_space_above_inside = -1
+                white_to_black_first = True
+                black_to_white_second = False
+                white_to_black_third = False
+                
+                temporary_x = x_index - black_count + 1
+                #calculate the x
+                while True:
+                    if temporary_x < 0:
+                        white_note = False
+                        break
+                    #think this is the right area
+                    temp_pixel = img_array[starting_above_white, temporary_x]
+                    
 
-                #define a new start end here!!!!
-                #need it to be accurate then we can apply the same thing we did on dashed black!
-                #something around these lines!
-                        
+                distance_above = ending_of_space_above_inside - starting_of_space_above_inside
 
+                if distance_above < (difference_between_lines / 3):
+                    white_note = False
 
-                #completely edit up thislogic it shouldn't be that hard we do starting above white?
-                """ start_up = -1
-                end_up = -1
                 if white_note:
-                    found_white = False
-                    for new_x_index in range(x_index - difference_between_blacks + 1, x_index):
-                        new_pixel = img_array[starting_above_black, new_x_index]
-                        if new_pixel == 0 and not found_white:
-                            found_white = True
-                            start_up = new_x_index
-                        elif found_white:
-                            #white and a black has been found
-                            end_up = new_x_index - 1
-                    if end_up - start_up < difference_between_lines / 5:
-                        black_note = False
-                start_down = -1
-                end_down = -1
-                if black_note:
-                    found_white = False
-                    for new_x_index in range(x_index - black_count + 1, x_index):
-                        new_pixel = img_array[starting_below_black, new_x_index]
-                        if new_pixel == 0 and not found_white:
-                            found_white = True
-                            start_down = new_x_index
-                        elif found_white:
-                            end_down = new_x_index - 1
-                    if end_down - start_down < difference_between_lines / 5:
-                        black_note = False
-
-
-
-
-
-
-                start = max(start_up, start_down)
-                end = min(end_up, end_down) """
-
-
-
 
 
                 #need to adjust where it starts and ends
