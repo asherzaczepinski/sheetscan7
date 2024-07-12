@@ -9,7 +9,6 @@
 #need to adjust where it starts and ends inside the note too for the dashed whites
 #should calculate a left and right this way we can keep the dsame logic as the normal white notes
 #can calculate from dashed white the outer right left and iner for top and bottom have this running at the top of the note this kills two birds w one stone
-#see if we want to add an across parameter for the dashed black the other ones already have it!
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -682,10 +681,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     white_note = False
 
                 if white_note:
+                    #finish up this based off the above part
                     starting_of_space_below_outside = -1
                     ending_of_space_below_outside = -1
                     starting_of_space_below_inside = -1
                     ending_of_space_below_inside = -1
+
+
 
                 #need to adjust where it starts and ends
                 #should calculate a left and right!!!!
