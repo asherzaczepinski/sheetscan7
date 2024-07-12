@@ -653,8 +653,29 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     temp_pixel = img_array[starting_above_white, temporary_x]
                     if temp_pixel == 255:
                         starting_of_space_above_outside = temporary_x + 1
+                    temporary_x -= 1
                 #ending
                 temporary_x = x_index - round(black_count / 2)
+
+                while True:
+                    if temporary_x >= width - 1: 
+                        white_note = False
+                    temp_pixel = img_array[starting_above_white, temporary_x]
+                    if temp_pixel != 255:
+                        ending_of_space_above_inside = temporary_x - 1
+                        break
+                    temporary_x += 1
+                #calculate the x
+                while True:
+                    if temporary_x >= width - 1:
+                        white_note = False
+                        break
+                    #think this is the right area
+                    temp_pixel = img_array[starting_above_white, temporary_x]
+                    if temp_pixel == 255:
+                        ending_of_space_above_outside = temporary_x - 1
+                    temporary_x += 1
+
 
                 #+1 bc of how it is the inside white pixels spacing have to compensate
                 distance_above = ending_of_space_above_inside - starting_of_space_above_inside + 1
