@@ -253,12 +253,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
     black_count = 0
     #black and dashed white
 
-
-
-
-
-
-    #SOMETHING IN HERE THAT IS DIFFERENT it's not one singular thing
     for x_index in range(width):
         pixel = img_array[input_y, x_index]
         if pixel != 255 and x_index != width - 1:
@@ -275,9 +269,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             max_above = -1
             max_below = -1
 
-
-            #its something bf here that is determining the difference
-            #ITS NOT IN HERE BUT IT IS SOMETHING ELSE THAT IS DOING IT IN HERE LOL or in the else and shit
             if black_note:
                 if black_count < difference_between_lines_for_line_drawing * 1.5:
                     past_temp_y_above = -1
@@ -567,9 +558,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             #max below is adjusted when there is anote
                             if max_below < input_y + round(difference_between_lines / 5):
                                 black_note = False   
-                        #just added this logic in
-                        if max_below - max_above >= (difference_between_lines * 6/5):
-                            black_note = False
+                                
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
