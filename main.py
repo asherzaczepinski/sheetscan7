@@ -626,6 +626,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         counter += 1
 
 
+
+
+
+
+
+
+                #need the same crazy shit dashed black does for distance parameters!!!! except for the 1.15
                 #working in here
 
 
