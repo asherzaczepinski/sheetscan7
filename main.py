@@ -4,7 +4,7 @@
 #make it so that it has to change 2* on either the top or bottom
 #for the dashed black notes!
 #make sure the edge to edge is greater than a certain distance
-#same w dashed white!
+#same w dashed white! ---- need a better start end system to apply this!
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -417,7 +417,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     end = min(end_up, end_down)
                     
                     #testing distance!!!
-                    if end - start <= difference_between_lines:
+                    if end - start <= difference_between_lines * 1.15:
                         black_note = False
                     if black_note:
                         #it meets it on edges
@@ -673,6 +673,17 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             break
                         counter += 1
 
+
+
+
+
+
+
+
+                #define a new start end here!!!!
+                #need it to be accurate then we can apply the same thing we did on dashed black!
+
+
                 #top part 
                 if white_note:
                     first_switch = False
@@ -710,7 +721,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 past_temp_y = temp_y_above
                             else:
                                 white_note = False
-                                break                    
+                                break      
+
+
+
                 #bottom part
                 if white_note:
                     if temp_y_above <= max_above or max_above == -1:
