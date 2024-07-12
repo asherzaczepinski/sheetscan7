@@ -682,7 +682,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     white_note = False
 
                 if white_note:
-
+                    starting_of_space_below_outside = -1
+                    ending_of_space_below_outside = -1
+                    starting_of_space_below_inside = -1
+                    ending_of_space_below_inside = -1
 
                 #need to adjust where it starts and ends
                 #should calculate a left and right!!!!
@@ -725,7 +728,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break      
-
+                    
 
 
                 #bottom part
