@@ -482,9 +482,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         if img_array[temp_y_above, new_x_index2] == 255:
                                             continued = False
                                             break
-                                if continued:
-                                    max_above = temp_y_above
-                                    continue 
                                 temp_pixel_above = img_array[temp_y_above, new_x_index]       
                                 if temp_pixel_above == 255:
                                     break
@@ -495,7 +492,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                             if black_note:
-                                #we can still figure out y when this was enabled it let the other black notes slide thru
+                                #we can still figure out y when this wasn't max_above == -1 enabled it didn't let the other ones t ogo thru
+
                                 if temp_y_above <= max_above or max_above == -1:
                                     max_above = temp_y_above
 
@@ -531,9 +529,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                             if img_array[temp_y_below, new_x_index2] == 255:
                                                 continued = False
                                                 break
-                                    if continued:
-                                        max_below = temp_y_below
-                                        continue 
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]      
                                     if temp_pixel_below == 255:
                                         break
