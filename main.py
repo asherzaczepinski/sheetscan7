@@ -1,15 +1,10 @@
 #One free pdf scan of one page and then $1 a month --- business model
 #make it have a colleciton of all scanned sheets to easily identify stuff like if it matches up just return it immediately
 
-#add middle ending shit and remember it changes based on the note
-#also, we should add a variable to each note where it will allow it a max of one change in direction for the temp_y_above and below!!!!!
-#after we figure out where the shit was at then we can put back the -1 and make the overall logic better just want ot figure out how it decided to break it
-
-#once i finish this i will work on sharps
-
-#add some logic in for the direction change on god!!!!!
 #make it so that it has to change 2* on either the top or bottom
-#and not only that but the first can't equal the middle and ending!!!!!!
+#for the dashed black notes!
+#make sure the edge to edge is greater than a certain distance
+#same w dashed white!
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -260,8 +255,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
         if pixel != 255 and x_index != width - 1:
             black_count += 1
         elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
-
-            changed_direction_once
+            
+            
+            changed_direction_once = 0
 
             #apply my logic to see if it is a black note
             middle_x = x_index - round(black_count / 2)
@@ -417,10 +413,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     max_above = -1
                     max_below = -1
 
+                    start = max(start_up, start_down)
+                    end = min(end_up, end_down)
+                    
+                    #testing distance!!!
+                    if end - start <= difference_between_lines:
+                        black_note = False
                     if black_note:
                         #it meets it on edges
-                        start = max(start_up, start_down)
-                        end = min(end_up, end_down)
                         past_temp_y_above = -1
                         past_temp_y_below = -1
                         for new_x_index in range(start, end):
