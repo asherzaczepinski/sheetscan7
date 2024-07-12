@@ -5,6 +5,7 @@
 #for the dashed black notes!
 #make sure the edge to edge is greater than a certain distance
 #same w dashed white! ---- need a better start end system to apply this!
+#we could also do if max_Above - max_below > difference_between_lines_for_drawing + line_hgith * 2 its over
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -202,6 +203,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if white_note:
                                 if max_below < input_y + round(difference_between_lines / 5):
                                     white_note = False
+
+
+                            if max_below - max_above > difference_between_lines + (line_height * 2):
+                                white_note = False
                         if white_note:
                             top_left = [left - 5, input_y - 10]
                             bottom_right = [right + 5, input_y + 10]   
@@ -319,7 +324,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if continued:
                                     break
                                 if temp_y_below >= input_y + round(difference_between_lines_for_line_drawing * 3 / 4):
-                                    black_note = False
+                                    black_note =  False
                                     break                                
                                 temp_pixel_below = img_array[temp_y_below, new_x_index]      
                                 if temp_pixel_below == 255:
@@ -688,7 +693,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                 #completely edit up thislogic it shouldn't be that hard we do starting above white?
-                start_up = -1
+                """ start_up = -1
                 end_up = -1
                 if white_note:
                     found_white = False
@@ -722,7 +727,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                 start = max(start_up, start_down)
-                end = min(end_up, end_down)
+                end = min(end_up, end_down) """
 
                 #top part 
                 if white_note:
