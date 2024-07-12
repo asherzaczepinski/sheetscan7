@@ -3,9 +3,12 @@
 
 #add middle ending shit and remember it changes based on the note
 #also, we should add a variable to each note where it will allow it a max of one change in direction for the temp_y_above and below!!!!!
-
+#after we figure out where the shit was at then we can put back the -1 and make the overall logic better just want ot figure out how it decided to break it
 
 #once i finish this i will work on sharps
+
+
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -450,21 +453,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         break
                                 if continued:
                                     break
-                                #don't want to do input_y - starting to compensate bc input y could be anywhere on that little line
-
-
-
-                                #this is isssue it is passing on here which is fine but we need more logic!!!!
-                                #i need my change og direction shit
-                                #add some logic in for the direction change on god!!!!!
-                                #make it so that it has to change 2* and not only that but the first can't equal the middle and ending!!!!!!
-
-
-
-
                                 if temp_y_above <= input_y - (round(difference_between_lines_for_line_drawing) * 3 / 4) :
-                                    #my best guess is it goes thru once and on second time thru somehow the tempyabove is -1 still cuz it wasn' tupdated for some reason
-                                    #THIS IS WHERE THE 3/4 breaks when THE -1 shit is gone
                                     img_array[input_y: input_y + 50, x_index - round(black_count / 2)]= 50
                                     black_note = False
                                     break
@@ -493,23 +482,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_pixel_above == 255:
                                     break
                                 temp_y_above -= 1      
-
-
-
-
-
                             if black_note:
-                                #no -1 they go thru
-
-
-
-                                # or max_above == -1
-
-
-                                #up above is where the dif is made that it says its a black note
-                                if temp_y_above <= max_above:
+                                if temp_y_above <= max_above or max_above == -1:
                                     max_above = temp_y_above
-
                                 while True:
                                     continued = True
                                     for new_x_index2 in range(x_index - black_count + 1 - int(difference_between_lines / 4), x_index - 1 + int(difference_between_lines / 4)):
@@ -547,24 +522,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if temp_pixel_below == 255:
                                         break
                                     temp_y_below += 1        
-
                                 if black_note:
-
-
-                                    #somwhere in here
-                                    
-
                                     if temp_y_below >= max_below:
                                         max_below = temp_y_below
                                     left_zone = False
                                     if not left_zone and new_x_index >= x_index - black_count + 1:
-                                        
-
-                                        #my theory is the -1 has something to do w this --- wiithout the other stuff it couldn't count it as a black note but if it has the -1 and a temp_y_aboe it counts it!
-                                        #then it goes to the black_note
-                                        #we can test by drawing where it says black_note = False but even better we can test by doing the other things and seeing what it is qualifying it thru
-
-                                        #we can prove this
                                         if new_x_index >= x_index - round(black_count / 2):
                                             #note here
                                             left_zone = True
@@ -594,13 +556,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                                 past_temp_y_above = temp_y_above
                                                 past_temp_y_below = temp_y_below
                                         else:
-
                                             black_note = False
                                             break
-
-
-
-
                     #before here
                     if black_note:
                         #if it's -1 during this then it won't be greater and no issue here
@@ -610,6 +567,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             #max below is adjusted when there is anote
                             if max_below < input_y + round(difference_between_lines / 5):
                                 black_note = False   
+                        #just added this logic in
+                        if max_below - max_above >= (difference_between_lines * 6/5):
+                            black_note = False
 
                     if black_note:
                         top_left = [x_index - black_count, input_y - (round(difference_between_lines_for_line_drawing / 2) - 1)]
