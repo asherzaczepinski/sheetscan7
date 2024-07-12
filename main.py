@@ -12,6 +12,9 @@
 #remember ot the / 3 and do the start end difference check too!
 #it's important for fair calculations of above and below white
 #distance check!
+
+
+#make sure to apply  the dashed black calculations for distance to the dashed white!
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -431,6 +434,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     end = min(end_up, end_down)
                     
                     #testing distance!!!
+                    if abs(start_up - start_down) > difference_between_lines / 4 or abs(end_up - end_down) > difference_between_lines / 4:
+                        black_note = False
+                    if max(end_up, end_down) - min(start_up, start_down) > difference_between_lines * 2.5:
+                        black_note = False
                     if end - start <= difference_between_lines * 1.15:
                         black_note = False
                     if black_note:
@@ -617,6 +624,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if above and below:
                             break
                         counter += 1
+
+
+                #working in here
+
+
                 starting_of_space_above_outside = -1
                 ending_of_space_above_outside = -1
                 starting_of_space_above_inside = -1
@@ -625,6 +637,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 #starting
                 temporary_x = x_index - round(black_count / 2)
                 #getting starting inside
+                flag = True
                 while True:
                     if temporary_x < 0: 
                         white_note = False
@@ -669,9 +682,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
 
                 #+1 bc of how it is the inside white pixels spacing have to compensate
+               
                 distance_above = ending_of_space_above_inside - starting_of_space_above_inside + 1
 
-                if distance_above < (difference_between_lines / 3):
+
+                if distance_above < (difference_between_lines / 3) or distance_above > (difference_between_lines):
                     white_note = False
 
                 starting_of_space_below_outside = -1
@@ -730,6 +745,12 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                     if distance_below < (difference_between_lines / 3):
                         white_note = False
+                        print('here')
+
+
+
+
+
 
 
 
