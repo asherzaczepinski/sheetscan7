@@ -5,8 +5,9 @@
 #for the dashed black notes!
 #make sure the edge to edge is greater than a certain distance
 #same w dashed white! ---- need a better start end system to apply this!
-#we could also do if max_Above - max_below > difference_between_lines_for_drawing + line_hgith * 2 its over
 
+#need to adjust where it starts and ends inside the note too for the dashed whites
+#should calculate a left and right this way we can keep the dsame logic as the normal white notes
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -578,7 +579,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         bottom_right = [x_index, input_y + (round(difference_between_lines_for_line_drawing / 2) - 1)]
                         black_notes.append([top_left, bottom_right])
                     black_count = 0
-                    
+
             else:
                 #dashed white notes
                 max_above = -1
@@ -733,6 +734,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 start = max(start_up, start_down)
                 end = min(end_up, end_down) """
 
+
+
+
+
+                #need to adjust where it starts and ends
+                #should calculate a left and right!!!!
+
                 #top part 
                 if white_note:
                     first_switch = False
@@ -819,12 +827,21 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     if temp_y_below >= max_below:
                         max_below = temp_y_below
 
+
+
+
+
+                #we should keep this that way!!!!
                 if white_note:
-                    #don't want adjuster cuz the top part is cut off quick
-                    if max_above > input_y - round(difference_between_lines / 10):
+                    #little /5 cuz it is not all the way
+                    if max_above > input_y - round(difference_between_lines / 5):
                         white_note = False
                     if white_note:
-                        if max_below < input_y + round(difference_between_lines / 10):
+                        if max_below < input_y + round(difference_between_lines / 5):
+                            white_note = False
+                    #overall height check
+                    if white_note:
+                        if max_below - max_above > difference_between_lines + line_height:
                             white_note = False
                 #put it in here
                 if white_note:
