@@ -7,7 +7,9 @@
 
 #once i finish this i will work on sharps
 
-
+#add some logic in for the direction change on god!!!!!
+#make it so that it has to change 2* on either the top or bottom
+#and not only that but the first can't equal the middle and ending!!!!!!
 
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -258,6 +260,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
         if pixel != 255 and x_index != width - 1:
             black_count += 1
         elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
+
+            changed_direction_once
+
             #apply my logic to see if it is a black note
             middle_x = x_index - round(black_count / 2)
             black_note = True
