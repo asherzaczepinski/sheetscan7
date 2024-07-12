@@ -464,7 +464,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if continued:
                                     break
                                 if temp_y_above <= input_y - (round(difference_between_lines_for_line_drawing) * 3 / 4) :
-                                    img_array[input_y: input_y + 50, x_index - round(black_count / 2)]= 50
                                     black_note = False
                                     break
                                 if max_above >= temp_y_above:
@@ -629,6 +628,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 while True:
                     if temporary_x < 0: 
                         white_note = False
+                        break
                     temp_pixel = img_array[starting_above_white, temporary_x]
                     if temp_pixel != 255:
                         starting_of_space_above_inside = temporary_x + 1
@@ -650,6 +650,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 while True:
                     if temporary_x >= width - 1: 
                         white_note = False
+                        break
                     temp_pixel = img_array[starting_above_white, temporary_x]
                     if temp_pixel != 255:
                         ending_of_space_above_inside = temporary_x - 1
@@ -684,6 +685,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     while True:
                         if temporary_x < 0: 
                             white_note = False
+                            break
                         temp_pixel = img_array[starting_below_white, temporary_x]
                         if temp_pixel != 255:
                             starting_of_space_below_inside = temporary_x + 1
@@ -705,6 +707,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     while True:
                         if temporary_x >= width - 1: 
                             white_note = False
+                            break
                         temp_pixel = img_array[starting_below_white, temporary_x]
                         if temp_pixel != 255:
                             ending_of_space_below_inside = temporary_x - 1
@@ -1140,11 +1143,11 @@ open_pdf_into_input(pdf_path, input_folder, new_input)
 for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
         image_path = os.path.join(input_folder, filename)
-        #extract_highlighted_lines_and_columns_from_image(image_path)
+        extract_highlighted_lines_and_columns_from_image(image_path)
 
-        try:
+        """ try:
             extract_highlighted_lines_and_columns_from_image(image_path)
         except IndexError as e:
             print(e) 
-        
+         """
 
