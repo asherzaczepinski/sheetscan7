@@ -260,7 +260,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             black_count += 1
         elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
             
-            
             changed_direction_once = 0
 
             #apply my logic to see if it is a black note
@@ -616,6 +615,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         counter += 1
 
                 #need the same crazy shit dashed black does for distance parameters!!!! except for the 1.15
+                #add in if whitenote to make sure it doesn't go over twice
                 #working in here
 
 
@@ -681,7 +681,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 ending_of_space_below_outside = -1
                 starting_of_space_below_inside = -1
                 ending_of_space_below_inside = -1
-                #not one fucking time does it make it here so weird!!!!
                 if white_note:
                     #starting
                     temporary_x = x_index - round(black_count / 2)
@@ -731,6 +730,17 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                     if distance_below < (difference_between_lines / 3):
                         white_note = False
+
+                start = max(starting_of_space_above_outside, starting_of_space_below_outside)
+                end = min(ending_of_space_above_outside, ending_of_space_below_outside)
+                
+                #testing distance!!!
+                if abs(starting_of_space_above_outside - starting_of_space_below_outside) > difference_between_lines / 4 or abs(ending_of_space_above_outside - ending_of_space_below_outside) > difference_between_lines / 4:
+                    white_note = False
+                if max(ending_of_space_above_outside, ending_of_space_below_outside) - min(starting_of_space_above_outside, starting_of_space_below_outside) > difference_between_lines * 2.5:
+                    white_note = False
+                if end - start <= difference_between_lines * 1.15:
+                    white_note = False
 
                 #top part 
                 if white_note:
