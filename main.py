@@ -356,18 +356,16 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if black_note and past_temp_y_below != -1:
                             if changed_direction_below == 0: 
                                 #going down has to start in this way
-                                if past_temp_y_above - temp_y_above < 0:
+                                if past_temp_y_below - temp_y_below < 0:
                                     changed_direction_below = 1
-                                elif past_temp_y_above - temp_y_above != 0:
+                                elif past_temp_y_below - temp_y_below != 0:
                                     black_note = False
-                                    print('issues here!')
                             elif changed_direction_below == 1:
                                 #if it's going down make sure it starts going up
-                                if temp_y_above - past_temp_y_above < 0:
+                                if temp_y_below - past_temp_y_below < 0:
                                     changed_direction_below = 2
                             else:
-                                if past_temp_y_above - temp_y_above < 0:
-                                    print('what the sigma!')
+                                if past_temp_y_below - temp_y_below < 0:
                                     black_note = False
 
                         if black_note: 
