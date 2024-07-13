@@ -2,17 +2,7 @@
 #make it have a colleciton of all scanned sheets to easily identify stuff like if it matches up just return it immediately
 
 #make it so that it has to change 2* on either the top or bottom
-#for the dashed black notes!
-#make sure the edge to edge is greater than a certain distance
-#same w dashed white! ---- need a better start end system to apply this!
-
-#need to adjust where it starts and ends inside the note too for the dashed whites
-#should calculate a left and right this way we can keep the dsame logic as the normal white notes
-#can calculate from dashed white the outer right left and iner for top and bottom have this running at the top of the note this kills two birds w one stone
-#remember ot the / 3 and do the start end difference check too!
-#it's important for fair calculations of above and below white
-#distance check!
-
+#this could fix up the middle end shit! that may be excess
 
 #make sure to apply  the dashed black calculations for distance to the dashed white!
 from PIL import Image, ImageDraw
@@ -763,7 +753,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break      
-                            
+
                 #bottom part
                 if white_note:
                     if temp_y_above <= max_above or max_above == -1:
