@@ -259,7 +259,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
             black_count += 1
         elif black_count >= difference_between_lines_for_line_drawing * 1.15 and black_count < difference_between_lines_for_line_drawing * 5:
             
-            changed_direction_once = 0
+            changed_direction_above = 0
+            changed_direction_below = 0
 
             #apply my logic to see if it is a black note
             middle_x = x_index - round(black_count / 2)
@@ -316,25 +317,22 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         #try this first
                         #then need something to make sure either one got to 2
                         #can rename it changed directonabove and changed direction below
+                        #apply to below and then do the other notes
                         if black_note and past_temp_y_above != -1:
-                            if changed_direction_once == 0: 
+                            if changed_direction_above == 0: 
                                 #going up has to start in this way
                                 if past_temp_y_above - temp_y_above > 0:
-                                    changed_direction_once = 1
+                                    changed_direction_above = 1
                                 elif past_temp_y_above - temp_y_above != 0:
                                     print(past_temp_y_above, temp_y_above)
                                     black_note = False
-                            elif changed_direction_once == 1:
+                            elif changed_direction_above == 1:
                                 #if it's going up make sure it starts going down
                                 if temp_y_above - past_temp_y_above > 0:
-                                    changed_direction_once = 2
+                                    changed_direction_above = 2
                             else:
                                 if past_temp_y_above - temp_y_above > 0:
-                                    print('dsfdamfd')
                                     black_note = False
-
-
-
 
                         if black_note:
                             if temp_y_above <= max_above or max_above == -1:
@@ -353,42 +351,60 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 temp_pixel_below = img_array[temp_y_below, new_x_index]      
                                 if temp_pixel_below == 255:
                                     break
-                                temp_y_below += 1         
-                            if black_note: 
-                                if temp_y_below >= max_below:
-                                    max_below = temp_y_below                                   
-                                left_zone = False
-                                if not left_zone and new_x_index >= x_index - black_count + 1:
-                                    if new_x_index >= x_index - round(black_count / 2):
-                                        left_zone = True
-                                    #gives exception of if it increases proportiately
-                                    elif abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
+                                temp_y_below += 1   
+
+                        if black_note and past_temp_y_below != -1:
+                            if changed_direction_below == 0: 
+                                #going down has to start in this way
+                                if past_temp_y_above - temp_y_above < 0:
+                                    changed_direction_below = 1
+                                elif past_temp_y_above - temp_y_above != 0:
+                                    black_note = False
+                                    print('issues here!')
+                            elif changed_direction_below == 1:
+                                #if it's going down make sure it starts going up
+                                if temp_y_above - past_temp_y_above < 0:
+                                    changed_direction_below = 2
+                            else:
+                                if past_temp_y_above - temp_y_above < 0:
+                                    print('what the sigma!')
+                                    black_note = False
+
+                        if black_note: 
+                            if temp_y_below >= max_below:
+                                max_below = temp_y_below                                   
+                            left_zone = False
+                            if not left_zone and new_x_index >= x_index - black_count + 1:
+                                if new_x_index >= x_index - round(black_count / 2):
+                                    left_zone = True
+                                #gives exception of if it increases proportiately
+                                elif abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
+                                    past_temp_y_above = temp_y_above
+                                    past_temp_y_below = temp_y_below
+                                #have no past
+                                elif past_temp_y_above == -1:
+                                    past_temp_y_above = temp_y_above
+                                    past_temp_y_below = temp_y_below
+                                #slowly increasing
+                                elif past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0:
+                                    if temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0:
                                         past_temp_y_above = temp_y_above
                                         past_temp_y_below = temp_y_below
-                                    #have no past
-                                    elif past_temp_y_above == -1:
+                                #not the correct note
+                                else:
+                                    black_note = False
+                                    break
+                            elif new_x_index <= x_index - 1:
+                                if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
+                                    past_temp_y_above = temp_y_above
+                                    past_temp_y_below = temp_y_below
+                                elif temp_y_above - past_temp_y_above <= round(difference_between_lines / 5) and temp_y_above - past_temp_y_above >= 0:
+                                    if past_temp_y_below - temp_y_below <= round(difference_between_lines / 5) and past_temp_y_below - temp_y_below >= 0:
                                         past_temp_y_above = temp_y_above
                                         past_temp_y_below = temp_y_below
-                                    #slowly increasing
-                                    elif past_temp_y_above - temp_y_above <= round(difference_between_lines / 5) and past_temp_y_above - temp_y_above >= 0:
-                                        if temp_y_below - past_temp_y_below <= round(difference_between_lines / 5) and temp_y_below - past_temp_y_below >= 0:
-                                            past_temp_y_above = temp_y_above
-                                            past_temp_y_below = temp_y_below
-                                    #not the correct note
-                                    else:
-                                        black_note = False
-                                        break
-                                elif new_x_index <= x_index - 1:
-                                    if abs((temp_y_above - past_temp_y_above) - (past_temp_y_below - temp_y_below)) < difference_between_lines / 10 and temp_y_above - past_temp_y_above >= 0 and past_temp_y_below - temp_y_below >= 0:
-                                        past_temp_y_above = temp_y_above
-                                        past_temp_y_below = temp_y_below
-                                    elif temp_y_above - past_temp_y_above <= round(difference_between_lines / 5) and temp_y_above - past_temp_y_above >= 0:
-                                        if past_temp_y_below - temp_y_below <= round(difference_between_lines / 5) and past_temp_y_below - temp_y_below >= 0:
-                                            past_temp_y_above = temp_y_above
-                                            past_temp_y_below = temp_y_below
-                                    else:
-                                        black_note = False
-                                        break
+                                else:
+                                    black_note = False
+                                    break
                     if black_note:
                         if max_above > input_y - round(difference_between_lines_for_line_drawing / 2) + (line_height * 2):
                             black_note = False
