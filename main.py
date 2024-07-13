@@ -533,6 +533,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                             #understand why we had to do >= 0 bc i thought it should just go up --- i can figure stuff out
                             #working here!
+                            #the issue looks like it it cutting it off past a certain point and then going hella right and this is why it never goes up!!!1
+                            #make markers for where it is starting and ending
+                            img_array[past_temp_y_above:input_y,new_x_index] = 50
                             if black_note and past_temp_y_above != -1:
                                 if changed_direction_above == 0: 
                                     #going up has to start in this way
