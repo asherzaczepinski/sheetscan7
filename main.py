@@ -644,7 +644,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 #starting
                 temporary_x = x_index - round(black_count / 2)
                 #getting starting inside
-                flag = True
                 while True:
                     if temporary_x < 0: 
                         white_note = False
@@ -663,6 +662,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     temp_pixel = img_array[starting_above_white, temporary_x]
                     if temp_pixel == 255:
                         starting_of_space_above_outside = temporary_x + 1
+                        break
                     temporary_x -= 1
                 #ending
                 temporary_x = x_index - round(black_count / 2)
@@ -685,6 +685,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     temp_pixel = img_array[starting_above_white, temporary_x]
                     if temp_pixel == 255:
                         ending_of_space_above_outside = temporary_x - 1
+                        break
                     temporary_x += 1
 
 
@@ -692,39 +693,33 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                
                 distance_above = ending_of_space_above_inside - starting_of_space_above_inside + 1
 
-                #think it might have to do w /3
-                #maybe we should just do this w outside idk work on tn
-                if distance_above < (difference_between_lines / 3) or distance_above > (difference_between_lines):
-                    white_note = False
-                else:
-                    print(white_note)
-                    print('hoora')
-
+                #white note is false in all cases for some reason!
+                if white_note:
+                    if distance_above < (difference_between_lines / 3) or distance_above > (difference_between_lines):
+                        white_note = False
+                
+                #when it's not the white_note already is false
+                    
                 starting_of_space_below_outside = -1
                 ending_of_space_below_outside = -1
                 starting_of_space_below_inside = -1
                 ending_of_space_below_inside = -1
                 #not one fucking time does it make it here so weird!!!!
                 if white_note:
-                    print('made it here')
                     #starting
                     temporary_x = x_index - round(black_count / 2)
                     #getting starting inside
-                    flag = True
                     while True:
                         if temporary_x < 0: 
-                            print('got to here')
                             white_note = False
                             break
                         temp_pixel = img_array[starting_below_white, temporary_x]
                         #testing
-                        if flag:
-                            print(temp_pixel)
-                            flag = False
                         if temp_pixel != 255:
                             starting_of_space_below_inside = temporary_x + 1
                             break
                         temporary_x -= 1
+
                     #calculate the x
                     while True:
                         if temporary_x < 0:
@@ -734,6 +729,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_pixel = img_array[starting_below_white, temporary_x]
                         if temp_pixel == 255:
                             starting_of_space_below_outside = temporary_x + 1
+                            break
                         temporary_x -= 1
                     #ending
                     temporary_x = x_index - round(black_count / 2)
@@ -756,6 +752,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_pixel = img_array[starting_below_white, temporary_x]
                         if temp_pixel == 255:
                             ending_of_space_below_outside = temporary_x - 1
+                            break
                         temporary_x += 1
 
 
@@ -764,7 +761,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                     if distance_below < (difference_between_lines / 3):
                         white_note = False
-                        print('here')
 
 
 
