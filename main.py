@@ -355,13 +355,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
 
                         if black_note and past_temp_y_below != -1:
                             if changed_direction_below == 0: 
-                                #going down has to start in this way
-                                if past_temp_y_below - temp_y_below < 0:
+                                #<= bc of the below it can start straight too not only down
+                                if past_temp_y_below - temp_y_below <= 0:
                                     changed_direction_below = 1
-                                elif past_temp_y_below - temp_y_below != 0:
+                                else:
                                     black_note = False
                             elif changed_direction_below == 1:
-                                #if it's going down make sure it starts going up
+                                #if it's going down or straight make sure it starts going up
                                 if temp_y_below - past_temp_y_below < 0:
                                     changed_direction_below = 2
                             else:
