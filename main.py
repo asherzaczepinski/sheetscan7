@@ -625,13 +625,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             break
                         counter += 1
 
-
-
-
-
-
-
-
                 #need the same crazy shit dashed black does for distance parameters!!!! except for the 1.15
                 #working in here
 
@@ -687,19 +680,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         ending_of_space_above_outside = temporary_x - 1
                         break
                     temporary_x += 1
-
-
-                #+1 bc of how it is the inside white pixels spacing have to compensate
                
                 distance_above = ending_of_space_above_inside - starting_of_space_above_inside + 1
 
-                #white note is false in all cases for some reason!
                 if white_note:
                     if distance_above < (difference_between_lines / 3) or distance_above > (difference_between_lines):
                         white_note = False
-                
-                #when it's not the white_note already is false
-                    
+                                
                 starting_of_space_below_outside = -1
                 ending_of_space_below_outside = -1
                 starting_of_space_below_inside = -1
@@ -714,18 +701,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             white_note = False
                             break
                         temp_pixel = img_array[starting_below_white, temporary_x]
-                        #testing
                         if temp_pixel != 255:
                             starting_of_space_below_inside = temporary_x + 1
                             break
                         temporary_x -= 1
 
-                    #calculate the x
                     while True:
                         if temporary_x < 0:
                             white_note = False
                             break
-                        #think this is the right area
                         temp_pixel = img_array[starting_below_white, temporary_x]
                         if temp_pixel == 255:
                             starting_of_space_below_outside = temporary_x + 1
@@ -733,7 +717,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temporary_x -= 1
                     #ending
                     temporary_x = x_index - round(black_count / 2)
-
                     while True:
                         if temporary_x >= width - 1: 
                             white_note = False
@@ -743,18 +726,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             ending_of_space_below_inside = temporary_x - 1
                             break
                         temporary_x += 1
-                    #calculate the x
                     while True:
                         if temporary_x >= width - 1:
                             white_note = False
                             break
-                        #think this is the right area
                         temp_pixel = img_array[starting_below_white, temporary_x]
                         if temp_pixel == 255:
                             ending_of_space_below_outside = temporary_x - 1
                             break
                         temporary_x += 1
-
 
                     #+1 bc of how it is the inside white pixels spacing have to compensate
                     distance_below = ending_of_space_below_inside - starting_of_space_below_inside + 1
@@ -762,38 +742,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     if distance_below < (difference_between_lines / 3):
                         white_note = False
 
-
-
-
-
-
-
-
-                #need to adjust where it starts and ends
-                #should calculate a left and right!!!!
-
                 #top part 
                 if white_note:
-                    first_switch = False
-                    space_counter = 0
                     past_temp_y = -1
-                    start = x_index - round(difference_between_lines * 1.5)
-                    end = x_index - round(difference_between_lines * 0.5)
-                    first = -1
-                    middle = -1
-                    for new_x_index in range(start, end):
+                    for new_x_index in range(starting_of_space_above_inside, ending_of_space_above_inside):
                         temp_pixel = img_array[starting_above_white, new_x_index]
-                        if temp_pixel != 255:
-                            if space_counter > 0:
-                                if not first_switch:
-                                    first_switch = True
-                                    space_counter = 0
-                                else:
-                                    white_note = False
-                                    break
-                            continue
-                        else:
-                            space_counter += 1
                         temp_y_above = starting_above_white
 
                         if white_note:
@@ -810,34 +763,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break      
-                    
-
-
+                            
                 #bottom part
                 if white_note:
                     if temp_y_above <= max_above or max_above == -1:
                         max_above = temp_y_above
-                    first_switch = False
-                    space_counter = 0
                     past_temp_y = -1
-                    first = -1
-                    middle = -1
-                    start = x_index - round(difference_between_lines * 2)
-                    end = x_index - difference_between_lines
-
-                    for new_x_index in range(start, end):
+                    for new_x_index in range(starting_of_space_below_inside, ending_of_space_below_inside):
                         temp_pixel = img_array[starting_below_white, new_x_index]
-                        if temp_pixel != 255:
-                            if space_counter > 0:
-                                if not first_switch:
-                                    first_switch = True
-                                    space_counter = 0
-                                else:
-                                    white_note = False
-                                    break
-                            continue
-                        else:
-                            space_counter += 1
                         temp_y_below = starting_below_white
 
                         if white_note:
@@ -857,10 +790,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 if white_note:
                     if temp_y_below >= max_below:
                         max_below = temp_y_below
-
-
-
-
 
                 #we should keep this that way!!!!
                 if white_note:
