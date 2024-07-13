@@ -4,7 +4,6 @@
 #make it so that it has to change 2* on either the top or bottom
 #this could fix up the middle end shit! that may be excess
 
-#make sure to apply  the dashed black calculations for distance to the dashed white!
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -310,6 +309,33 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             if temp_pixel_above == 255:
                                 break
                             temp_y_above -= 1
+
+
+
+                        #double swtich stuff --- have to put one after the below too
+                        #try this first
+                        #then need something to make sure either one got to 2
+                        #can rename it changed directonabove and changed direction below
+                        if black_note and past_temp_y_above != -1:
+                            if changed_direction_once == 0: 
+                                #going up has to start in this way
+                                if past_temp_y_above - temp_y_above > 0:
+                                    changed_direction_once = 1
+                                elif past_temp_y_above - temp_y_above != 0:
+                                    print(past_temp_y_above, temp_y_above)
+                                    black_note = False
+                            elif changed_direction_once == 1:
+                                #if it's going up make sure it starts going down
+                                if temp_y_above - past_temp_y_above > 0:
+                                    changed_direction_once = 2
+                            else:
+                                if past_temp_y_above - temp_y_above > 0:
+                                    print('dsfdamfd')
+                                    black_note = False
+
+
+
+
                         if black_note:
                             if temp_y_above <= max_above or max_above == -1:
                                 max_above = temp_y_above
