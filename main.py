@@ -7,6 +7,9 @@
 
 
 #have to still implement the two check!!!!!! on all just working on getting the stuff implemented for right now
+
+
+#i think some of the issues include the fact that the start might not be checking for the column part
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -38,7 +41,7 @@ def draw_example_rectangle(image_path, rect):
     # Load the image
     img = Image.open(image_path)
     draw = ImageDraw.Draw(img)
-
+    
     # Draw each rectangle
     try:
         draw.rectangle(rect, fill=None, outline="black", width=1)
@@ -154,7 +157,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 temp_pixel_above = img_array[temp_y_above, new_x_index]       
                                 if temp_pixel_above != 255:
                                     break
-                                temp_y_above -= 1                                
+                                temp_y_above -= 1   
+                             
                             if white_note:
                                 if temp_y_above <= max_above or max_above == -1:
                                     max_above = temp_y_above
@@ -314,6 +318,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 break
                             temp_y_above -= 1
 
+                        #the black notes pass the test
+
                         if black_note and past_temp_y_above != -1:
                             if changed_direction_above == 0: 
                                 #going up has to start in this way
@@ -432,12 +438,25 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                     end_up = -1
                     if black_note:
                         found_black = False
+
+
+                        #this change of check wouldn't be game changing tho that is the thing! it would jus make sure the start up shit was more accurate
                         for new_x_index in range(x_index - black_count + 1, x_index):
                             new_pixel = img_array[starting_above_black, new_x_index]
                             if new_pixel == 0 and not found_black:
+
+
+
+                                #have to run a check here ot make sure it is not a column type shit
+
                                 found_black = True
                                 start_up = new_x_index
                             elif found_black:
+
+
+                                
+                                #also run a check here
+
                                 #white and a black has been found
                                 end_up = new_x_index - 1
                         if end_up - start_up < difference_between_lines / 5:
@@ -449,9 +468,15 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         for new_x_index in range(x_index - black_count + 1, x_index):
                             new_pixel = img_array[starting_below_black, new_x_index]
                             if new_pixel == 0 and not found_black:
+
+
+                                #same run a check here
                                 found_black = True
                                 start_down = new_x_index
                             elif found_black:
+
+
+                                #same run a check here
                                 end_down = new_x_index - 1
                         if end_down - start_down < difference_between_lines / 5:
                             black_note = False
@@ -501,8 +526,13 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 if temp_y_above <= input_y - (round(difference_between_lines_for_line_drawing) * 3 / 4) :
                                     black_note = False
                                     break
-                                if max_above >= temp_y_above:
-                                    break
+
+
+
+
+
+                                #there should be a number where temp_y_above is only there for this check or another variable if it hits where a line was
+                                #i think this is the issue bc it is scared of the line it cuts off once it gets a max above
                                 continued = True
                                 most_left = -1
                                 flag = False
@@ -527,29 +557,12 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 temp_y_above -= 1   
 
-
-
-
-
-                            #understand why we had to do >= 0 bc i thought it should just go up --- i can figure stuff out
-                            #working here!
-                            #the issue looks like it it cutting it off past a certain point and then going hella right and this is why it never goes up!!!1
-                            #make markers for where it is starting and ending
-                            img_array[past_temp_y_above:input_y,new_x_index] = 50
+                            #this would all be working if temp_y_above worked better
                             if black_note and past_temp_y_above != -1:
                                 if changed_direction_above == 0: 
-                                    #going up has to start in this way
-
-
-
-                                    #don't realize why this has to be >= 0
-                                    if past_temp_y_above - temp_y_above >= 0:
+                                    if past_temp_y_above - temp_y_above > 0:
                                         changed_direction_above = 1
-                                        #shit so this is depe into it
-                                        print('got to here')
-                                    elif past_temp_y_above - temp_y_above != 0:
-                                        print(new_x_index - start)
-                                        
+                                    elif past_temp_y_above - temp_y_above != 0:                                        
                                         black_note = False
                                 elif changed_direction_above == 1:
                                     #if it's going up make sure it starts going down
@@ -577,8 +590,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if temp_y_below >= input_y + (round(difference_between_lines_for_line_drawing) * 3 / 4):
 
                                         black_note = False
-                                        break
-                                    if max_below <= temp_y_below and max_below != -1:
                                         break
                                     continued = True
                                     most_left = -1
@@ -894,6 +905,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             else:
                                 white_note = False
                                 break
+
                 if white_note:
                     if temp_y_below >= max_below:
                         max_below = temp_y_below
