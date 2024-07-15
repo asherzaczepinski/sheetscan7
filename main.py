@@ -1,5 +1,5 @@
 #have to still implement the two check!!!!!! on all just working on getting the stuff implemented for right now
-#make sure on all the notes the max is beign adjusted on each thing consistently
+
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -405,6 +405,9 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 else:
                                     black_note = False
                                     break
+                    black_note = False
+                    if changed_direction_above == 2 or changed_direction_below == 2:
+                        black_note = True
                     if black_note:
                         if max_above > input_y - round(difference_between_lines_for_line_drawing / 2) + (line_height * 2):
                             black_note = False
@@ -528,10 +531,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     black_note = False
                                     break
 
-
-
-
-
                                 #there should be a number where temp_y_above is only there for this check or another variable if it hits where a line was
                                 #i think this is the issue bc it is scared of the line it cuts off once it gets a max above
                                 continued = True
@@ -573,10 +572,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if past_temp_y_above - temp_y_above > 0:
                                         black_note = False  
 
-
-
-
-
                             if black_note:
                                 if temp_y_above <= max_above or max_above == -1:
                                     max_above = temp_y_above
@@ -616,12 +611,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         break
                                     temp_y_below += 1  
 
-
-
-
-
-
-
                                 if black_note and past_temp_y_below != -1:
                                     if changed_direction_below == 0: 
                                         #<= bc of the below it can start straight too not only down
@@ -637,11 +626,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     else:
                                         if past_temp_y_below - temp_y_below < 0:
                                             black_note = False   
-
-
-
-
-
                                 if black_note:
                                     if temp_y_below >= max_below:
                                         max_below = temp_y_below
@@ -678,7 +662,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                         else:
                                             black_note = False
                                             break
-                                
+                    
+                    black_note = False
+                    if changed_direction_above == 2 or changed_direction_below == 2:
+                        black_note = True
                     if black_note:
                         if max_above > input_y - round(difference_between_lines_for_line_drawing / 2) + (line_height * 2):
                             black_note = False
