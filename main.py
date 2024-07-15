@@ -8,7 +8,7 @@
 
 #have to still implement the two check!!!!!! on all just working on getting the stuff implemented for right now
 
-
+#black and dashed black working just need to see white notes working noW!
 #i think some of the issues include the fact that the start might not be checking for the column part
 from PIL import Image, ImageDraw
 from pathlib import Path
@@ -137,6 +137,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         #testing where it is here
                         start = x_index - difference_between_blacks + 1
                         end = x_index - 1
+
                         for new_x_index in range(start, end):
                             temp_pixel = img_array[input_y, new_x_index]
                             if temp_pixel != 255:
@@ -159,6 +160,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 temp_y_above -= 1   
                              
+
+                            #so for the white notes it fine it will just always go up so we need to incorporate this into the check 
+                            #the reason for the step on some is bc of both input_y on the two things
+                            
                             if white_note:
                                 if temp_y_above <= max_above or max_above == -1:
                                     max_above = temp_y_above
@@ -176,7 +181,8 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]      
                                     if temp_pixel_below != 255:
                                         break
-                                    temp_y_below += 1                                
+                                    temp_y_below += 1           
+
                             if white_note:
                                 if temp_y_below >= max_below:
                                     max_below = temp_y_below
