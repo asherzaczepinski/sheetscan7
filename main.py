@@ -1,5 +1,3 @@
-#have to still implement the two check!!!!!! on all just working on getting the stuff implemented for right now
-
 from PIL import Image, ImageDraw
 from pathlib import Path
 import fitz  # PyMuPDF
@@ -217,40 +215,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                             top_left = [left - 5, input_y - 10]
                             bottom_right = [right + 5, input_y + 10]   
                             white_notes.append([top_left, bottom_right])
-    
-        
-            #sharps
-            #combine this w above logic to not have two seperate statements
-            #we are going to loop backwards and forwards and see if the for y in range thing applies here!!!
-            #i want sharps working by tmrw
-            """ sharp = True
-            if difference_between_blacks >= difference_between_lines * 0.2 and difference_between_blacks <= difference_between_lines * 0.7:
-                #do something where it calcultes from where it starts the positions of the "pillars"
-                #this will account for a lot of things so here is where we do narrow it down to the sharps
-                left_x = x_index - difference_between_blacks - 1
-                while True:
-                    temp_pixel = img_array[input_y, left_x]
-                    if temp_pixel != 255:
-                        continued = True
-                        for new_y_index in range (input_y - difference_between_lines, input_y):
-                            if img_array[new_y_index, new_x_index] == 255:
-                                continued = False
-                                break
-                        if not continued:
-                            for new_y_index in range (input_y, input_y + difference_between_lines):
-                                if img_array[new_y_index, new_x_index] == 255:
-                                    continued = False
-                                    break
-                                else:
-                                    continued = True
-                        if continued:
-                            continue 
-                    else:
-                        break 
-
-            """
-
-
             difference_between_blacks = 0
         else:
             #if it's white
@@ -1207,11 +1171,9 @@ open_pdf_into_input(pdf_path, input_folder, new_input)
 for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
         image_path = os.path.join(input_folder, filename)
-        extract_highlighted_lines_and_columns_from_image(image_path)
 
-        """ try:
+        try:
             extract_highlighted_lines_and_columns_from_image(image_path)
         except IndexError as e:
             print(e) 
-         """
 
