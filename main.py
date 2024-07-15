@@ -161,6 +161,14 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 temp_y_above -= 1   
                              
 
+                            if white_note and past_temp_y_above != -1:
+                                if past_temp_y_above - temp_y_above < 0:
+                                    white_note = False
+                                    
+
+
+
+
                             #so for the white notes it fine it will just always go up so we need to incorporate this into the check 
                             #the reason for the step on some is bc of both input_y on the two things
                             
@@ -181,7 +189,11 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     temp_pixel_below = img_array[temp_y_below, new_x_index]      
                                     if temp_pixel_below != 255:
                                         break
-                                    temp_y_below += 1           
+                                    temp_y_below += 1  
+
+                            if white_note and past_temp_y_below != -1:
+                                if past_temp_y_below - temp_y_below < 0:
+                                    white_note = False         
 
                             if white_note:
                                 if temp_y_below >= max_below:
