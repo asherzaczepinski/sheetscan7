@@ -50,30 +50,41 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
     for x_index in range(width):
         pixel = img_array[input_y, x_index]
         if pixel != 255 and x_index != width - 1:
+            
+
             black_count += 1
-            if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing:
+            if difference_between_blacks >= difference_between_lines_for_line_drawing * 0.4 and difference_between_blacks < difference_between_lines_for_line_drawing * 1.5:
+                
                 counter = 0
                 white_note = True
                 above = False
                 below = False
+                keep_going = True
                 max_above = -1
                 max_below = -1
                 #quick up and down check
                 while True:
                     temp_pixel_above = img_array[input_y - counter, x_index - int(difference_between_blacks / 2)]
                     temp_pixel_below = img_array[input_y + counter, x_index - int(difference_between_blacks / 2)]
-                    if counter > difference_between_lines_for_line_drawing / 3:
+                    if counter > difference_between_lines_for_line_drawing * 3 / 4:
+                        #breaking around here
                         white_note = False
                         break
                     if temp_pixel_above != 255:
                         above = True
                     if temp_pixel_below != 255:
                         below = True
-                    if above and below and counter < difference_between_lines_for_line_drawing / 3:
+                    if above and below and counter < difference_between_lines_for_line_drawing * 3 / 4:
                         break
                     counter += 1
+                
+
                 #this is going across and then up and down 
                 if white_note:
+                    
+                    #past here
+
+
                     first = -1
                     middle = -1
                     start = x_index - difference_between_blacks
@@ -83,7 +94,7 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         temp_y_below = input_y
                         above_flag = False
                         below_flag = False
-                        while temp_y_above > input_y - round(difference_between_lines_for_line_drawing / 2):
+                        while temp_y_above > input_y - round(difference_between_lines_for_line_drawing * 3 / 4):
                             temp_pixel_above = img_array[temp_y_above, new_x_index]                                        
                             if temp_pixel_above != 255:
                                 above_flag = True
@@ -92,14 +103,111 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                         if above_flag == False:
                             white_note = False
                         if white_note:
-                            while temp_y_below < input_y + round(difference_between_lines_for_line_drawing / 2):
+                            while temp_y_below < input_y + round(difference_between_lines_for_line_drawing * 3 / 4):
                                 temp_pixel_below = img_array[temp_y_below, new_x_index]                                            
                                 if temp_pixel_below != 255:
                                     below_flag = True
                                     break
                                 temp_y_below += 1
                             if below_flag == False:
-                                white_note = False             
+                                white_note = False          
+
+                    #need to now go up and down then across
+                    if white_note:
+                        for new_y_index in range(input_y - round(difference_between_lines_for_line_drawing / 2), input_y + round(difference_between_lines_for_line_drawing / 2)):
+                            temp_x_right = x_index - int(difference_between_blacks / 2) + 1
+                            temp_x_left = x_index - int(difference_between_blacks / 2) - 1
+                            right_flag = False
+                            left_flag = False
+                            while temp_x_left > x_index - difference_between_blacks * 2:
+                                temp_pixel_left = img_array[new_y_index, temp_x_left]
+                                if temp_pixel_left != 255:
+                                    left_flag = True
+                                    break
+                                temp_x_left -= 1
+                            if left_flag == False:
+                                white_note = False
+                            if white_note:
+                                while temp_x_right < x_index + difference_between_blacks:
+                                    temp_pixel_right = img_array[new_y_index, temp_x_right]
+                                    if temp_pixel_right != 255:
+                                        right_flag = True
+                                        break
+                                    temp_x_right -= 1
+                                if right_flag == False:
+                                    white_note = False
+                    #bottom left
+                    continued = False
+                    current_y = input_y
+                    current_x = x_index - difference_between_blacks + 1
+                    just_switched = False
+                    if white_note:
+                        while True:
+                            temp_pixel = img_array[current_y, current_x]
+                            if temp_pixel != 255:
+                                if just_switched:
+                                    break
+                                continued = True
+                                for new_y_index in range (input_y - difference_between_lines, input_y):
+                                    if img_array[new_y_index, current_x] == 255:
+                                        continued = False
+                                        break
+                                if not continued:
+                                    for new_y_index in range (input_y, input_y + difference_between_lines):
+                                        if img_array[new_y_index, current_x] == 255:
+                                            continued = False
+                                            break
+                                        else:
+                                            continued = True
+                                if continued:
+                                    break
+                                #keep working here
+                                current_y += 1
+                                just_switched = True
+                            else:
+                                just_switched = False
+                                current_x -= 1
+                                if current_x < 1:
+                                    white_note = False
+                                    break
+                    most_left = current_x
+                    continued = False
+                    current_y = input_y
+                    current_x = x_index - 1
+                    just_switched = False
+                    if white_note:
+                        while True:
+                            temp_pixel = img_array[current_y, current_x]
+                            if temp_pixel != 255:
+                                if just_switched:
+                                    break
+                                continued = True
+                                for new_y_index in range (input_y - difference_between_lines, input_y):
+                                    if img_array[new_y_index, current_x] == 255:
+                                        continued = False
+                                        break
+                                if not continued:
+                                    for new_y_index in range (input_y, input_y + difference_between_lines):
+                                        if img_array[new_y_index, current_x] == 255:
+                                            continued = False
+                                            break
+                                        else:
+                                            continued = True
+                                if continued:
+                                    break
+                                #keep working here
+                                current_y -= 1
+                                just_switched = True
+                            else:
+                                just_switched = False
+                                current_x += 1
+                                if current_x > width - 2:
+                                    white_note = False
+                                    break
+                    most_right = current_x
+                    if most_right - most_left < difference_between_lines or most_right - most_left > difference_between_lines * 1.5:
+                        white_note = False                
+                    #this is just seeing the left and right at input y
                     left = -1
                     right = -1
                     left_x = x_index - difference_between_blacks - 1
@@ -119,14 +227,22 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                 break
                         if right == -1:
                             white_note = False
+
+
                     if white_note:
+                        went_here = False
                         past_temp_y_above = -1
                         past_temp_y_below = -1
                         #testing where it is here
                         start = x_index - difference_between_blacks + 1
                         end = x_index - 1
-
+                        normal_white = True
+                        changed_direction_above = 0
+                        changed_direction_below = 0
+                        
                         for new_x_index in range(start, end):
+                            if not white_note:
+                                break
                             temp_pixel = img_array[input_y, new_x_index]
                             if temp_pixel != 255:
                                 continue
@@ -148,11 +264,6 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     break
                                 temp_y_above -= 1   
                              
-
-                            if white_note and past_temp_y_above != -1:
-                                if past_temp_y_above - temp_y_above < 0:
-                                    white_note = False
-                            #the reason for the step on some is bc of both input_y on the two things
                             if white_note:
                                 if temp_y_above <= max_above or max_above == -1:
                                     max_above = temp_y_above
@@ -171,50 +282,148 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                                     if temp_pixel_below != 255:
                                         break
                                     temp_y_below += 1  
-
-                            if white_note and past_temp_y_below != -1:
-                                if past_temp_y_below - temp_y_below < 0:
-                                    white_note = False         
-
+                            
                             if white_note:
-                                if temp_y_below >= max_below:
-                                    max_below = temp_y_below
-                                if new_x_index == start:
-                                    first = round((temp_y_above + temp_y_below) / 2)
-                                elif new_x_index == round((start + end) / 2):
-                                    middle = round((temp_y_above + temp_y_below) / 2)
-                                    if first - middle < int(difference_between_lines / 10):
+                                if past_temp_y_below != -1:
+                                    if past_temp_y_below - temp_y_below < 0:
+                                        normal_white = False
+                                if normal_white:
+                                    if past_temp_y_above != -1:
+                                        if past_temp_y_above - temp_y_above < 0:
+                                            normal_white = False
+                                #we may need to put something else here for those whole notes like that
+                                if normal_white:
+                                    if temp_y_below >= max_below:
+                                        max_below = temp_y_below
+                                    if new_x_index == start:
+                                        first = round((temp_y_above + temp_y_below) / 2)
+                                    elif new_x_index == round((start + end) / 2):
+                                        middle = round((temp_y_above + temp_y_below) / 2)
+                                        if first - middle < int(difference_between_lines / 10):
+                                            white_note = False
+                                            break
+                                    elif new_x_index == end - 1:
+                                        ending = round((temp_y_above + temp_y_below) / 2)
+                                        if middle - ending < int(difference_between_lines / 10):
+                                            white_note = False
+                                            break        
+                                    if abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
+                                        past_temp_y_above = temp_y_above
+                                        past_temp_y_below = temp_y_below
+                                    elif past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
+                                        past_temp_y_above = temp_y_above
+                                        past_temp_y_below = temp_y_below
+                                    else:
                                         white_note = False
                                         break
-                                elif new_x_index == end - 1:
-                                    ending = round((temp_y_above + temp_y_below) / 2)
-                                    if middle - ending < int(difference_between_lines / 10):
-                                        white_note = False
-                                        break        
-                                if abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10 and past_temp_y_above - temp_y_above >= 0 and temp_y_below - past_temp_y_below >= 0:
-                                    past_temp_y_above = temp_y_above
-                                    past_temp_y_below = temp_y_below
-                                elif past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 5) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 5)):
-                                    past_temp_y_above = temp_y_above
-                                    past_temp_y_below = temp_y_below
                                 else:
-                                    white_note = False
-                                    break
+                                    went_here = True
+                                    if white_note and past_temp_y_above != -1:
+                                        if changed_direction_above == 0: 
+                                            #going up has to start in this way
+                                            if past_temp_y_above - temp_y_above > 0:
+                                                changed_direction_above = 1
+                                            elif past_temp_y_above - temp_y_above != 0:
+                                                white_note = False
+                                        elif changed_direction_above == 1:
+                                            #if it's going up make sure it starts going down
+                                            if temp_y_above - past_temp_y_above > 0:
+                                                changed_direction_above = 2
+                                        else:
+                                            if past_temp_y_above - temp_y_above > 0:
+                                                white_note = False
+                                    if white_note and past_temp_y_below != -1:
+                                        if changed_direction_below == 0: 
+                                            #<= bc of the below it can start straight too not only down
+                                            if past_temp_y_below - temp_y_below <= 0:
+                                                changed_direction_below = 1
+                                            else:
+                                                white_note = False
+                                        elif changed_direction_below == 1:
+                                            #if it's going down or straight make sure it starts going up
+                                            if temp_y_below - past_temp_y_below < 0:
+                                                changed_direction_below = 2
+                                        else:
+                                            if past_temp_y_below - temp_y_below < 0:
+                                                white_note = False
+                                    
+                                    if abs((past_temp_y_above - temp_y_above) - (temp_y_below - past_temp_y_below)) < difference_between_lines / 10:
+                                        past_temp_y_above = temp_y_above
+                                        past_temp_y_below = temp_y_below
+                                    elif past_temp_y_above == -1 or (abs(past_temp_y_above - temp_y_above) <= round(difference_between_lines / 2) and abs(past_temp_y_below - temp_y_below) <= round(difference_between_lines / 2)):
+                                        past_temp_y_above = temp_y_above
+                                        past_temp_y_below = temp_y_below
+                                    else:
+                                        white_note = False
+                                        break
+                                    if keep_going:
+
+
+
+
+                                        #its in here
+                                        middle = round((max_above + max_below) / 2)
+                                        left_thickness = 0
+                                        right_thickness = 0
+                                        temp_x = x_index - round(difference_between_blacks / 2)
+                                        started_mattering = -1
+                                        while True:
+                                            if temp_x < 0:
+                                                white_note = False
+                                                break
+                                            temp_pixel = img_array[middle, temp_x]
+                                            if started_mattering == -1:
+                                                if temp_pixel != 255:
+                                                    started_mattering = temp_x
+                                            else:
+                                                if temp_pixel == 255:
+                                                    left_thickness = started_mattering - temp_x
+                                                    break
+                                            temp_x -= 1
+                                        temp_x = x_index - round(difference_between_blacks / 2)
+                                        started_mattering = -1
+                                        while True:
+                                            if temp_x > width - 1:
+                                                white_note = False
+                                                break
+                                            temp_pixel = img_array[middle, temp_x]
+                                            if started_mattering == -1:
+                                                if temp_pixel != 255:
+                                                    started_mattering = temp_x
+                                            else:
+                                                if temp_pixel == 255:
+                                                    right_thickness = temp_x - started_mattering
+                                                    break
+                                            temp_x += 1
+                                        
+                                        if left_thickness < int(difference_between_lines / 4) or right_thickness < int(difference_between_lines / 4):
+                                            white_note = False
+                                            keep_going = False
+                                        else:
+                                            keep_going = False
+                        if went_here:
+                            white_note = False
+                            if changed_direction_above == 2 or changed_direction_below == 2:
+                                white_note = True
                         if white_note:
+                            #in here
+
                             #little /5 cuz it is not all the way
-                            if max_above > input_y - round(difference_between_lines / 5):
+                            if max_above > input_y - round(difference_between_lines / 10):
                                 white_note = False
                             if white_note:
-                                if max_below < input_y + round(difference_between_lines / 5):
+                                if max_below < input_y + round(difference_between_lines / 10):
                                     white_note = False
                             #overall height check
                             if white_note:
-                                if max_below - max_above > difference_between_lines + line_height:
+                                if max_below - max_above > difference_between_lines_for_line_drawing + line_height * 2:
+                                    #not here
                                     white_note = False
                         if white_note:
                             top_left = [left - 5, input_y - 10]
                             bottom_right = [right + 5, input_y + 10]   
                             white_notes.append([top_left, bottom_right])
+            
             difference_between_blacks = 0
         else:
             #if it's white
@@ -744,6 +953,10 @@ def process_line(input_y, img_array, width, difference_between_lines_for_line_dr
                 ending_of_space_below_outside = -1
                 starting_of_space_below_inside = -1
                 ending_of_space_below_inside = -1
+                
+
+
+                #FIX UP NORMAL WHITE NOTe GLITCHES BEFORE MOVING ONTO THE OTHER STUFF
                 if white_note:
                     #starting
                     temporary_x = x_index - round(black_count / 2)
@@ -914,7 +1127,13 @@ def y_assigner(y_array, y):
     else:
         return before
 
-def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
+    
+#implement something on all white notes to check that it gets closed off at the right points all around the notes!!!!
+    
+
+#the issue is how it is processing it it is doing thE NON LINE ONES GODDAMN
+def extract_highlighted_lines_and_columns_from_image_took_out(image_path, threshold=2/3):
+    open_pdf_into_input(pdf_path, input_folder, new_input)
 
     # Load the image
     img = Image.open(image_path).convert("L")  # Convert to grayscale
@@ -959,7 +1178,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     invisible_lines = []
 
     #Space it in middle for line identification
-
     difference_between_lines_for_line_drawing = lines[1][1] - lines[0][1] 
 
     #difference between lines
@@ -996,7 +1214,6 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             group = []
         #this is on the first line of a staff and goes up 
         elif row_index % 5 == 0:
-            #Going to work on the removal of the every other line HERE!!!!
             temp_difference = lines[row_index + 1][1] - current_y
             if row_index == 0:
                 stopping_point = row[1] 
@@ -1109,6 +1326,7 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
     sorted_middles = sort_pairs(invisible_lines)
 
     notes = sort_notes(notes)
+    new_notes = []
     for row in notes:
         past_note = -1
         for note in row:
@@ -1116,27 +1334,230 @@ def extract_highlighted_lines_and_columns_from_image(image_path, threshold=2/3):
             #sometimes they like encompass each other thats y abs like it could start before end later
             if past_note != -1 and abs(note[1][0] - past_note) < (difference_between_lines * 2 / 3):
                 continue
-            top_left = note[0]
-            bottom_right = note[1]
-            assigned_value = y_assigner(sorted_middles, top_left[1] + (round(difference_between_lines_for_line_drawing / 2) - 1))
-            top_left[1] = assigned_value - (round(difference_between_lines_for_line_drawing / 2) - 1)
-            bottom_right[1] = assigned_value + (round(difference_between_lines_for_line_drawing / 2) - 1)
-            #right side
-            img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
-            #left side
-            img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
-            #top side
-            img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
-            #bottom side
-            img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0  
-            past_note = note[1][0]
+            new_notes.append(note)
+            past_note = note[1][0] 
 
     img = Image.fromarray(img_array)
     img.save(image_path)
 
     lines.append(image_path)
     all_rows.append(lines)
+
+    #only return the extra stuff here bc this looks at everything so it feels better
+    return new_notes, sorted_middles, difference_between_lines_for_line_drawing
     
+def extract_highlighted_lines_and_columns_from_image_kept_in(image_path, threshold=2/3):
+    open_pdf_into_input(pdf_path, input_folder, new_input)
+
+    # Load the image
+    img = Image.open(image_path).convert("L")  # Convert to grayscale
+
+    # Convert the PIL Image to a NumPy array
+    img_array = np.array(img)
+
+    # Get image width
+    width = img_array.shape[1]
+
+    # This will hold the lines found in the image
+    lines = []
+
+    # Variable to track the start of a line
+    start_line = -1
+
+    for row_index, row in enumerate(img_array):
+        # Count non-white (in grayscale, white is 255) pixels in the row
+        non_white_pixels = np.sum(row != 255)
+        # Highlight the row if the count exceeds the threshold
+        if non_white_pixels > (threshold * width):
+            if start_line == -1:
+                start_line = row_index
+        else:
+            # If a line was started previously, add it to the list
+            if start_line != -1:
+                lines.append([0, start_line, width, row_index])
+                start_line = -1  # Reset start_line
+
+    #replace the part we took out
+    for row in lines:
+        upper_line_y = row[1] - 1
+        bottom_line_y = row[3] 
+        for x_index in range(width):
+            if img_array[upper_line_y, x_index] != 255 and img_array[bottom_line_y, x_index] != 255:
+                for y in range(upper_line_y + 1, bottom_line_y):
+                    img_array[y, x_index] = 0
+    
+    invisible_lines = []
+
+    #Space it in middle for line identification
+
+    difference_between_lines_for_line_drawing = lines[1][1] - lines[0][1] 
+
+    #difference between lines
+
+    difference_between_lines = lines[1][1] - lines[0][3]
+
+    #line height
+
+    line_height = lines[0][3] - lines[0][1]
+
+    #For note heights
+
+    staff_white_range = (lines[len(lines) - 5][1] - lines[len(lines) - 6][1]) / 2 
+    
+    group = []
+    
+    temp_difference = -1
+
+
+    #this is the area to work on the kept in
+    #need some way to work in this here to add one extra line above and below where it is getting stuff from or some shit... pretty positive that is the issue here is the line stuff..maybe two extra lines
+    #to check lets add everything back and see what happens
+
+
+    #Going to work on the removal of the every other line HERE!!!!
+    for row_index in range(len(lines)):
+        row = lines[row_index]
+        current_y = row[1]
+        if row_index % 5 == 0:
+            #Going to work on the removal of the every other line HERE!!!!
+            temp_difference = lines[row_index + 1][1] - current_y
+            if row_index == 0:
+                stopping_point = row[1] 
+                while stopping_point > 0 and stopping_point >= row[1] - staff_white_range:
+                    stopping_point -= round(temp_difference / 2)
+                stopping_point += round(temp_difference / 2)
+            else:
+                stopping_point = (row[1] + lines[row_index - 1][1]) / 2
+            #before first
+            group.extend([[current_y - round(temp_difference / 2), current_y - round(temp_difference / 2) + round(line_height / 2)]])
+            last_line = -1
+            for add_row_index in range(4): 
+                future_line = lines[row_index + add_row_index + 1][1] 
+                last_line = future_line
+                group.extend([[int((future_line + lines[row_index + add_row_index][1]) / 2), int((future_line + lines[row_index + add_row_index][1]) / 2) + round(line_height / 2)]])
+                if add_row_index != 3:
+                    group.extend([[future_line, future_line + round(line_height / 2)]])
+            #after first
+            #make it draw the lines
+            group.extend([[last_line + round(temp_difference / 2), last_line + round(temp_difference / 2) + round(line_height / 2)]])
+            invisible_lines.append(group)
+            group = []
+
+    notes = []
+    for group in invisible_lines:
+
+        for [current_loop_y, new_y] in group:
+            #i think it's not going all the way
+            row_notes = []
+            # Process the lines and get the notes
+            current_dashed_whites, current_black_notes, current_white_notes = process_line(
+                current_loop_y, img_array, width, difference_between_lines_for_line_drawing, 
+                difference_between_lines, line_height
+            )
+            new_dashed_whites, new_black_notes, new_white_notes = process_line(
+                new_y, img_array, width, difference_between_lines_for_line_drawing, 
+                difference_between_lines, line_height
+            )
+
+            all_blacks_in_line = sorted(current_black_notes + new_black_notes, key=lambda note: note[0][0])
+            all_whites_in_line = sorted(current_white_notes + new_white_notes, key=lambda note: note[0][0])
+            all_dashed_whites_in_line = sorted(current_dashed_whites + new_dashed_whites, key=lambda note: note[0][0])
+
+            index = 0
+
+            while index < len(all_blacks_in_line):
+                black_note = all_blacks_in_line[index]
+                if index == len(all_blacks_in_line) - 1:
+                    row_notes.append(['black', black_note])
+                    break
+                next_note = all_blacks_in_line[index + 1]
+                
+                if next_note[0][0] - black_note[0][0] < difference_between_lines:
+                    #compare which ones y is greater it doesn't matter the x
+                    if next_note[0][1] < black_note[0][1]:
+                        row_notes.append(['black', black_note])
+                    else:
+                        row_notes.append(['black', next_note])
+                    index += 1
+                else:
+                    row_notes.append(['black', black_note])
+                index += 1
+            
+            index = 0
+
+            while index < len(all_whites_in_line):
+                white_note = all_whites_in_line[index]
+                if index == len(all_whites_in_line) - 1:
+                    row_notes.append(['white', white_note])
+                    break
+                next_note = all_whites_in_line[index + 1]
+                if next_note[0][0] - white_note[0][0] < difference_between_lines:
+                    if next_note[0][1] < white_note[0][1]:
+                        row_notes.append(['white', white_note])
+                    else:
+                        row_notes.append(['white', next_note])
+                    index += 1
+                else:
+                    row_notes.append(['white', white_note])
+                index += 1
+
+            index = 0
+
+            while index < len(all_dashed_whites_in_line):
+                dashed_white = all_dashed_whites_in_line[index]
+                if index == len(all_dashed_whites_in_line) - 1:
+                    row_notes.append(['dashed_white', dashed_white])
+                    break
+                next_note = all_dashed_whites_in_line[index + 1]
+                if next_note[0][0] - dashed_white[0][0] < difference_between_lines:
+                    if next_note[0][1] < dashed_white[0][1]:
+                        row_notes.append(['dashed_white', dashed_white])
+                    else:
+                        row_notes.append(['dashed_white', next_note])
+                    index += 1
+                else:
+                    row_notes.append(['dashed_white', dashed_white])
+                index += 1
+            notes.append(row_notes)
+
+    past_notes = []
+    
+    for index, row in enumerate(notes):
+        if index != 0:
+            for index2, note in enumerate(row):
+                note = note[1]
+                for index3, past_note in enumerate(past_notes):
+                    past_note = past_note[1]
+                    #this is an example of a specific usecase when removing!
+                    if abs(past_note[0][0] - note[0][0]) <= difference_between_lines:
+                        if past_notes[index3][0] == 'black' and row[index2][0] != 'black':
+                            notes[index - 1].pop(index3)
+                            break
+                        else:
+                            notes[index].pop(index2)
+                            break
+        past_notes = row
+
+    notes = sort_notes(notes)
+    new_notes = []
+    for row in notes:
+        past_note = -1
+        for note in row:
+            note = note[1]
+            #sometimes they like encompass each other thats y abs like it could start before end later
+            if past_note != -1 and abs(note[1][0] - past_note) < (difference_between_lines * 2 / 3):
+                continue
+            new_notes.append(note)
+            past_note = note[1][0] 
+
+    img = Image.fromarray(img_array)
+    img.save(image_path)
+
+    lines.append(image_path)
+    all_rows.append(lines)
+
+    return new_notes
+
 def open_pdf_into_input(pdf_path, input_folder, new_input):
     # Open the PDF file
     doc = fitz.open(pdf_path)
@@ -1158,22 +1579,64 @@ def open_pdf_into_input(pdf_path, input_folder, new_input):
         # Save the image to a file
         image_path = os.path.join(input_folder, f"page_{page_num + 1}.png")
         image_path2 = os.path.join(new_input, f"page_{page_num + 1}.png")
+        if not os.path.exists(os.path.dirname(image_path2)):
+            os.makedirs(os.path.dirname(image_path2))
         img.save(image_path)
-        img.save(image_path2)
+
+#use this to find the new shit
+
+def find_and_combine_extra(arr1, arr2):
+    # Convert each sub-array and inner lists to a tuple for hashability
+    set1 = {tuple(map(tuple, sub_array)) for sub_array in arr1}
+    set2 = {tuple(map(tuple, sub_array)) for sub_array in arr2}
+
+    # Find the elements in arr2 that are not in arr1
+    extra_in_arr2 = set2 - set1
+
+    # Convert the extra elements back to lists of lists and combine with arr1
+    result = arr1 + [list(map(list, item)) for item in extra_in_arr2]
+
+    return result
 
 # Example usage
-pdf_path = "input.pdf"
+pdf_path = "hello.pdf"
 input_folder = "input"
 new_input = 'new_input'
 
-open_pdf_into_input(pdf_path, input_folder, new_input)
-
+#to debug this we can try to see it proces both pages seperately from some old commits but literally it is showing it has everything there i think it is a probelm with combine
 for filename in os.listdir(input_folder):
     if filename.endswith(".png") or filename.endswith(".jpg"):
-        image_path = os.path.join(input_folder, filename)
-
         try:
-            extract_highlighted_lines_and_columns_from_image(image_path)
+
+            image_path = os.path.join(input_folder, filename)
+            new_image_path = os.path.join(new_input, filename)
+            # Load the image
+            img = Image.open(image_path).convert("L")  # Convert to grayscale
+
+            # Convert the PIL Image to a NumPy array
+            img_array = np.array(img)
+
+            return_extract_highlighted_lines_and_columns_from_image_took_out, sorted_middles, difference_between_lines_for_line_drawing = extract_highlighted_lines_and_columns_from_image_took_out(image_path)
+
+            notes = find_and_combine_extra(return_extract_highlighted_lines_and_columns_from_image_took_out, extract_highlighted_lines_and_columns_from_image_kept_in(image_path))
+            
+            for note in notes:
+                top_left = note[0]
+                bottom_right = note[1]
+                assigned_value = y_assigner(sorted_middles, top_left[1] + (round(difference_between_lines_for_line_drawing / 2) - 1))
+                top_left[1] = assigned_value - (round(difference_between_lines_for_line_drawing / 2) - 1)
+                bottom_right[1] = assigned_value + (round(difference_between_lines_for_line_drawing / 2) - 1)
+                #right side
+                img_array[top_left[1] - 5: bottom_right[1] + 5, bottom_right[0] + 5] = 0
+                #left side
+                img_array[top_left[1] - 5: bottom_right[1] + 5, top_left[0] - 5] = 0
+                #top side
+                img_array[top_left[1] - 5, top_left[0] - 5:bottom_right[0] + 5] = 0
+                #bottom side
+                img_array[bottom_right[1] + 5, top_left[0] - 5:bottom_right[0] + 5] = 0  
+                
+            #img array might be regenerating idk some stupid shit is happening right here
+            img = Image.fromarray(img_array)
+            img.save(new_image_path)
         except IndexError as e:
             print(e) 
-
